@@ -3,6 +3,7 @@ import { COLORS, FONT_UI, GAME_H, GAME_W } from '../config/constants';
 import { generateAllTextures, makeAtrioxFallback } from '../fx/TextureFactory';
 import { ATLAS_KEY, type AnimLibrary } from '../animation/SpriteAnimator';
 import { buildAnimations, type AtlasMeta } from '../../data/animations';
+import { CHARACTER_ATLAS_META, versionedCharacterAtlas } from '../../data/atlas';
 
 export const ATRIOX_POSES = ['idle', 'lunge', 'slash', 'cast', 'dash', 'hurt'] as const;
 
@@ -42,8 +43,11 @@ export class BootScene extends Phaser.Scene {
     for (const p of ATRIOX_POSES) this.load.image(`atriox_${p}`, `${p}.png`);
     // atlas de animação (tools/build_atlases.py)
     this.load.setPath('assets/atlas/');
-    this.load.multiatlas(ATLAS_KEY, 'characters.json', 'assets/atlas/');
-    this.load.json('characters_meta', 'characters.json');
+    // Phaser 3.90 supports an inline JSON object (MultiAtlasFile -> JSONFile),
+    // but its declaration incorrectly restricts atlasURL to string.
+    // @ts-expect-error Runtime supports the documented inline-JSON overload.
+    this.load.multiatlas(ATLAS_KEY, versionedCharacterAtlas(__ATLAS_REVISION__), 'assets/atlas/');
+    this.cache.json.add('characters_meta', { meta: CHARACTER_ATLAS_META });
   }
 
   create(): void {

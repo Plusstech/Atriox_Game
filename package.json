@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "sprites": "python tools/extract_sprites.py",
-    "test:e2e": "node tests/e2e/smoke.mjs && node tests/e2e/v03.mjs",
+    "test:e2e": "node tests/e2e/smoke.mjs && node tests/e2e/v03.mjs && node tests/e2e/atlas-cache.mjs",
     "check": "npm run test && npm run build && npm run test:e2e",
     "atlas": "python tools/build_atlases.py && python tools/build_v03_atlas.py"
   },
