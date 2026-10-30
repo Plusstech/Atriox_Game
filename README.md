@@ -1,5 +1,7 @@
 # Atriox Cinder: Lâmina sem Deus
 
+**v0.5:** Carrasco com visual novo e postura quebrável; Toknar com Ceifa e Fome próprias, efeitos desenhados, reforços do clã e arena ilustrada; Caim em 3/4 numa arena ilustrada; goblins, orcs saqueadores (escudo frontal) e wyverns selvagens; conversas estilo RPG antes dos três chefes; antecipações sem pose congelada. Veja [V05.md](docs/V05.md) e o que ainda falta de arte em [ASSETS_PENDENTES.md](docs/ASSETS_PENDENTES.md).
+
 **v0.3 em revisão local:** altar complementar, dons nas portas, nove dons avançados, Toknar antes de Caim, Caim com novas defesas e infecção, e Provação da Eternidade. Veja [mudanças, controles, validação e limitações](docs/V03.md).
 
 As novas folhas de combate de Atriox foram normalizadas em 512×512 e integradas, incluindo carga em pé. Veja [mapeamento das fontes, preparação e testes](docs/COMBAT_ART_UPDATE.md).
@@ -57,13 +59,16 @@ src/
 public/assets/atlas/      atlas WebP dos personagens + characters.json (quadros, trim, pivô, ordem da corrida)
 public/assets/atriox/     poses do concept v0.1 (menu, retrato)
 art_source/v02/           folhas de arte originais da v0.2
-tools/                    sheet_frames.py (recorte), build_atlases.py (atlas), extract_sprites.py (v0.1)
+tools/                    sheet_frames.py (recorte), build_atlases.py (atlas v0.2), build_v03/v04/v05_atlas.py (folhas seguintes), extract_sprites.py (v0.1)
+art_source/v05/           folhas, retratos e arenas do pacote PROMPT_MASTER (originais intactos)
 tests/                    unitários (Vitest) e e2e (playwright-core)
 docs/                     GAME_DESIGN, LORE_CANON, ART_PIPELINE, REFERENCES, DEPLOY_HOSTINGER
 ```
 
 ## Documentação
 
+- [v0.5: campanha, chefes, inimigos, conversas, testes](docs/V05.md)
+- [Assets pendentes](docs/ASSETS_PENDENTES.md)
 - [Game design e números](docs/GAME_DESIGN.md)
 - [Cânone e decisões narrativas](docs/LORE_CANON.md)
 - [Pipeline de arte e animações pendentes](docs/ART_PIPELINE.md)

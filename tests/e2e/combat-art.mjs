@@ -99,7 +99,8 @@ try {
         window.artFrames.every(
           (f) => !['orbit', 'execution_mark', 'second_step'].includes(f.state),
         ) &&
-        ['atriox_horizontal', 'atriox_return', 'atriox_ascending'].every(
+        // v0.5: o finalizador usa o corte diagonal próprio (atriox_combo_3)
+        ['atriox_horizontal', 'atriox_return', 'atriox_diagonal'].every(
           (prefix) => window.artFrames.some((f) => f.frame.startsWith(prefix)),
         ),
     ),

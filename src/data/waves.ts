@@ -4,9 +4,12 @@ import type { EnemyKind } from './enemies';
  * Cada onda é uma sequência de grupos. Um grupo surge quando o número de
  * inimigos vivos cai para `whenAliveAtMost` ou menos.
  */
+/** O que uma onda pode trazer: inimigos comuns ou wyverns selvagens (entidade própria). */
+export type SpawnKind = EnemyKind | 'wyvern_wild';
+
 export interface SpawnGroup {
   whenAliveAtMost: number;
-  spawns: { kind: EnemyKind; count: number }[];
+  spawns: { kind: SpawnKind; count: number }[];
 }
 
 export interface WaveDef {

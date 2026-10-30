@@ -22,6 +22,8 @@ import {
 import { ENEMIES, type EnemyKind } from '../../data/enemies';
 import { EXECUTIONER, CAIM } from '../../data/bosses';
 import { ROOMS, type RewardKind } from '../../data/rooms';
+import type { SpawnKind } from '../../data/waves';
+import { BOSS_DIALOGUES, type BossDialogueId } from '../../data/dialogues';
 import { JUDGMENT_FLAME } from '../../data/abilities';
 import {
   AVATAR,
@@ -244,6 +246,8 @@ export class ArenaScene extends Phaser.Scene {
   private transitioning = false;
   private camTarget: { x: number; y: number } | null = null;
   private introWalk: 'executioner' | 'caim' | null = null;
+  /** conversa pré-chefe aberta (arena pausada) */
+  dialogueActive = false;
   private orbObjects: Phaser.GameObjects.GameObject[] = [];
   private cinematic: BlessingCinematic | null = null;
   private gloryGranted: boolean | null = null;
@@ -293,6 +297,7 @@ export class ArenaScene extends Phaser.Scene {
     this.transitioning = false;
     this.camTarget = null;
     this.introWalk = null;
+    this.dialogueActive = false;
     this.orbObjects = [];
     this.cinematic = null;
     this.gloryGranted = null;
@@ -693,16 +698,17 @@ export class ArenaScene extends Phaser.Scene {
       if (this.introWalk === 'executioner') {
         if (
           !frozen &&
-          this.boss.walkTo(this.layout.gatePos.x, FLOOR.y + 260, sdt, 95)
+          this.boss.walkTo(this.layout.gatePos.x, FLOOR.y + 420, sdt, 110)
         )
           this.introWalk = null;
-      } else this.boss.update(edt, this.player);
+      } else if (this.boss.scripted && !this.boss.dead) this.boss.idle(sdt, this.player);
+      else this.boss.update(edt, this.player);
     }
     if (this.caim) {
       if (this.introWalk === 'caim') {
         if (
           !frozen &&
-          this.caim.walkTo(this.layout.gatePos.x, FLOOR.y + 280, sdt)
+          this.caim.walkTo(this.layout.gatePos.x, FLOOR.y + 420, sdt)
         )
           this.introWalk = null;
       } else this.caim.update(edt, this.player);
@@ -771,7 +777,10 @@ export class ArenaScene extends Phaser.Scene {
   }
 
   aliveEnemies(): number {
-    return this.enemies.filter((e) => !e.dead).length;
+    return (
+      this.enemies.filter((e) => !e.dead).length +
+      this.wyverns.filter((w) => !w.dead && w.variant === 'wild').length
+    );
   }
 
   private collectHurtboxes(): Hurtbox[] {
@@ -1570,7 +1579,11 @@ export class ArenaScene extends Phaser.Scene {
     this.layout = buildArena(this, room.theme);
     this.player.x = ARENA_CENTER.x;
     this.player.y =
-      room.kind === 'prep' ? ARENA_CENTER.y + 250 : FLOOR.y + FLOOR.h - 120;
+      room.kind === 'prep'
+        ? ARENA_CENTER.y + 250
+        : room.kind === 'boss'
+          ? FLOOR.y + FLOOR.h - 300
+          : FLOOR.y + FLOOR.h - 120;
     this.player.vx = this.player.vy = 0;
     this.cameras.main.centerOn(this.player.x, this.player.y - 40);
     this.ui()?.roomTitle(room.name, room.subtitle);
@@ -1771,7 +1784,7 @@ export class ArenaScene extends Phaser.Scene {
     return { x: ARENA_CENTER.x, y: FLOOR.y + 120 };
   }
 
-  private queueSpawn(kind: EnemyKind, delay: number): void {
+  private queueSpawn(kind: SpawnKind, delay: number): void {
     this.pendingSpawns++;
     const pt = this.pickSpawnPoint();
     const roomAt = this.run.index;
@@ -1786,7 +1799,8 @@ export class ArenaScene extends Phaser.Scene {
           this.pendingSpawns = Math.max(0, this.pendingSpawns - 1);
         return;
       }
-      this.effects.spawnSigil(pt.x, pt.y, 850);
+      // wyvern selvagem: anuncia pela sombra que cresce (não por um selo)
+      if (kind !== 'wyvern_wild') this.effects.spawnSigil(pt.x, pt.y, 850);
       this.time.delayedCall(800, () => {
         if (epoch !== this.roomEpoch) return;
         this.pendingSpawns = Math.max(0, this.pendingSpawns - 1);
@@ -1796,7 +1810,8 @@ export class ArenaScene extends Phaser.Scene {
           epoch !== this.roomEpoch
         )
           return;
-        if (this.aliveEnemies() < ETERNITY.activeCap)
+        if (kind === 'wyvern_wild') this.spawnWyvern(pt.x, pt.y, 'wild');
+        else if (this.aliveEnemies() < ETERNITY.activeCap)
           this.spawnEnemy(kind, pt.x, pt.y);
       });
     });
@@ -1839,7 +1854,7 @@ export class ArenaScene extends Phaser.Scene {
     return e;
   }
 
-  spawnWyvern(x: number, y: number): void {
+  spawnWyvern(x: number, y: number, variant: 'blood' | 'wild' = 'blood'): void {
     if (this.wyverns.filter((w) => !w.dead).length >= 3) return;
     const w = new Wyvern(this, this.lib, x, y, {
       hitboxes: this.hitboxes,
@@ -1851,7 +1866,7 @@ export class ArenaScene extends Phaser.Scene {
         this.skills.glory('kill', AVATAR.gloryPerKill);
         this.fireBlessings('kill', { x: w.x, y: w.y, angle: 0 });
       },
-    });
+    }, variant);
     this.wyverns.push(w);
   }
 
@@ -1967,20 +1982,51 @@ export class ArenaScene extends Phaser.Scene {
   }
 
   // =================================================================== chefes
+  /**
+   * Conversa antes do chefe: a arena PAUSA (combate e perigos congelados), a
+   * DialogueScene assume a entrada e, ao terminar, nenhuma tecla ou clique vaza
+   * para o primeiro quadro da luta. `done` roda uma única vez.
+   */
+  private bossDialogue(id: BossDialogueId, done: () => void): void {
+    if (this.endless || this.run.over || this.player.dead) {
+      done();
+      return;
+    }
+    const epoch = this.roomEpoch;
+    let finished = false;
+    this.dialogueActive = true;
+    this.queued = NO_INPUT();
+    this.player.clearInput();
+    this.scene.launch('DialogueScene', {
+      lines: BOSS_DIALOGUES[id],
+      onDone: () => {
+        if (finished) return;
+        finished = true;
+        this.dialogueActive = false;
+        this.scene.resume();
+        this.input.keyboard?.resetKeys();
+        this.queued = NO_INPUT();
+        this.player.clearInput();
+        if (epoch !== this.roomEpoch || this.run.over || this.player.dead) return;
+        done();
+      },
+    });
+    this.scene.pause();
+  }
+
   private startToknarIntro(): void {
-    this.ui()?.bossIntro(
-      'TOKNAR',
-      'Rhaesis drena sangue. Ataque a postura durante o Banquete.',
-    );
-    this.toknar = new Toknar(this, this.lib, ARENA_CENTER.x, FLOOR.y + 250, {
+    this.player.locked = !this.endless;
+    this.toknar = new Toknar(this, this.lib, ARENA_CENTER.x, FLOOR.y + 360, {
       hitboxes: this.hitboxes,
       effects: this.effects,
       collide: (x, y, r) =>
         resolveCircle(x, y, r, FLOOR, this.layout.obstacles),
-      onPhase: () =>
+      onPhase: () => {
         this.ui()?.toast(
           'Rhaesis desperta! Observe o golpe atrasado e a canalização.',
-        ),
+        );
+        this.toknarReinforcements(this.toknar?.brain.phase ?? 2);
+      },
       onDeath: () => {
         this.hitboxes.clear();
         this.projectiles.clear();
@@ -2002,11 +2048,49 @@ export class ArenaScene extends Phaser.Scene {
         } else this.handleRun(this.run.bossDefeated());
       },
     });
-    this.camTarget = { x: ARENA_CENTER.x, y: FLOOR.y + 210 };
+    this.camTarget = { x: ARENA_CENTER.x, y: FLOOR.y + 260 };
     const epoch = this.roomEpoch;
-    this.time.delayedCall(1100, () => {
-      if (epoch === this.roomEpoch) this.camTarget = null;
+    Sfx.bossRoar();
+    this.effects.shake(500, 0.005);
+    this.time.delayedCall(900, () => {
+      if (epoch !== this.roomEpoch || !this.toknar) return;
+      this.bossDialogue('toknar', () => {
+        this.ui()?.bossIntro(
+          'TOKNAR',
+          'Rhaesis drena sangue. Ataque a postura durante o Banquete.',
+        );
+        Sfx.bossRoar();
+        this.time.delayedCall(700, () => {
+          if (epoch !== this.roomEpoch || !this.toknar || this.run.over) return;
+          this.camTarget = null;
+          this.player.locked = false;
+          this.toknar.startFight();
+        });
+      });
     });
+  }
+
+  /**
+   * Reforços reais na troca de fase: entram pelos acessos superiores laterais
+   * da arena do clã e caminham para o chão. A plateia pintada não se move.
+   */
+  private toknarReinforcements(phase: number): void {
+    const kinds = TOKNAR.reinforcements[phase] ?? [];
+    const epoch = this.roomEpoch;
+    const gates = [
+      { x: FLOOR.x + 180, y: FLOOR.y + 30 },
+      { x: FLOOR.x + FLOOR.w - 180, y: FLOOR.y + 30 },
+    ];
+    kinds.forEach((kind, i) => {
+      this.time.delayedCall(700 + i * 450, () => {
+        if (epoch !== this.roomEpoch || this.run.over || !this.toknar || this.toknar.dead) return;
+        if (this.aliveEnemies() >= ETERNITY.activeCap) return;
+        const g = gates[i % gates.length];
+        this.effects.dustPuff(g.x, g.y, 8);
+        this.spawnEnemy(kind, g.x, g.y);
+      });
+    });
+    if (kinds.length) this.ui()?.banner('O clã responde', `${kinds.length} guerreiros descem pelos acessos`, 0xa8e070);
   }
 
   private startExecutionerIntro(): void {
@@ -2046,17 +2130,21 @@ export class ArenaScene extends Phaser.Scene {
       });
       this.introWalk = 'executioner';
     });
-    this.time.delayedCall(2500, () => {
-      if (!this.boss) return;
-      Sfx.bossRoar();
-      this.ui()?.bossIntro(EXECUTIONER.name, EXECUTIONER.title);
-    });
-    this.time.delayedCall(4300, () => {
-      if (!this.boss || this.run.over) return;
+    const epoch = this.roomEpoch;
+    this.time.delayedCall(4500, () => {
+      if (!this.boss || this.run.over || epoch !== this.roomEpoch) return;
       this.introWalk = null;
-      this.camTarget = null;
-      this.player.locked = false;
-      this.boss.startFight();
+      this.bossDialogue('executioner', () => {
+        if (!this.boss) return;
+        Sfx.bossRoar();
+        this.ui()?.bossIntro(EXECUTIONER.name, EXECUTIONER.title);
+        this.time.delayedCall(700, () => {
+          if (!this.boss || this.run.over || epoch !== this.roomEpoch) return;
+          this.camTarget = null;
+          this.player.locked = false;
+          this.boss.startFight();
+        });
+      });
     });
   }
 
@@ -2125,18 +2213,22 @@ export class ArenaScene extends Phaser.Scene {
       });
       this.introWalk = 'caim';
     });
-    this.time.delayedCall(2300, () => {
-      if (!this.caim) return;
-      Sfx.bossRoar();
-      this.effects.shockRing(this.caim.x, this.caim.y, 200, 0xc0101a, 600);
-      this.ui()?.bossIntro(CAIM.name, CAIM.title);
-    });
-    this.time.delayedCall(4200, () => {
-      if (!this.caim || this.run.over) return;
+    const epoch = this.roomEpoch;
+    this.time.delayedCall(4300, () => {
+      if (!this.caim || this.run.over || epoch !== this.roomEpoch) return;
       this.introWalk = null;
-      this.camTarget = null;
-      this.player.locked = false;
-      this.caim.startFight();
+      this.bossDialogue('caim', () => {
+        if (!this.caim) return;
+        Sfx.bossRoar();
+        this.effects.shockRing(this.caim.x, this.caim.y, 200, 0xc0101a, 600);
+        this.ui()?.bossIntro(CAIM.name, CAIM.title);
+        this.time.delayedCall(700, () => {
+          if (!this.caim || this.run.over || epoch !== this.roomEpoch) return;
+          this.camTarget = null;
+          this.player.locked = false;
+          this.caim.startFight();
+        });
+      });
     });
   }
 
@@ -2328,17 +2420,24 @@ export class ArenaScene extends Phaser.Scene {
       ETERNITY.activeCap,
       4 + Math.floor(this.endlessWave / 2),
     );
-    for (let i = 0; i < count; i++)
-      this.queueSpawn(
-        this.endlessWave % 5 === 0
-          ? 'guardian'
-          : i % 3 === 0
-            ? 'archer'
-            : this.endlessWave % 2 === 0 && i % 2 === 0
-              ? 'guardian'
-              : 'recruit',
-        i * 180,
-      );
+    // formações alternadas (não só inflação de vida): enxame, muralha, céu, misto
+    const formations: SpawnKind[][] = [
+      ['goblin', 'goblin', 'archer'],
+      ['orc', 'recruit', 'goblin'],
+      ['wyvern_wild', 'goblin', 'recruit'],
+      ['guardian', 'archer', 'orc', 'goblin'],
+    ];
+    const elite: SpawnKind[] = ['orc', 'guardian', 'orc', 'archer'];
+    const pattern =
+      this.endlessWave % ETERNITY.eliteEvery === 0
+        ? elite
+        : formations[this.endlessWave % formations.length];
+    let wild = 0;
+    for (let i = 0; i < count; i++) {
+      let kind = pattern[i % pattern.length];
+      if (kind === 'wyvern_wild' && ++wild > 2) kind = 'goblin';
+      this.queueSpawn(kind, i * 180);
+    }
   }
 
   private endlessCleared(): void {
@@ -2450,8 +2549,8 @@ export class ArenaScene extends Phaser.Scene {
               ? this.boss
               : null;
       if (foe) {
-        tx += Phaser.Math.Clamp((foe.x - this.player.x) * 0.32, -220, 220);
-        ty += Phaser.Math.Clamp((foe.y - this.player.y) * 0.32, -130, 130);
+        tx += Phaser.Math.Clamp((foe.x - this.player.x) * 0.42, -260, 260);
+        ty += Phaser.Math.Clamp((foe.y - this.player.y) * 0.42, -230, 230);
       }
     }
     // seguimento suave; o tremor do Phaser é um deslocamento de render, desacoplado daqui
@@ -2541,7 +2640,8 @@ export class ArenaScene extends Phaser.Scene {
         ratio: this.caim.hpRatio,
         phase: this.caim.brain.phase,
       };
-    if (this.toknar && !this.toknar.dead)
+    // a barra só entra depois da conversa (ordem: diálogo → rugido/título → barra)
+    if (this.toknar && !this.toknar.dead && this.toknar.brain.state !== 'intro')
       boss = {
         name: this.toknar.name,
         title: this.toknar.title,
@@ -2567,7 +2667,9 @@ export class ArenaScene extends Phaser.Scene {
       buff: this.buffActive
         ? `${this.buffActive.name} · ${this.buffRooms === 1 ? 'sala atual' : 'próxima sala'}${this.buffActive.id === 'barrier' ? ` · ${p.barrier} barreira / ${p.barrierHits} acertos` : this.buffActive.id === 'ward' ? ` · ${p.infectionWard} proteções` : ''}`
         : '',
-      bossExtra: this.toknar
+      bossExtra: this.boss && !this.boss.scripted && !this.boss.dead && !this.toknar && !this.caim
+        ? `Postura ${Math.ceil(this.boss.brain.posture)}/${EXECUTIONER.posture}${this.boss.brain.state === 'broken' ? ' · VULNERÁVEL' : ''}`
+        : this.toknar
         ? `${TOKNAR.moves[this.toknar.brain.move].name} · Postura ${Math.ceil(this.toknar.brain.posture)}/${TOKNAR.posture}${this.toknar.brain.state === 'broken' ? ' · VULNERÁVEL' : ''}`
         : this.caim
           ? `Manto ${Math.ceil(this.caim.defense.shield)}/${FINAL_BOSS.shieldHp} · ${this.caim.defense.mode === 'ritual' ? `COLHEITA: quebre ${Math.ceil(this.caim.defense.posture)} de postura` : this.caim.defense.mode === 'rupture' ? 'ONDA DE SERVIDÃO — recue ou esquive' : this.caim.defense.mode === 'shieldWarning' ? 'MANTO DA SERVIDÃO — preparando escudo' : this.caim.defense.mode === 'punish' ? 'VULNERÁVEL' : ''}`
@@ -2640,6 +2742,9 @@ export class ArenaScene extends Phaser.Scene {
             posture: this.toknar.brain.posture,
           }
         : null,
+      dialogue: this.dialogueActive,
+      kinds: this.enemies.filter((e) => !e.dead).map((e) => e.def.kind),
+      wildWyverns: this.wyverns.filter((w) => !w.dead && w.variant === 'wild').length,
       endlessWave: this.endlessWave,
       room: this.run.room?.id,
       roomIndex: this.run.index,
@@ -2670,6 +2775,8 @@ export class ArenaScene extends Phaser.Scene {
             hp: this.boss.health.current,
             phase: this.boss.brain.phase,
             state: this.boss.brain.state,
+            posture: this.boss.brain.posture,
+            frame: this.boss.frameName,
           }
         : null,
       caim: this.caim

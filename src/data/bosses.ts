@@ -40,6 +40,10 @@ export interface BossDef {
   transitionDuration: number;
   moves: BossMoveDef[];
   scale: number;
+  /** postura quebrável (v0.5) */
+  posture?: number;
+  breakMs?: number;
+  breakImmunity?: number;
 }
 
 export const EXECUTIONER: BossDef = {
@@ -54,7 +58,10 @@ export const EXECUTIONER: BossDef = {
   phase2RecoveryMul: 0.68,
   phase2WindupMul: 0.85,
   transitionDuration: 1500,
-  scale: 0.78,
+  scale: 0.8,
+  posture: 150,
+  breakMs: 1600,
+  breakImmunity: 6500,
   moves: [
     {
       id: 'overhead',

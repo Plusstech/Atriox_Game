@@ -8,6 +8,7 @@ import { angleDiff, degToRad, length, normalize } from '../combat/geometry';
 import type { Effects } from '../fx/Effects';
 import { DEPTH } from '../config/constants';
 import { Sfx } from '../audio/Sfx';
+import { SpriteAnimator, getLibrary } from '../animation/SpriteAnimator';
 import { newEntityId, type CollideFn, type Combatant, type HitInfo } from './types';
 
 export interface EnemyContext {
@@ -32,10 +33,16 @@ interface WeaponRig {
 const RIGS: Record<string, WeaponRig> = {
   recruit: { ox: 22, oy: -82, rest: 1.15, windup: -2.3, strike: 1.0, behind: false },
   archer: { ox: 20, oy: -75, rest: 0.7, windup: 0, strike: 0, behind: false },
-  guardian: { ox: -26, oy: -111, rest: 1.3, windup: -2.6, strike: 1.2, behind: true }
+  guardian: { ox: -26, oy: -111, rest: 1.3, windup: -2.6, strike: 1.2, behind: true },
+  // inimigos com quadros do atlas não usam rig (valores neutros)
+  sprite: { ox: 0, oy: 0, rest: 0, windup: 0, strike: 0, behind: false }
 };
 
-/** Inimigo comum: IA por máquina de estados + rig visual (corpo + braço/arma). */
+/**
+ * Inimigo comum: IA por máquina de estados + visual.
+ * - rig procedural (corpo + braço/arma) para os inimigos de treinamento;
+ * - quadros do atlas (goblin, orc) sincronizados com as fases do golpe.
+ */
 export class Enemy implements Combatant {
   readonly id = newEntityId();
   readonly brain: EnemyBrain;
@@ -60,8 +67,12 @@ export class Enemy implements Combatant {
   private readonly rig: WeaponRig;
 
   readonly container: Phaser.GameObjects.Container;
-  private body: Phaser.GameObjects.Image;
-  private weapon: Phaser.GameObjects.Image;
+  private body: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite;
+  private weapon: Phaser.GameObjects.Image | null = null;
+  private anim: SpriteAnimator | null = null;
+  /** direção da guarda do escudo (orc) */
+  private guardAngle = 0;
+  private blockFx = 0;
   private shadow: Phaser.GameObjects.Image;
   private telegraph: Phaser.GameObjects.Graphics;
   private hpBar: Phaser.GameObjects.Graphics;
@@ -80,14 +91,22 @@ export class Enemy implements Combatant {
     this.brain = new EnemyBrain(def);
     this.health = new Health(def.hp);
     this.hurtbox = { id: this.id, team: 'enemy', x, y, radius: def.radius, alive: true, invulnerable: false };
-    this.rig = RIGS[def.kind];
+    this.rig = RIGS[def.sprite ? 'sprite' : def.kind];
 
     this.shadow = scene.add.image(x, y, 'shadow').setDepth(DEPTH.shadow).setDisplaySize(def.radius * 4, def.radius * 1.4);
     this.telegraph = scene.add.graphics().setDepth(DEPTH.telegraph);
     this.hpBar = scene.add.graphics().setDepth(DEPTH.overlayFx - 30);
-    this.body = scene.add.image(0, 0, def.texture).setOrigin(0.5, (scene.textures.get(def.texture).getSourceImage().height - 4) / scene.textures.get(def.texture).getSourceImage().height);
-    this.weapon = scene.add.image(this.rig.ox, this.rig.oy, def.weaponTexture).setOrigin(0.03, 0.5).setRotation(this.rig.rest);
-    this.container = scene.add.container(x, y, this.rig.behind ? [this.weapon, this.body] : [this.body, this.weapon]);
+    if (def.sprite) {
+      this.anim = new SpriteAnimator(scene, getLibrary(scene), def.sprite.char, 0, 0, `${def.sprite.anim}.run`);
+      this.body = this.anim.sprite;
+      this.container = scene.add.container(x, y, [this.body]);
+    } else {
+      const tex = def.texture!;
+      const h = scene.textures.get(tex).getSourceImage().height;
+      this.body = scene.add.image(0, 0, tex).setOrigin(0.5, (h - 4) / h);
+      this.weapon = scene.add.image(this.rig.ox, this.rig.oy, def.weaponTexture!).setOrigin(0.03, 0.5).setRotation(this.rig.rest);
+      this.container = scene.add.container(x, y, this.rig.behind ? [this.weapon, this.body] : [this.body, this.weapon]);
+    }
     this.container.setScale(def.scale);
     // surgimento
     this.container.setAlpha(0);
@@ -185,13 +204,14 @@ export class Enemy implements Combatant {
     else if (Math.abs(dx) > 8) this.facing = dx >= 0 ? 1 : -1;
 
     // arco do arqueiro mira o jogador
-    if (this.def.kind === 'archer' && !this.weaponTween?.isPlaying()) {
+    if (this.def.kind === 'archer' && this.weapon && !this.weaponTween?.isPlaying()) {
       const local = this.facing > 0 ? this.attackAngle : Math.PI - this.attackAngle;
       const aim = st === 'windup' ? Phaser.Math.Angle.Wrap(local) * 0.6 : this.rig.rest;
       this.weapon.setRotation(this.weapon.rotation + (aim - this.weapon.rotation) * Math.min(1, dt / 80));
       if (st !== 'windup') this.attackAngle = toPlayer;
     }
 
+    if (st !== 'windup' && st !== 'attack') this.guardAngle = toPlayer;
     this.drawTelegraph(player);
     this.syncVisual(dt);
   }
@@ -201,8 +221,10 @@ export class Enemy implements Combatant {
     this.vx *= 0.2;
     this.vy *= 0.2;
     this.ctx.effects.telegraphPulse(this.x, this.chestY - 10, 0xff3b1f);
-    Sfx.telegraph(this.def.kind === 'guardian');
-    if (this.def.kind !== 'archer') {
+    Sfx.telegraph(this.def.kind === 'guardian' || this.def.kind === 'orc');
+    if (!this.weapon) {
+      // quadros do atlas: a antecipação está desenhada (sem girar o corpo)
+    } else if (this.def.kind !== 'archer') {
       this.weaponTween?.stop();
       this.weaponTween = this.scene.tweens.add({ targets: this.weapon, rotation: this.rig.windup, duration: this.def.windup * 0.7, ease: 'Sine.easeOut' });
       // antecipação: corpo se inclina para trás
@@ -215,7 +237,7 @@ export class Enemy implements Combatant {
   private strike(): void {
     const a = this.attackAngle;
     const d = this.def;
-    this.scene.tweens.add({ targets: this.body, angle: 5, duration: 90, yoyo: true, onComplete: () => this.body.setAngle(0) });
+    if (this.weapon) this.scene.tweens.add({ targets: this.body, angle: 5, duration: 90, yoyo: true, onComplete: () => this.body.setAngle(0) });
     if (d.attackShape === 'projectile') {
       Sfx.arrow();
       const ox = this.x + Math.cos(a) * 20;
@@ -244,12 +266,12 @@ export class Enemy implements Combatant {
           return true;
         }
       });
-      this.scene.tweens.add({ targets: this.weapon, x: this.rig.ox - 6, duration: 60, yoyo: true });
+      if (this.weapon) this.scene.tweens.add({ targets: this.weapon, x: this.rig.ox - 6, duration: 60, yoyo: true });
       return;
     }
     Sfx.enemyAttack();
     this.weaponTween?.stop();
-    this.weaponTween = this.scene.tweens.add({ targets: this.weapon, rotation: this.rig.strike, duration: 90, ease: 'Cubic.easeIn' });
+    if (this.weapon) this.weaponTween = this.scene.tweens.add({ targets: this.weapon, rotation: this.rig.strike, duration: 90, ease: 'Cubic.easeIn' });
     if (d.attackShape === 'sector') {
       const sp = (d.lunge ?? 0) / (d.active / 1000);
       this.lunge = { x: Math.cos(a) * sp, y: Math.sin(a) * sp, t: d.active };
@@ -264,7 +286,8 @@ export class Enemy implements Combatant {
           follow: () => ({ x: this.x, y: this.y })
         })
       );
-      this.ctx.effects.slash(this.x, this.y - 30, a, 'slash_enemy', d.hitRadius * 0.9, { duration: 160, flipY: this.facing < 0 });
+      // goblin/orc: o golpe está desenhado nos quadros; o rastro procedural fica para o rig antigo
+      if (this.weapon) this.ctx.effects.slash(this.x, this.y - 30, a, 'slash_enemy', d.hitRadius * 0.9, { duration: 160, flipY: this.facing < 0 });
     } else {
       const cx = this.x + Math.cos(a) * 40;
       const cy = this.y + Math.sin(a) * 40;
@@ -287,6 +310,7 @@ export class Enemy implements Combatant {
 
   private restWeapon(delay: number): void {
     this.weaponTween?.stop();
+    if (!this.weapon) return;
     this.weaponTween = this.scene.tweens.add({ targets: this.weapon, rotation: this.rig.rest, delay, duration: 280, ease: 'Sine.easeInOut' });
   }
 
@@ -334,28 +358,30 @@ export class Enemy implements Combatant {
     this.hurtbox.x = this.x;
     this.hurtbox.y = this.y;
     this.hurtbox.alive = !this.dead;
+    this.animate(dt);
     if (this.flashTimer > 0) {
       this.flashTimer -= dt;
-      this.body.setTintFill(0xffffff);
-      this.weapon.setTintFill(0xffffff);
+      this.body.setTintFill(this.blockFx > 0 ? 0xc8d8ff : 0xffffff);
+      this.weapon?.setTintFill(0xffffff);
     } else if (!this.dead) {
       if (this.burning) {
         this.body.setTint(0xffb080);
-        this.weapon.clearTint();
+        this.weapon?.clearTint();
       } else if (this.brain.state === 'windup' && this.brain.windupProgress > 0.75) {
         this.body.setTint(0xffc0b0);
-        this.weapon.setTint(0xff9070);
+        this.weapon?.setTint(0xff9070);
       } else {
         this.body.clearTint();
-        this.weapon.clearTint();
+        this.weapon?.clearTint();
       }
     }
+    if (this.blockFx > 0) this.blockFx -= dt;
     // barra de vida discreta
     const g = this.hpBar;
     g.clear();
     if (!this.dead && this.health.current < this.health.max) {
       const w = 46 * this.def.scale + 10;
-      const top = this.y - (this.body.height - 10) * this.def.scale - 12;
+      const top = this.def.sprite ? this.y - this.def.sprite.height - 10 : this.y - (this.body.height - 10) * this.def.scale - 12;
       g.fillStyle(0x000000, 0.6);
       g.fillRect(this.x - w / 2 - 1, top - 1, w + 2, 6);
       g.fillStyle(this.burning ? 0xff8a3a : 0xc0303a, 1);
@@ -363,8 +389,59 @@ export class Enemy implements Combatant {
     }
   }
 
+  /** Quadros do atlas pela fase da IA: corrida em loop, golpe sincronizado, reação, queda. */
+  private animate(dt: number): void {
+    const a = this.anim;
+    if (!a || !this.def.sprite) return;
+    const k = this.def.sprite.anim;
+    const st = this.brain.state;
+    const d = this.def;
+    if (st === 'dead') {
+      a.play(`${k}.dead`);
+      a.update(dt);
+    } else if (st === 'hurt') {
+      a.play(`${k}.hurt`);
+      a.update(dt);
+    } else if (st === 'windup' || st === 'attack' || st === 'recovery') {
+      a.play(`${k}.attack`);
+      const t = this.brain.timer;
+      if (st === 'windup') a.sync('windup', t / d.windup);
+      else if (st === 'attack') a.sync('active', t / d.active);
+      else a.sync('recovery', t / d.recovery);
+    } else {
+      a.play(`${k}.run`);
+      const sp = length(this.vx, this.vy);
+      // cadência proporcional à velocidade real; parado, o ciclo quase congela
+      a.update(dt, sp < 20 ? 0.25 : Math.min(1.4, 0.45 + sp / d.speed));
+    }
+  }
+
+  /** Escudo frontal: o ataque vem de dentro do arco da guarda? */
+  private blocks(hit: HitInfo): boolean {
+    const sh = this.def.shield;
+    if (!sh || hit.heavy || hit.tag === 'burn' || hit.tag === 'charged') return false;
+    const st = this.brain.state;
+    if (st === 'hurt' || st === 'recovery' || st === 'attack' || st === 'dead') return false;
+    if (Math.abs(hit.dirX) + Math.abs(hit.dirY) < 0.01) return false;
+    const from = Math.atan2(-hit.dirY, -hit.dirX);
+    return Math.abs(angleDiff(this.guardAngle, from)) <= degToRad(sh.arcDeg / 2);
+  }
+
   receiveHit(hit: HitInfo): number {
     if (this.dead || this.removed) return 0;
+    if (this.blocks(hit)) {
+      // defesa frontal legível: dano reduzido, sem interrupção; flancos e golpes pesados passam
+      const dealt = this.health.damage(Math.max(1, Math.round(hit.damage * (1 - this.def.shield!.reduction))));
+      this.flashTimer = 60;
+      this.blockFx = 60;
+      this.knock.x = hit.dirX * hit.knockback * 0.15;
+      this.knock.y = hit.dirY * hit.knockback * 0.15;
+      Sfx.block();
+      this.ctx.effects.floatingText(this.x, this.chestY - 40, 'BLOQUEIO', '#c8d8ff', 13);
+      this.ctx.onDamaged(this, dealt, { ...hit, tag: 'blocked' });
+      if (this.health.dead) this.die();
+      return dealt;
+    }
     const dealt = this.health.damage(Math.round(hit.damage));
     if (dealt <= 0) return 0;
     if (hit.tag === 'burn') {
@@ -404,8 +481,15 @@ export class Enemy implements Combatant {
     this.ctx.onDeath(this);
     Sfx.enemyDie();
     this.ctx.effects.deathBurst(this.x, this.y, 0xff9a50);
+    if (this.anim) {
+      // queda desenhada nos quadros; depois desaparece
+      this.anim.play(`${this.def.sprite!.anim}.dead`, true);
+      this.scene.tweens.add({ targets: this.container, alpha: 0, delay: 900, duration: 500, onComplete: () => this.destroy() });
+      this.scene.tweens.add({ targets: this.shadow, alpha: 0, delay: 900, duration: 500 });
+      return;
+    }
     this.body.setTint(0x6a2a20);
-    this.weapon.setTint(0x6a2a20);
+    this.weapon?.setTint(0x6a2a20);
     this.scene.tweens.add({
       targets: this.container,
       alpha: 0,

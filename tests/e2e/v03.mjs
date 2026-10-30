@@ -52,6 +52,8 @@ try {
     viewport: { width: 1280, height: 720 },
   });
   const page = await ctx.newPage();
+  // v0.5: conversas pré-chefe dispensadas (testadas em tests/e2e/v05.mjs)
+  await page.addInitScript(() => { window.__ATRIOX_SKIP_DIALOGUE__ = true; });
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   const a = (fn) => page.evaluate(fn);
@@ -192,12 +194,14 @@ try {
     );
   }
   check(
-    'campanha dá cinco combates e Carrasco antes de Toknar',
+    'campanha dá combates, Carrasco e mais salas antes de Toknar',
     seen.includes('build-3') &&
       seen.includes('executioner') &&
+      seen.indexOf('executioner') < seen.indexOf('build-3') &&
       seen.at(-1) === 'toknar',
   );
-  await wait(() => !!window.__ATRIOX__.arena.toknar);
+  // v0.5: a barra do chefe só aparece quando a luta começa (depois da conversa)
+  await wait(() => !!window.__ATRIOX__.arena.toknar && window.__ATRIOX__.arena.toknar.brain.state !== 'intro');
   check(
     'Toknar é acessível na campanha e usa sprites',
     await a(() => {
@@ -374,12 +378,26 @@ try {
   await a(() => window.__ATRIOX__.arena.devDamageBoss(2));
   await wait(() => window.__ATRIOX__.arena.giftOffers.length === 2);
   await interact('door0');
+  // v0.5: Toknar → salas → Caim (Forja do Sentinela no meio)
+  await page.waitForFunction(() => window.__ATRIOX__.arena.run.room.id === 'build-4', null, { timeout: 10000 });
+  await wait(() => window.__ATRIOX__.arena.run.phase === 'combat');
+  await page.waitForFunction(
+    () => {
+      const a = window.__ATRIOX__.arena;
+      a.devKillAll();
+      return a.run.phase === 'doors';
+    },
+    null,
+    { timeout: 30000, polling: 150 },
+  );
+  await wait(() => window.__ATRIOX__.arena.giftOffers.length === 2);
+  await interact('door0');
   await wait(
     () =>
       window.__ATRIOX__.arena.caim && !window.__ATRIOX__.arena.caim.scripted,
   );
   check(
-    'Caim vem depois de Toknar',
+    'Caim vem depois de Toknar e de mais uma sala',
     await a(() => window.__ATRIOX__.arena.run.room.id === 'nemeia'),
   );
   check(

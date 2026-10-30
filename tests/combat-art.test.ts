@@ -8,8 +8,9 @@ import { ATRIOX_COMBO } from '../src/data/attacks';
 import { ComboController } from '../src/game/combat/ComboController';
 
 describe('Novas folhas de combate', () => {
-  it('exporta 32 PNGs RGBA em 512x512, com apoio e margem constantes', () => {
-    expect(Object.keys(prepared.frames)).toHaveLength(32);
+  it('exporta 40 PNGs RGBA em 512x512, com apoio e margem constantes', () => {
+    // 32 (v0.4) + 8 do finalizador diagonal (v0.5)
+    expect(Object.keys(prepared.frames)).toHaveLength(40);
     for (const [name, frame] of Object.entries(prepared.frames)) {
       const png = readFileSync(
         new URL(`../art_source/v04/normalized/${name}.png`, import.meta.url),
@@ -36,8 +37,6 @@ describe('Novas folhas de combate', () => {
     for (const [key, sheet] of [
       ['attack_1', 'atriox_horizontal'],
       ['attack_2', 'atriox_return'],
-      ['attack_3', 'atriox_ascending'],
-      ['attack_3_glory', 'atriox_ascending'],
       ['ascending', 'atriox_ascending'],
       ['return_cut', 'atriox_horizontal'],
     ]) {
@@ -48,6 +47,19 @@ describe('Novas folhas de combate', () => {
       expect(d.frames.filter((f) => f.phase === 'windup')).toHaveLength(3);
       expect(d.frames.filter((f) => f.phase === 'active')).toHaveLength(2);
       expect(d.frames.filter((f) => f.phase === 'recovery')).toHaveLength(3);
+      expect(d.frames.filter((f) => f.event === 'hit')).toEqual([d.frames[3]]);
+    }
+  });
+  it('finalizador diagonal próprio (v0.5): 3 antecipação, 2 ativos, 2 recuperação, sem o quadro 05', () => {
+    const defs = buildAnimations(atlas.meta);
+    for (const key of ['attack_3', 'attack_3_glory']) {
+      const d = defs[`atriox.${key}`];
+      expect(d.frames.map((f) => f.name)).toEqual(
+        [0, 1, 2, 3, 4, 6, 7].map((i) => `atriox_diagonal_0${i}`),
+      );
+      expect(d.frames.filter((f) => f.phase === 'windup')).toHaveLength(3);
+      expect(d.frames.filter((f) => f.phase === 'active')).toHaveLength(2);
+      expect(d.frames.filter((f) => f.phase === 'recovery')).toHaveLength(2);
       expect(d.frames.filter((f) => f.event === 'hit')).toEqual([d.frames[3]]);
     }
   });

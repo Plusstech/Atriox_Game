@@ -22,9 +22,14 @@ SPECS={
     'atriox_horizontal': {'cols':[4,4], 'refs':[0,7], 'role':'attack_1', 'source':'Spritesheet de guerreiro com espada transparente-6 - Copia.png'},
     'atriox_return': {'cols':[4,4], 'refs':[6,7], 'role':'attack_2', 'source':'Spritesheet de espadachim em oito poses-7 - Copia.png'},
     'atriox_charge': {'cols':[2,2], 'refs':[0,1,2,3], 'role':'charge_hold', 'source':'Espadachim em spritesheet transparente de quatro quadros-8 - Copia.png'},
-    'atriox_ascending': {'cols':[4,4], 'refs':[0,7], 'role':'ascending / attack_3', 'source':'Spritesheet de ataque ascendente com espada-9 - Copia.png'},
+    'atriox_ascending': {'cols':[4,4], 'refs':[0,7], 'role':'ascending (Sentença)', 'source':'Spritesheet de ataque ascendente com espada-9 - Copia.png'},
+    'atriox_diagonal': {'cols':[4,4], 'refs':[0,7], 'role':'attack_3 (finalizador diagonal)', 'source':'atriox_combo_3.png (pacote PROMPT_MASTER v0.5)'},
 }
 SIZE=512
+# Explicit cuts (normalized 512px coords): tips of the neighbouring pose's blade that
+# touch this pose's boots in the source sheet, so no automatic split can separate them.
+# atriox_diagonal_05 is NOT cleaned: the stray blade crosses its leg; the animation skips it.
+MANUAL_ERASE={('atriox_diagonal',6):[(110,394,174,446)]}
 ANCHOR=(256,448)
 MARGIN=10
 
@@ -51,16 +56,27 @@ def clean(a):
             if sizes[label]<10 and near[labels==label].min()>8:a[labels==label]=0
     return a
 
+def drop_loose(a,share=0.06):
+    """Blade tips of neighbouring poses left after splitting chained figures: small, detached."""
+    a=a.copy();m=a[:,:,3]>0
+    labels,n=ndimage.label(m,structure=np.ones((3,3)))
+    if n<2:return a
+    sizes=np.bincount(labels.ravel());sizes[0]=0
+    for label in range(1,n+1):
+        if sizes[label]<share*sizes.max():a[labels==label]=0
+    return a
+
 def prepare():
     OUT.mkdir(parents=True,exist_ok=True);INSPECT.mkdir(exist_ok=True)
     sheets={};provenance={};body_target=256.0
     for name,cfg in SPECS.items():
         path=SRC/(name+'.png')
         rgba=clean(np.array(Image.open(path).convert('RGBA')))
-        sf.SHEETS[name]={'cols':cfg['cols'],'expected':sum(cfg['cols'])}
+        sf.SHEETS[name]={'cols':cfg['cols'],'expected':sum(cfg['cols']),'split_all':name=='atriox_diagonal'}
         extracted=sf.extract(name,rgba)
         if len(extracted)!=sum(cfg['cols']) or any(a is None for a,_ in extracted):raise ValueError(name)
         frames=[(clean(a),bounds) for a,bounds in extracted]
+        if name=='atriox_diagonal':frames=[(drop_loose(a),b) for a,b in frames]
         ref=float(np.median([body_height(frames[i][0]) for i in cfg['refs']]))
         anchors=[foot_anchor(a) for a,_ in frames]
         # One common target across all sheets; even the longest sword must fit.
@@ -81,7 +97,13 @@ def prepare():
             image=Image.fromarray(a).resize((max(1,round(a.shape[1]*scale)),max(1,round(a.shape[0]*scale))),Image.Resampling.LANCZOS)
             ox=int(round(ANCHOR[0]-px*scale));oy=int(round(ANCHOR[1]-py*scale))
             canvas=Image.new('RGBA',(SIZE,SIZE));canvas.alpha_composite(image,(ox,oy))
-            arr=np.array(canvas);arr[arr[:,:,3]<8]=0;canvas=Image.fromarray(arr)
+            arr=np.array(canvas);arr[arr[:,:,3]<8]=0
+            for x0,y0,x1,y1 in MANUAL_ERASE.get((name,i),[]):
+                # explicit cut: only grey blade pixels inside the box (boots/cloth stay)
+                box=arr[y0:y1,x0:x1];rgb=box[:,:,:3].astype(int)
+                sat=(rgb.max(2)-rgb.min(2))/np.maximum(rgb.max(2),1)
+                box[((sat<0.38)|(rgb.max(2)<95))&(box[:,:,3]>0)]=0
+            canvas=Image.fromarray(arr)
             bbox=canvas.getbbox()
             if not bbox or bbox[0]<MARGIN-2 or bbox[2]>SIZE-MARGIN+2 or bbox[1]<MARGIN-2 or bbox[3]>SIZE-MARGIN+2:raise ValueError(f'Clipped frame {name}_{i:02d}: {bbox}')
             filename=f'{name}_{i:02d}.png';canvas.save(OUT/filename);norms.append(canvas)

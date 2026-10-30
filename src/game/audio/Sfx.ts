@@ -128,6 +128,20 @@ class SfxEngine {
     this.tone(heavy ? 900 : 1300, 0.05, 'square', 0.05, 600);
   }
 
+  /** golpe defendido por escudo: estalo metálico curto */
+  block(): void {
+    if (!this.throttle('block', 60)) return;
+    this.tone(1650, 0.09, 'square', 0.06, 1100);
+    this.tone(2400, 0.06, 'triangle', 0.05, 1800);
+    this.noise(0.08, 0.3, 'highpass', 3000, 1600, 0.9);
+  }
+
+  /** dialogo: letra revelada */
+  blip(): void {
+    if (!this.throttle('blip', 45)) return;
+    this.tone(640, 0.03, 'triangle', 0.025, 560);
+  }
+
   enemyAttack(): void {
     if (!this.throttle('enemyAttack', 60)) return;
     this.noise(0.14, 0.25, 'bandpass', 900, 2200, 1.2);

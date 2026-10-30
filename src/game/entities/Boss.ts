@@ -8,6 +8,7 @@ import type { Effects } from '../fx/Effects';
 import { DEPTH } from '../config/constants';
 import { Sfx } from '../audio/Sfx';
 import { newEntityId, type CollideFn, type Combatant, type HitInfo } from './types';
+import { SpriteAnimator, getLibrary } from '../animation/SpriteAnimator';
 
 export interface BossContext {
   hitboxes: HitboxSystem;
@@ -18,10 +19,13 @@ export interface BossContext {
   onDeath(): void;
 }
 
-const SHOULDER = { x: 43, y: -169 };
-const REST = 1.2;
+const seq = (p: string, n: number): string[] => Array.from({ length: n }, (_, i) => `${p}_${String(i).padStart(2, '0')}`);
 
-/** O Carrasco da Provação — miniboss original do protótipo. */
+/**
+ * O Carrasco da Provação — primeiro chefe (personagem original do jogo).
+ * v0.5: capuz carmesim, placas gastas e machado de execução (folhas carrasco_*),
+ * animado por quadros sincronizados com as fases do golpe; postura quebrável.
+ */
 export class Boss implements Combatant {
   readonly id = newEntityId();
   readonly brain: BossBrain;
@@ -41,13 +45,13 @@ export class Boss implements Combatant {
   scripted = true;
 
   readonly container: Phaser.GameObjects.Container;
-  private body: Phaser.GameObjects.Image;
-  private weapon: Phaser.GameObjects.Image;
+  private anim: SpriteAnimator;
+  private body: Phaser.GameObjects.Sprite;
+  private hurtFlash = 0;
   private shadow: Phaser.GameObjects.Image;
   private telegraph: Phaser.GameObjects.Graphics;
   private aura: Phaser.GameObjects.Particles.ParticleEmitter;
   private glow: Phaser.GameObjects.Image;
-  private weaponTween?: Phaser.Tweens.Tween;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -67,10 +71,9 @@ export class Boss implements Combatant {
     this.glow = scene.add.image(x, y - 10, 'light').setDepth(DEPTH.groundFx).setBlendMode(Phaser.BlendModes.ADD).setTint(0xff3010).setAlpha(0);
     this.glow.setDisplaySize(320, 170);
     this.telegraph = scene.add.graphics().setDepth(DEPTH.telegraph);
-    const src = scene.textures.get('boss_executioner').getSourceImage();
-    this.body = scene.add.image(0, 0, 'boss_executioner').setOrigin(0.5, (src.height - 4) / src.height);
-    this.weapon = scene.add.image(SHOULDER.x, SHOULDER.y, 'weapon_axe').setOrigin(0.03, 0.5).setRotation(REST);
-    this.container = scene.add.container(x, y, [this.body, this.weapon]).setScale(def.scale);
+    this.anim = new SpriteAnimator(scene, getLibrary(scene), 'carrasco', 0, 0, 'carrasco.idle');
+    this.body = this.anim.sprite;
+    this.container = scene.add.container(x, y, [this.body]).setScale(def.scale);
     this.aura = scene.add.particles(0, 0, 'p_ember', {
       x: { min: -40, max: 40 },
       y: { min: -150, max: 0 },
@@ -83,6 +86,11 @@ export class Boss implements Combatant {
       frequency: 45,
       emitting: false
     });
+  }
+
+  /** quadro atual do atlas (testes/inspeção) */
+  get frameName(): string {
+    return this.body.frame.name;
   }
 
   get dead(): boolean {
@@ -108,20 +116,29 @@ export class Boss implements Combatant {
     this.x += (n.x * speed * dt) / 1000;
     this.y += (n.y * speed * dt) / 1000;
     this.facing = n.x >= 0 ? 1 : -1;
-    this.body.setAngle(Math.sin(this.scene.time.now / 120) * 2);
+    this.anim.play('carrasco.run');
+    this.anim.update(dt, speed / this.def.speed);
     this.syncVisual(dt);
     return false;
   }
 
   startFight(): void {
     this.scripted = false;
-    this.body.setAngle(0);
     this.brain.startFight();
+  }
+
+  /** Parado em guarda (conversa antes da luta). */
+  idle(dt: number, lookAt: { x: number }): void {
+    this.facing = lookAt.x >= this.x ? 1 : -1;
+    this.anim.play('carrasco.idle');
+    this.anim.update(dt);
+    this.syncVisual(dt);
   }
 
   update(dt: number, player: { x: number; y: number; dead: boolean }): void {
     if (this.removed || this.scripted) return;
     if (this.dead) {
+      this.anim.update(dt);
       this.syncVisual(dt);
       return;
     }
@@ -135,7 +152,6 @@ export class Boss implements Combatant {
       else if (ev.type === 'moveActive') this.executeMove(ev.move);
       else if (ev.type === 'moveEnd') this.endMove(ev.move);
       else if (ev.type === 'phaseChange') this.enterPhase2();
-      else if (ev.type === 'transitionEnd') this.restWeapon(0);
     }
 
     let tvx = 0;
@@ -148,7 +164,6 @@ export class Boss implements Combatant {
         tvy = n.y * this.def.speed * this.brain.speedMul;
       }
       this.facing = dx >= 0 ? 1 : -1;
-      this.body.setAngle(Math.sin(this.scene.time.now / 140) * 1.5);
     } else if (st === 'windup' && this.brain.move) {
       if (this.brain.windupProgress < 0.6) {
         const d = angleDiff(this.attackAngle, toPlayer);
@@ -175,12 +190,47 @@ export class Boss implements Combatant {
         this.vx = this.vy = 0;
         this.ctx.effects.shake(160, 0.006);
         this.ctx.effects.dustPuff(this.x, this.y, 10);
+        this.ctx.effects.atlasFx(this.x + this.facing * 50, this.y - 40, seq('fxc_impact', 6), { frameMs: 55, depth: this.y + 5 });
         Sfx.slam();
       }
     }
 
     this.drawTelegraph();
+    this.animate(dt);
     this.syncVisual(dt);
+  }
+
+  /** Quadros pela fase da IA (sincronizados); loops só em corrida, investida, fúria e tontura. */
+  private animate(dt: number): void {
+    const b = this.brain;
+    const st = b.state;
+    const m = b.move;
+    if (this.hurtFlash > 0) this.hurtFlash -= dt;
+    if (st === 'transition') {
+      this.anim.play('carrasco.rage');
+      this.anim.update(dt);
+    } else if (st === 'broken') {
+      this.anim.play('carrasco.broken');
+      this.anim.update(dt);
+    } else if ((st === 'windup' || st === 'active' || st === 'recovery') && m) {
+      if (m.id === 'charge' && st === 'active') {
+        this.anim.play('carrasco.charge_loop');
+        this.anim.update(dt);
+        return;
+      }
+      this.anim.play(`carrasco.${m.id}`);
+      if (st === 'windup') this.anim.sync('windup', b.timer / b.windupOf(m));
+      else if (st === 'active') this.anim.sync('active', b.timer / m.active);
+      else this.anim.sync('recovery', b.timer / b.recoveryOf(m));
+    } else if (this.hurtFlash > 0) {
+      // reação curta (super armor: não interrompe a IA)
+      this.anim.play('carrasco.hurt');
+      this.anim.update(dt);
+    } else {
+      const moving = Math.hypot(this.vx, this.vy) > 25;
+      this.anim.play(moving ? 'carrasco.run' : 'carrasco.idle');
+      this.anim.update(dt, moving ? Math.max(0.6, Math.hypot(this.vx, this.vy) / this.def.speed) : 1);
+    }
   }
 
   private beginWindup(m: BossMoveDef, toPlayer: number): void {
@@ -188,23 +238,15 @@ export class Boss implements Combatant {
     this.facing = Math.cos(toPlayer) >= 0 ? 1 : -1;
     this.vx *= 0.2;
     this.vy *= 0.2;
-    const w = this.brain.windupOf(m);
     Sfx.telegraph(true);
     this.ctx.effects.telegraphPulse(this.x, this.chestY, m.id === 'inferno' ? 0xff8a20 : 0xff3b1f);
-    this.weaponTween?.stop();
-    const target = m.id === 'sweep' ? 2.7 : m.id === 'charge' ? -0.2 : -2.75;
-    this.weaponTween = this.scene.tweens.add({ targets: this.weapon, rotation: target, duration: w * 0.75, ease: 'Sine.easeOut' });
-    this.scene.tweens.add({ targets: this.body, angle: m.id === 'charge' ? 8 : -7, duration: w * 0.75 });
   }
 
   private executeMove(m: BossMoveDef): void {
     const a = this.attackAngle;
     const team = 'enemy' as const;
-    this.weaponTween?.stop();
-    this.scene.tweens.add({ targets: this.body, angle: 4, duration: 100 });
     switch (m.id) {
       case 'overhead': {
-        this.weaponTween = this.scene.tweens.add({ targets: this.weapon, rotation: 1.35, duration: 90, ease: 'Cubic.easeIn' });
         this.owned.push(
           this.ctx.hitboxes.spawn({
             shape: { kind: 'rect', x: this.x, y: this.y, angle: a, length: m.length!, width: m.width! },
@@ -220,7 +262,7 @@ export class Boss implements Combatant {
         this.scene.time.delayedCall(70, () => {
           const ex = this.x + Math.cos(a) * m.length! * 0.75;
           const ey = this.y + Math.sin(a) * m.length! * 0.75;
-          this.ctx.effects.shockRing(ex, ey, 90, 0xff6a30, 320);
+          this.ctx.effects.atlasFx(ex, ey - 30, seq('fxc_impact', 6), { frameMs: 55, scale: 1.2, depth: ey + 5 });
           this.ctx.effects.dustPuff(ex, ey, 12);
           this.ctx.effects.scorch(ex, ey, 50);
           this.ctx.effects.shake(200, 0.009);
@@ -229,7 +271,6 @@ export class Boss implements Combatant {
         break;
       }
       case 'sweep': {
-        this.weaponTween = this.scene.tweens.add({ targets: this.weapon, rotation: -0.6, duration: m.active, ease: 'Cubic.easeOut' });
         this.owned.push(
           this.ctx.hitboxes.spawn({
             shape: { kind: 'sector', x: this.x, y: this.y, radius: m.radius!, angle: a, halfArc: degToRad(m.arcDeg! / 2) },
@@ -241,7 +282,7 @@ export class Boss implements Combatant {
             follow: () => ({ x: this.x, y: this.y })
           })
         );
-        this.ctx.effects.slash(this.x, this.y - 50, a, 'slash_2', m.radius! * 0.95, { duration: 220, tint: 0xff6040, flipY: this.facing < 0, arcSpin: 0.9 });
+        this.ctx.effects.atlasFx(this.x + Math.cos(a) * 80, this.y + Math.sin(a) * 50 - 60, seq('fxc_slash_h', 6), { frameMs: 45, scale: 1.1, flipX: Math.cos(a) < 0, depth: this.y + 5 });
         this.ctx.effects.shake(140, 0.004);
         Sfx.swing(2);
         break;
@@ -249,7 +290,6 @@ export class Boss implements Combatant {
       case 'charge': {
         const sp = m.speed ?? 900;
         this.charge = { x: Math.cos(a) * sp, y: Math.sin(a) * sp, active: true };
-        this.weaponTween = this.scene.tweens.add({ targets: this.weapon, rotation: 0.3, duration: 120 });
         this.owned.push(
           this.ctx.hitboxes.spawn({
             shape: { kind: 'circle', x: this.x, y: this.y, radius: this.def.radius + 26 },
@@ -266,7 +306,6 @@ export class Boss implements Combatant {
         break;
       }
       case 'inferno': {
-        this.weaponTween = this.scene.tweens.add({ targets: this.weapon, rotation: 1.4, duration: 90, ease: 'Cubic.easeIn' });
         const r0 = m.radius!;
         this.owned.push(
           this.ctx.hitboxes.spawn({
@@ -316,13 +355,7 @@ export class Boss implements Combatant {
 
   private endMove(m: BossMoveDef): void {
     this.charge.active = false;
-    this.restWeapon(m.id === 'charge' ? 0 : 250);
-    this.scene.tweens.add({ targets: this.body, angle: 0, duration: 300 });
-  }
-
-  private restWeapon(delay: number): void {
-    this.weaponTween?.stop();
-    this.weaponTween = this.scene.tweens.add({ targets: this.weapon, rotation: REST, delay, duration: 420, ease: 'Sine.easeInOut' });
+    if (m.id === 'charge') this.ctx.effects.dustPuff(this.x, this.y, 8);
   }
 
   private enterPhase2(): void {
@@ -336,8 +369,6 @@ export class Boss implements Combatant {
     this.aura.start();
     this.aura.startFollow(this.container);
     this.scene.tweens.add({ targets: this.glow, alpha: 0.55, duration: 600 });
-    this.weaponTween?.stop();
-    this.weaponTween = this.scene.tweens.add({ targets: this.weapon, rotation: -2.4, duration: 400, yoyo: true, hold: 600 });
     this.ctx.onPhaseChange();
   }
 
@@ -422,30 +453,43 @@ export class Boss implements Combatant {
     if (this.flashTimer > 0) {
       this.flashTimer -= dt;
       this.body.setTintFill(0xffffff);
-      this.weapon.setTintFill(0xffffff);
     } else if (!this.dead) {
       if (this.brain.state === 'transition') {
         const k = Math.sin(this.scene.time.now / 60) > 0;
         this.body.setTint(k ? 0xff9070 : 0xffffff);
+      } else if (this.brain.state === 'broken') {
+        this.body.setTint(0xc8f0e8);
+      } else if (this.brain.state === 'windup' && this.brain.windupProgress > 0.75) {
+        this.body.setTint(0xffd0b8);
       } else if (this.brain.phase === 2) {
         this.body.setTint(0xffc4b0);
-        this.weapon.setTint(0xffb090);
       } else {
         this.body.clearTint();
-        this.weapon.clearTint();
       }
     }
   }
 
   receiveHit(hit: HitInfo): number {
     if (this.dead || this.hurtbox.invulnerable) return 0;
-    const dealt = this.health.damage(Math.round(hit.damage));
+    const broken = this.brain.state === 'broken';
+    const dealt = this.health.damage(Math.round(hit.damage * (broken ? 1.3 : 1)));
     if (dealt <= 0) return 0;
     this.flashTimer = 60;
-    // super armor: só um empurrão mínimo
+    // super armor: só um empurrão mínimo e uma reação curta quando está andando
     if (!this.charge.active && this.brain.state === 'chase') {
       this.x += hit.dirX * 3;
       this.y += hit.dirY * 3;
+      if (hit.heavy || hit.damage >= 20) this.hurtFlash = 260;
+    }
+    // postura: golpes básicos desgastam pouco, pesados e carregados muito
+    if (hit.tag !== 'burn' && this.brain.hitPosture(hit.posture ?? (hit.tag === 'charged' ? 85 : hit.heavy ? 40 : hit.basic ? 12 : 6))) {
+      this.cancelOwned();
+      this.charge.active = false;
+      this.vx = this.vy = 0;
+      this.telegraph.clear();
+      this.ctx.effects.floatingText(this.x, this.chestY - 40, 'POSTURA QUEBRADA', '#80e0d0', 20);
+      this.ctx.effects.shake(200, 0.006);
+      Sfx.slam();
     }
     this.ctx.onDamaged(dealt, hit);
     if (this.health.dead) this.die();
@@ -465,12 +509,10 @@ export class Boss implements Combatant {
     this.telegraph.clear();
     this.hurtbox.alive = false;
     this.aura.stop();
-    this.body.setTint(0x8a3a2a);
-    this.weapon.setTint(0x8a3a2a);
-    this.weaponTween?.stop();
-    this.scene.tweens.add({ targets: this.weapon, rotation: 2.4, x: SHOULDER.x + 30, y: SHOULDER.y + 120, duration: 700, ease: 'Bounce.easeOut' });
-    this.scene.tweens.add({ targets: this.body, angle: this.facing * -12, duration: 900, ease: 'Cubic.easeIn' });
-    this.scene.tweens.add({ targets: this.container, alpha: 0, scaleY: this.def.scale * 0.85, delay: 1300, duration: 900, onComplete: () => this.destroy() });
+    this.body.setTint(0xb07060);
+    // queda completa desenhada (4 quadros), depois desaparece
+    this.anim.play('carrasco.dead', true);
+    this.scene.tweens.add({ targets: this.container, alpha: 0, delay: 1900, duration: 900, onComplete: () => this.destroy() });
     this.scene.tweens.add({ targets: [this.glow, this.shadow], alpha: 0, delay: 1300, duration: 900 });
     this.ctx.onDeath();
   }
@@ -479,7 +521,6 @@ export class Boss implements Combatant {
     if (this.removed) return;
     this.removed = true;
     this.cancelOwned();
-    this.weaponTween?.stop();
     this.container.destroy();
     this.shadow.destroy();
     this.telegraph.destroy();

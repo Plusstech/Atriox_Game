@@ -88,3 +88,14 @@ Na v0.2, Caim aparece com cabelo preto curto, rosto pálido, casaco preto com bo
 | O Carrasco da Provação | **Miniboss original**, sem relação com personagens da fonte |
 | Bênçãos experimentais (Lâmina Ardente etc.) | **Mecânicas originais** de jogo. Não são bênçãos citadas no texto. |
 | Fragmento da Provação (recompensa) | **Original** |
+
+## 7. Representação na v0.5 (proposta de jogo)
+
+| Elemento | Status |
+|---|---|
+| **O Carrasco da Provação** (capuz carmesim, placas gastas, machado de execução) | **Original.** Primeiro chefe; visual novo do pacote v0.5. Sem drenagem, Rhaesis ou servidão. |
+| **Toknar** e o machado **Rhaesis** | **Introduzido a pedido do usuário** (v0.3). Não atribuído à fonte. Reforços do clã e plateia são decisões de jogo. |
+| Goblins, orcs saqueadores, wyverns selvagens | **Inimigos originais** das primeiras fases. As wyverns selvagens são distintas das wyverns infectadas comandadas por Caim (estas sim registradas na fonte). |
+| Conversas antes dos chefes (`src/data/dialogues.ts`) | **Roteiros propostos para o jogo**, não falas canônicas. Não criam parentescos, pactos ou eventos. |
+| Arena de Toknar (fosso do clã) e "Campo em Ruínas" de Caim | **Cenários de jogo.** O local exato do confronto com Caim não é afirmado como canônico. |
+

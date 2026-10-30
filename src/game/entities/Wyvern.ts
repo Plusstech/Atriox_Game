@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { WyvernBrain, WYVERN } from '../ai/WyvernBrain';
+import { WyvernBrain, WYVERN, WYVERN_WILD } from '../ai/WyvernBrain';
 import { Health } from '../combat/DamageSystem';
 import type { ActiveHitbox, HitboxSystem, Hurtbox } from '../combat/HitboxSystem';
 import { angleDiff, length, normalize } from '../combat/geometry';
@@ -17,10 +17,13 @@ export interface WyvernContext {
 }
 
 /**
- * Wyvern infectada invocada por Caim.
+ * Wyvern. Variante 'blood': infectada, invocada por Caim (materializa do sangue).
+ * Variante 'wild' (v0.5): selvagem das fases iniciais; desce do céu, sem sangue.
  * Voa sobre a própria sombra (posição lógica = chão). A hitbox é um círculo no chão,
  * independente da envergadura das asas.
  */
+export type WyvernVariant = 'blood' | 'wild';
+
 export class Wyvern implements Combatant {
   readonly id = newEntityId();
   readonly brain: WyvernBrain;
@@ -42,26 +45,32 @@ export class Wyvern implements Combatant {
   private shadow: Phaser.GameObjects.Image;
   private telegraph: Phaser.GameObjects.Graphics;
   private hpBar: Phaser.GameObjects.Graphics;
+  /** prefixo das animações ('wyvern' | 'wyvern_wild') */
+  private readonly key: string;
 
   constructor(
     private readonly scene: Phaser.Scene,
     lib: AnimLibrary,
     x: number,
     y: number,
-    private readonly ctx: WyvernContext
+    private readonly ctx: WyvernContext,
+    readonly variant: WyvernVariant = 'blood'
   ) {
     this.x = x;
     this.y = y;
-    this.brain = new WyvernBrain(WYVERN);
-    this.health = new Health(WYVERN.hp);
-    this.hurtbox = { id: this.id, team: 'enemy', x, y, radius: WYVERN.hitRadius, alive: true, invulnerable: true };
+    const def = variant === 'wild' ? WYVERN_WILD : WYVERN;
+    this.key = variant === 'wild' ? 'wyvern_wild' : 'wyvern';
+    this.brain = new WyvernBrain(def);
+    this.health = new Health(def.hp);
+    this.hurtbox = { id: this.id, team: 'enemy', x, y, radius: def.hitRadius, alive: true, invulnerable: true };
     this.orbitAngle = Math.random() * Math.PI * 2;
     this.shadow = scene.add.image(x, y, 'shadow').setDepth(DEPTH.shadow).setDisplaySize(120, 34).setAlpha(0.6);
     this.telegraph = scene.add.graphics().setDepth(DEPTH.telegraph);
     this.hpBar = scene.add.graphics().setDepth(DEPTH.overlayFx - 30);
-    this.anim = new SpriteAnimator(scene, lib, 'wyvern', x, y - this.alt, 'wyvern.materialize');
+    if (variant === 'wild') this.alt = 430; // desce do céu durante a "materialização"
+    this.anim = new SpriteAnimator(scene, lib, this.key, x, y - this.alt, `${this.key}.materialize`);
     this.anim.sprite.setScale(WYVERN_SCALE);
-    ctx.effects.spawnSigil(x, y, 800, 0xc0182a);
+    if (variant === 'blood') ctx.effects.spawnSigil(x, y, 800, 0xc0182a);
   }
 
   get dead(): boolean {
@@ -78,15 +87,15 @@ export class Wyvern implements Combatant {
     const W = this.brain.def;
     const toP = Math.atan2(player.y - this.y, player.x - this.x);
     for (const ev of this.brain.update(dt)) {
-      if (ev === 'flying') this.anim.play('wyvern.fly');
+      if (ev === 'flying') this.anim.play(`${this.key}.fly`);
       else if (ev === 'windup') {
-        this.anim.play('wyvern.windup', true);
+        this.anim.play(`${this.key}.windup`, true);
         this.dir = { x: Math.cos(toP), y: Math.sin(toP) };
         Sfx.telegraph(false);
       } else if (ev === 'lock') {
         this.ctx.effects.telegraphPulse(this.x, this.y - this.alt, 0xff2a2a);
       } else if (ev === 'charge') {
-        this.anim.play('wyvern.charge', true);
+        this.anim.play(`${this.key}.charge`, true);
         Sfx.dash();
         this.owned.push(
           this.ctx.hitboxes.spawn({
@@ -101,7 +110,7 @@ export class Wyvern implements Combatant {
           })
         );
       } else if (ev === 'recover') {
-        this.anim.play('wyvern.recovery', true);
+        this.anim.play(`${this.key}.recovery`, true);
         this.cancelOwned();
       }
     }
@@ -144,7 +153,7 @@ export class Wyvern implements Combatant {
     this.y = r.y;
     if (st === 'charge' && r.blocked) {
       this.brain.endChargeEarly();
-      this.anim.play('wyvern.recovery', true);
+      this.anim.play(`${this.key}.recovery`, true);
       this.cancelOwned();
       this.ctx.effects.dustPuff(this.x, this.y, 8);
     }
@@ -197,7 +206,7 @@ export class Wyvern implements Combatant {
     this.hurtbox.y = this.y;
     this.hurtbox.alive = !this.dead;
     this.hurtbox.invulnerable = !this.brain.tangible;
-    if (this.brain.state === 'materialize') sp.setAlpha(Math.min(1, this.brain.timer / this.brain.def.materializeMs + 0.2));
+    if (this.brain.state === 'materialize' && this.variant === 'blood') sp.setAlpha(Math.min(1, this.brain.timer / this.brain.def.materializeMs + 0.2));
     if (this.flash > 0) {
       this.flash -= dt;
       sp.setTintFill(0xffffff);
@@ -241,12 +250,18 @@ export class Wyvern implements Combatant {
     this.telegraph.clear();
     this.hpBar.clear();
     this.hurtbox.alive = false;
-    this.anim.play('wyvern.dissolve', true);
-    this.ctx.effects.deathBurst(this.x, this.y - this.alt, 0xd0202a);
-    this.ctx.effects.bloodSpray(this.x, this.y - this.alt);
+    this.anim.play(`${this.key}.dissolve`, true);
+    if (this.variant === 'wild') {
+      // queda: cai até a sombra
+      this.scene.tweens.add({ targets: this, alt: 0, duration: 380, ease: 'Quad.easeIn' });
+      this.ctx.effects.dustPuff(this.x, this.y, 8);
+    } else {
+      this.ctx.effects.deathBurst(this.x, this.y - this.alt, 0xd0202a);
+      this.ctx.effects.bloodSpray(this.x, this.y - this.alt);
+    }
     this.ctx.onDeath(this);
     Sfx.enemyDie();
-    this.scene.tweens.add({ targets: this.anim.sprite, alpha: 0, delay: 250, duration: 450, onComplete: () => this.destroy() });
+    this.scene.tweens.add({ targets: this.anim.sprite, alpha: 0, delay: this.variant === 'wild' ? 900 : 250, duration: 450, onComplete: () => this.destroy() });
     this.scene.tweens.add({ targets: this.shadow, alpha: 0, duration: 600 });
   }
 
@@ -259,7 +274,7 @@ export class Wyvern implements Combatant {
       this.telegraph.clear();
       this.hpBar.clear();
       this.hurtbox.alive = false;
-      this.anim.play('wyvern.dissolve', true);
+      this.anim.play(`${this.key}.dissolve`, true);
     }
     this.scene.tweens.add({ targets: [this.anim.sprite, this.shadow], alpha: 0, duration: 500, onComplete: () => this.destroy() });
   }

@@ -54,6 +54,8 @@ async function main() {
   try {
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 720 } });
     const page = await ctx.newPage();
+    // v0.5: conversas pré-chefe dispensadas (testadas em tests/e2e/v05.mjs)
+    await page.addInitScript(() => { window.__ATRIOX_SKIP_DIALOGUE__ = true; });
     const errors = [];
     page.on('pageerror', (e) => errors.push(String(e)));
     page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
@@ -209,7 +211,7 @@ async function main() {
     await sleep(300);
     await page.keyboard.press('e');
     check('porta leva à sala 1', await waitFor(page, () => window.__ATRIOX__.snapshot().room === 'trial-1', null, 5000));
-    check('combate da sala 1 começa e inimigos surgem', await waitFor(page, () => window.__ATRIOX__.snapshot().alive >= 3, null, 8000));
+    check('combate da sala 1 começa e inimigos surgem (goblins apresentados em dupla)', await waitFor(page, () => window.__ATRIOX__.snapshot().alive >= 2, null, 8000));
     check('saída bloqueada durante o combate', (await snap(page)).doors.length === 0);
     await sleep(1000);
     await page.screenshot({ path: path.join(SHOTS, '02-sala1.png') });
@@ -425,6 +427,8 @@ async function main() {
     const ctx2 = await browser.newContext({ viewport: { width: 1280, height: 720 } });
     await ctx2.addInitScript(() => localStorage.setItem('atriox-cinder.save.v1', '{corrompido!!'));
     const page2 = await ctx2.newPage();
+    // v0.5: conversas pré-chefe dispensadas (testadas em tests/e2e/v05.mjs)
+    await page2.addInitScript(() => { window.__ATRIOX_SKIP_DIALOGUE__ = true; });
     const errors2 = [];
     page2.on('pageerror', (e) => errors2.push(String(e)));
     await page2.route('**/assets/atriox/slash.png', (r) => r.fulfill({ status: 404, body: 'not found' }));

@@ -1,7 +1,11 @@
 import Phaser from 'phaser';
 import { FLOOR, WORLD_H, WORLD_W } from '../config/constants';
 
-export type ArenaTheme = 'trial' | 'nemeia';
+/**
+ * 'trial' e 'nemeia' são pintados proceduralmente; 'toknar' e 'caim' usam as arenas
+ * ilustradas (public/assets/arenas) com a paleta de 'nemeia' como base do chão.
+ */
+export type ArenaTheme = 'trial' | 'nemeia' | 'toknar' | 'caim';
 
 interface Palette {
   stoneL: [number, number];
@@ -37,6 +41,13 @@ const PALETTES: Record<ArenaTheme, Palette> = {
     ring: 'rgba(200,40,40,',
     glow: 'rgba(255,90,40,0.10)',
     stain: 'rgba(110,8,12,0.42)'
+  },
+  // arenas ilustradas: o painter só gera a base escura sob a imagem
+  get toknar(): Palette {
+    return PALETTES.nemeia;
+  },
+  get caim(): Palette {
+    return PALETTES.nemeia;
   }
 };
 

@@ -74,7 +74,7 @@
       "sourceName": "Spritesheet de ataque ascendente com espada-9 - Copia.png",
       "sha256": "23e4aa40658617baf8ef02d414e92a01bbd669e388d7ac92ede5cdcd38fc8954",
       "frames": 8,
-      "role": "ascending / attack_3",
+      "role": "ascending (Sentença)",
       "alphaCleanupThreshold": 8,
       "silhouetteChangesIncludingLoop": [
         7850,
@@ -87,6 +87,24 @@
         7349
       ],
       "normalizationScale": 0.6863271
+    },
+    "atriox_diagonal": {
+      "sourceName": "atriox_combo_3.png (pacote PROMPT_MASTER v0.5)",
+      "sha256": "cc3cfee5aace23a39b7fe82540b1557c91d3762b281c2c8423a82071441257c5",
+      "frames": 8,
+      "role": "attack_3 (finalizador diagonal)",
+      "alphaCleanupThreshold": 8,
+      "silhouetteChangesIncludingLoop": [
+        10791,
+        9069,
+        17654,
+        17666,
+        12231,
+        13869,
+        19176,
+        21186
+      ],
+      "normalizationScale": 0.6206061
     }
   },
   "frames": {
@@ -1078,6 +1096,254 @@
         176,
         340,
         450
+      ],
+      "phase": "recovery",
+      "durationMs": 60
+    },
+    "atriox_diagonal_00": {
+      "source": "atriox_diagonal",
+      "index": 0,
+      "sourceBounds": [
+        44,
+        12,
+        409,
+        450
+      ],
+      "sourceFootAnchor": [
+        215.0,
+        434.0
+      ],
+      "scale": 0.6206061,
+      "anchor": [
+        256,
+        448
+      ],
+      "size": [
+        512,
+        512
+      ],
+      "bounds": [
+        123,
+        179,
+        350,
+        451
+      ],
+      "phase": "windup",
+      "durationMs": 60
+    },
+    "atriox_diagonal_01": {
+      "source": "atriox_diagonal",
+      "index": 1,
+      "sourceBounds": [
+        494,
+        9,
+        822,
+        450
+      ],
+      "sourceFootAnchor": [
+        170.5,
+        436.0
+      ],
+      "scale": 0.6206061,
+      "anchor": [
+        256,
+        448
+      ],
+      "size": [
+        512,
+        512
+      ],
+      "bounds": [
+        150,
+        177,
+        354,
+        451
+      ],
+      "phase": "windup",
+      "durationMs": 60
+    },
+    "atriox_diagonal_02": {
+      "source": "atriox_diagonal",
+      "index": 2,
+      "sourceBounds": [
+        901,
+        12,
+        1281,
+        451
+      ],
+      "sourceFootAnchor": [
+        156.592,
+        434.0
+      ],
+      "scale": 0.6206061,
+      "anchor": [
+        256,
+        448
+      ],
+      "size": [
+        512,
+        512
+      ],
+      "bounds": [
+        159,
+        179,
+        395,
+        451
+      ],
+      "phase": "windup",
+      "durationMs": 60
+    },
+    "atriox_diagonal_03": {
+      "source": "atriox_diagonal",
+      "index": 3,
+      "sourceBounds": [
+        1323,
+        106,
+        1760,
+        449
+      ],
+      "sourceFootAnchor": [
+        223.5,
+        337.0
+      ],
+      "scale": 0.6206061,
+      "anchor": [
+        256,
+        448
+      ],
+      "size": [
+        512,
+        512
+      ],
+      "bounds": [
+        117,
+        239,
+        388,
+        452
+      ],
+      "phase": "active",
+      "durationMs": 60
+    },
+    "atriox_diagonal_04": {
+      "source": "atriox_diagonal",
+      "index": 4,
+      "sourceBounds": [
+        29,
+        519,
+        509,
+        863
+      ],
+      "sourceFootAnchor": [
+        183.5,
+        340.0
+      ],
+      "scale": 0.6206061,
+      "anchor": [
+        256,
+        448
+      ],
+      "size": [
+        512,
+        512
+      ],
+      "bounds": [
+        142,
+        237,
+        440,
+        450
+      ],
+      "phase": "active",
+      "durationMs": 60
+    },
+    "atriox_diagonal_05": {
+      "source": "atriox_diagonal",
+      "index": 5,
+      "sourceBounds": [
+        457,
+        556,
+        916,
+        868
+      ],
+      "sourceFootAnchor": [
+        196.5,
+        307.0
+      ],
+      "scale": 0.6206061,
+      "anchor": [
+        256,
+        448
+      ],
+      "size": [
+        512,
+        512
+      ],
+      "bounds": [
+        134,
+        257,
+        419,
+        451
+      ],
+      "phase": "recovery",
+      "durationMs": 60
+    },
+    "atriox_diagonal_06": {
+      "source": "atriox_diagonal",
+      "index": 6,
+      "sourceBounds": [
+        913,
+        463,
+        1315,
+        864
+      ],
+      "sourceFootAnchor": [
+        218.5,
+        397.0
+      ],
+      "scale": 0.6206061,
+      "anchor": [
+        256,
+        448
+      ],
+      "size": [
+        512,
+        512
+      ],
+      "bounds": [
+        121,
+        202,
+        369,
+        451
+      ],
+      "phase": "recovery",
+      "durationMs": 60
+    },
+    "atriox_diagonal_07": {
+      "source": "atriox_diagonal",
+      "index": 7,
+      "sourceBounds": [
+        1375,
+        477,
+        1762,
+        870
+      ],
+      "sourceFootAnchor": [
+        198.0,
+        389.0
+      ],
+      "scale": 0.6206061,
+      "anchor": [
+        256,
+        448
+      ],
+      "size": [
+        512,
+        512
+      ],
+      "bounds": [
+        133,
+        207,
+        373,
+        451
       ],
       "phase": "recovery",
       "durationMs": 60

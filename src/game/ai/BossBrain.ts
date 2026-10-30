@@ -1,6 +1,6 @@
 import type { BossDef, BossMoveDef } from '../../data/bosses';
 
-export type BossState = 'intro' | 'chase' | 'windup' | 'active' | 'recovery' | 'transition' | 'dead';
+export type BossState = 'intro' | 'chase' | 'windup' | 'active' | 'recovery' | 'transition' | 'broken' | 'dead';
 
 export type BossEvent =
   | { type: 'phaseChange'; phase: 2 }
@@ -17,11 +17,30 @@ export class BossBrain {
   move: BossMoveDef | null = null;
   private lastMove: string | null = null;
   private chaseTime = 0;
+  /** postura: golpes a desgastam; ao zerar, o chefe fica vulnerável por breakMs */
+  posture: number;
+  /** imunidade a nova quebra (evita stagger infinito) */
+  postureImmunity = 0;
 
   constructor(
     private readonly def: BossDef,
     private readonly rng: () => number = Math.random
-  ) {}
+  ) {
+    this.posture = def.posture ?? Infinity;
+  }
+
+  /** Desgasta a postura. Retorna true quando quebra (uma vez por janela de imunidade). */
+  hitPosture(amount: number): boolean {
+    if (!Number.isFinite(this.posture) || this.postureImmunity > 0) return false;
+    if (this.state === 'broken' || this.state === 'transition' || this.state === 'intro' || this.state === 'dead') return false;
+    this.posture -= amount;
+    if (this.posture > 0) return false;
+    this.posture = this.def.posture!;
+    this.postureImmunity = (this.def.breakMs ?? 1500) + (this.def.breakImmunity ?? 6000);
+    this.move = null;
+    this.set('broken');
+    return true;
+  }
 
   get speedMul(): number {
     return this.phase === 2 ? this.def.phase2SpeedMul : 1;
@@ -73,6 +92,7 @@ export class BossBrain {
     const ev: BossEvent[] = [];
     if (this.state === 'dead' || this.state === 'intro') return ev;
     this.timer += dt;
+    this.postureImmunity = Math.max(0, this.postureImmunity - dt);
 
     if (this.phase === 1 && ctx.hpRatio <= this.def.phase2Threshold && this.state !== 'transition') {
       this.phase = 2;
@@ -83,6 +103,9 @@ export class BossBrain {
     }
 
     switch (this.state) {
+      case 'broken':
+        if (this.timer >= (this.def.breakMs ?? 1500)) this.set('chase');
+        break;
       case 'transition':
         if (this.timer >= this.def.transitionDuration) {
           this.set('chase');

@@ -19,7 +19,10 @@ export interface ArenaLayout {
 /**
  * Monta uma sala da arena. Decoração concentrada nas bordas; centro livre.
  * - 'trial': Campo de Provação da Liga Sóbele (adaptação jogável, não canônica).
- * - 'nemeia': Arena de Nemeia, cidade em chamas (cenário do confronto com Caim).
+ * - 'nemeia': Arena de Nemeia, cidade em chamas (procedural, legado).
+ * - 'toknar' / 'caim' (v0.5): arenas ilustradas (public/assets/arenas). A imagem cobre
+ *   o mundo; os cantos do retângulo de chão que caem sobre a plateia/ruínas pintadas
+ *   viram obstáculos invisíveis. Plateia e wyverns pintadas são só cenário.
  */
 export function buildArena(scene: Phaser.Scene, theme: ArenaTheme): ArenaLayout {
   const objects: Phaser.GameObjects.GameObject[] = [];
@@ -32,7 +35,9 @@ export function buildArena(scene: Phaser.Scene, theme: ArenaTheme): ArenaLayout 
   const obstacles: CircleObstacle[] = [];
   const cx = ARENA_CENTER.x;
   const cy = ARENA_CENTER.y;
+  const painted = theme === 'toknar' || theme === 'caim';
   const nemeia = theme === 'nemeia';
+  if (painted) return buildPainted(scene, theme, objects, add);
 
   // pilares nas bordas (centro livre para o combate)
   const pillars: [number, number, boolean][] = [
@@ -133,6 +138,75 @@ export function buildArena(scene: Phaser.Scene, theme: ArenaTheme): ArenaLayout 
     { x: cx + 460, y: FLOOR.y - 6 }
   ];
   return { theme, objects, obstacles, gate, gatePos, altarPos, doorSlots };
+}
+
+/** Pontos das tochas pintadas (px da imagem 1536×1024) para a luz tremular por cima. */
+const PAINTED_TORCHES: Record<'toknar' | 'caim', [number, number][]> = {
+  toknar: [[154, 49], [417, 66], [1119, 66], [1377, 49], [565, 856], [976, 856]],
+  caim: []
+};
+
+/** Obstáculos que mantêm o combate no chão pintado (cantos e cerca inferior). */
+export const PAINTED_BOUNDS: CircleObstacle[] = [
+  { x: FLOOR.x, y: FLOOR.y, r: 230 },
+  { x: FLOOR.x + FLOOR.w, y: FLOOR.y, r: 230 },
+  { x: FLOOR.x, y: FLOOR.y + FLOOR.h, r: 340 },
+  { x: FLOOR.x + FLOOR.w, y: FLOOR.y + FLOOR.h, r: 340 },
+  { x: FLOOR.x + 390, y: FLOOR.y + FLOOR.h + 60, r: 200 },
+  { x: FLOOR.x + FLOOR.w - 390, y: FLOOR.y + FLOOR.h + 60, r: 200 }
+];
+
+function buildPainted(
+  scene: Phaser.Scene,
+  theme: 'toknar' | 'caim',
+  objects: Phaser.GameObjects.GameObject[],
+  add: <T extends Phaser.GameObjects.GameObject>(o: T) => T
+): ArenaLayout {
+  const key = `arena_${theme}`;
+  let s = 1;
+  let ox = 0;
+  let oy = 0;
+  if (scene.textures.exists(key)) {
+    const img = add(scene.add.image(WORLD_W / 2, WORLD_H / 2, key).setDepth(DEPTH.background + 1));
+    s = Math.max(WORLD_W / img.width, WORLD_H / img.height);
+    img.setScale(s);
+    ox = WORLD_W / 2 - (img.width * s) / 2;
+    oy = WORLD_H / 2 - (img.height * s) / 2;
+  }
+  for (const [px, py] of PAINTED_TORCHES[theme]) {
+    const x = ox + px * s;
+    const y = oy + py * s;
+    const light = add(scene.add.image(x, y + 20, 'light').setBlendMode(Phaser.BlendModes.ADD).setTint(0xff8a3a).setDepth(DEPTH.groundFx));
+    light.setDisplaySize(420, 300).setAlpha(0.35);
+    scene.tweens.add({ targets: light, alpha: { from: 0.28, to: 0.45 }, duration: 130 + Math.random() * 140, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+  }
+  // brasas/cinzas discretas (limitadas)
+  add(
+    scene.add
+      .particles(0, 0, 'p_ember', {
+        x: { min: FLOOR.x, max: FLOOR.x + FLOOR.w },
+        y: { min: FLOOR.y + 200, max: WORLD_H },
+        speedY: { min: -40, max: -15 },
+        speedX: { min: -10, max: 20 },
+        lifespan: { min: 4000, max: 8000 },
+        scale: { start: 0.8, end: 0 },
+        alpha: { start: 0.7, end: 0 },
+        tint: theme === 'caim' ? [0xc0101a, 0xff3010] : [0xffa040, 0xff6a20],
+        blendMode: 'ADD',
+        frequency: 110 / particleScale(),
+        maxParticles: 80
+      })
+      .setDepth(DEPTH.overlayFx - 100)
+  );
+  // o portão não aparece (a arena pintada tem acessos próprios); mantém a posição para as entradas
+  const gatePos = { x: WORLD_W / 2, y: FLOOR.y - 40 };
+  const gate = add(scene.add.image(gatePos.x, gatePos.y - 262, 'gate').setOrigin(0.5, 0).setDepth(DEPTH.decal + 5).setAlpha(0));
+  const altarPos = { x: ARENA_CENTER.x, y: ARENA_CENTER.y };
+  const doorSlots = [
+    { x: ARENA_CENTER.x - 460, y: FLOOR.y - 6 },
+    { x: ARENA_CENTER.x + 460, y: FLOOR.y - 6 }
+  ];
+  return { theme, objects, obstacles: PAINTED_BOUNDS.map((o) => ({ ...o })), gate, gatePos, altarPos, doorSlots };
 }
 
 export function destroyArena(scene: Phaser.Scene, layout: ArenaLayout): void {

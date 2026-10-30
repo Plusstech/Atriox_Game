@@ -127,3 +127,20 @@ Os ataques tocam com as durações reais do combo.
 1. Coloque a nova folha em `art_source/v02/` e ajuste `SHEETS` (organização), `CHARS` (quadros usados, espelhamento e referência de escala) e, se preciso, `PIVOT_FIX` em `tools/build_atlases.py`.
 2. Rode `python tools/build_atlases.py` e confira `art_source/v02/_inspect/atlas_*.png`.
 3. Ajuste a lista de quadros em `src/data/animations.ts`. Os testes (`npm test`) verificam que todo quadro referenciado existe no atlas.
+
+## 8. v0.5 — pacote PROMPT_MASTER (`tools/build_v05_atlas.py`)
+
+```bash
+python tools/build_v05_atlas.py   # anexa páginas v05-*.webp, retratos e arenas (idempotente)
+npm run atlas                     # reconstrói tudo: v0.2 → v0.3 → v0.4 → v0.5
+```
+
+- Fontes intactas em `art_source/v05/` (nomes do pacote). Pranchas de inspeção com pivô: `art_source/v05/_inspect/atlas_*.png`.
+- Recorte por grade refinada + posse de componentes; `split_all` (opcional por folha) continua a erosão até separar uma figura por célula quando lâminas encadeiam várias poses.
+- Escala pelo **corpo**: Toknar e Caim pela mesma medida usada no atlas (sem metal e efeitos), para combinar com os quadros existentes; Carrasco, goblin, orc e wyvern selvagem pela silhueta opaca de quadros em pé (armadura de aço não pode ser excluída como "metal").
+- Pivô nos pés; wyvern e VFX pelo centro (VFX pelo centro da célula, para o desenho ficar onde foi feito).
+- Personagens existentes crescem o canvas quando preciso (Toknar 650×400 → 650×429), deslocando os quadros antigos; a reexecução desfaz e refaz (meta `v05Base`).
+- Finalizador diagonal do Atriox entra no pipeline v0.4 (512×512). Recorte explícito documentado: a ponta da lâmina vizinha é apagada no quadro 06; o quadro 05 fica fora da animação.
+- Retratos: `public/assets/portraits/*.webp` (440 px de altura). Arenas: `public/assets/arenas/*.webp`. Ambos entram na revisão de cache do atlas (`vite.config.ts`).
+- Pendências de arte: [ASSETS_PENDENTES.md](ASSETS_PENDENTES.md).
+

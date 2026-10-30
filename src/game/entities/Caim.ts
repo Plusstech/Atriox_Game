@@ -198,7 +198,7 @@ export class Caim implements Combatant {
     if (this.defense.mode !== 'none') {
       this.cancelAttacksForDefense();
       this.anim.play(
-        this.defense.mode === 'ritual' ? 'caim.summon' : 'caim.pool',
+        this.defense.mode === 'ritual' ? 'caim.ritual' : 'caim.shield',
       );
       this.anim.update(dt);
       this.telegraph.clear();

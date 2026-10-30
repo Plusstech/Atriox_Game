@@ -1,4 +1,5 @@
 import type { SpawnGroup } from './waves';
+import type { ArenaTheme } from '../game/fx/ArenaPainter';
 
 /**
  * Tipos de recompensa mostrados nas portas ANTES da escolha.
@@ -13,7 +14,7 @@ export interface RoomDef {
   name: string;
   subtitle: string;
   kind: 'prep' | 'combat' | 'boss';
-  theme: 'trial' | 'nemeia';
+  theme: ArenaTheme;
   boss?: 'executioner' | 'toknar' | 'caim';
   waves?: SpawnGroup[];
   /** quantas portas a sala anterior oferece para chegar aqui */
@@ -30,6 +31,11 @@ export const REWARD_INFO: Record<
   vitality: { label: 'Vitalidade', color: 0xd0473a, glyph: '♥' },
 };
 
+/**
+ * Ordem da campanha (v0.5): salas iniciais → Carrasco → salas → Toknar → salas → Caim.
+ * Inimigos novos são apresentados sozinhos antes de serem combinados:
+ * goblins (trial-1), orcs saqueadores (trial-2), wyverns selvagens (build-2).
+ */
 export const ROOMS: RoomDef[] = [
   {
     id: 'prep',
@@ -43,74 +49,60 @@ export const ROOMS: RoomDef[] = [
   {
     id: 'trial-1',
     name: 'Primeira Provação',
-    subtitle: 'Recrutas da Liga',
+    subtitle: 'Goblins: rápidos e frágeis',
     kind: 'combat',
     theme: 'trial',
     doors: 2,
     rewardPool: ['apollon', 'blessing'],
     waves: [
-      { whenAliveAtMost: 0, spawns: [{ kind: 'recruit', count: 3 }] },
-      {
-        whenAliveAtMost: 1,
-        spawns: [
-          { kind: 'recruit', count: 2 },
-          { kind: 'archer', count: 2 },
-        ],
-      },
+      { whenAliveAtMost: 0, spawns: [{ kind: 'goblin', count: 2 }] },
+      { whenAliveAtMost: 0, spawns: [{ kind: 'goblin', count: 4 }] },
     ],
   },
   {
     id: 'trial-2',
     name: 'Segunda Provação',
-    subtitle: 'Guardiões e atiradores',
+    subtitle: 'Orcs saqueadores: ataque pelos flancos',
     kind: 'combat',
     theme: 'trial',
     doors: 2,
     rewardPool: ['apollon', 'blessing', 'vitality'],
     waves: [
+      { whenAliveAtMost: 0, spawns: [{ kind: 'orc', count: 1 }] },
+      {
+        whenAliveAtMost: 0,
+        spawns: [
+          { kind: 'orc', count: 1 },
+          { kind: 'goblin', count: 2 },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'build-1',
+    name: 'Passagem das Cinzas',
+    subtitle: 'Recrutas da Liga e saqueadores',
+    kind: 'combat',
+    theme: 'trial',
+    doors: 2,
+    rewardPool: ['apollon', 'blessing'],
+    waves: [
       {
         whenAliveAtMost: 0,
         spawns: [
           { kind: 'recruit', count: 2 },
-          { kind: 'guardian', count: 1 },
-          { kind: 'archer', count: 1 },
+          { kind: 'archer', count: 2 },
         ],
       },
       {
         whenAliveAtMost: 1,
         spawns: [
-          { kind: 'archer', count: 2 },
-          { kind: 'recruit', count: 2 },
+          { kind: 'guardian', count: 1 },
+          { kind: 'goblin', count: 2 },
         ],
       },
     ],
   },
-  ...Array.from(
-    { length: 3 },
-    (_, i): RoomDef => ({
-      id: `build-${i + 1}`,
-      name: [
-        'Passagem das Cinzas',
-        'Pátio dos Juramentos',
-        'Forja do Sentinela',
-      ][i],
-      subtitle: 'Prepare sua build para Rhaesis',
-      kind: 'combat',
-      theme: 'trial',
-      doors: 2,
-      rewardPool: ['apollon', 'blessing'],
-      waves: [
-        {
-          whenAliveAtMost: 0,
-          spawns: [
-            { kind: 'recruit', count: 2 + i },
-            { kind: 'archer', count: 1 },
-            { kind: 'guardian', count: 1 },
-          ],
-        },
-      ],
-    }),
-  ),
   {
     id: 'executioner',
     name: 'Câmara do Carrasco',
@@ -122,22 +114,93 @@ export const ROOMS: RoomDef[] = [
     rewardPool: ['apollon', 'blessing', 'vitality'],
   },
   {
+    id: 'build-2',
+    name: 'Ninho das Wyverns',
+    subtitle: 'Wyverns selvagens: observe a sombra',
+    kind: 'combat',
+    theme: 'trial',
+    doors: 2,
+    rewardPool: ['apollon', 'blessing'],
+    waves: [
+      { whenAliveAtMost: 0, spawns: [{ kind: 'wyvern_wild', count: 1 }] },
+      {
+        whenAliveAtMost: 0,
+        spawns: [
+          { kind: 'wyvern_wild', count: 2 },
+          { kind: 'goblin', count: 2 },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'build-3',
+    name: 'Pátio dos Juramentos',
+    subtitle: 'Prepare sua build para Rhaesis',
+    kind: 'combat',
+    theme: 'trial',
+    doors: 2,
+    rewardPool: ['apollon', 'blessing', 'vitality'],
+    waves: [
+      {
+        whenAliveAtMost: 0,
+        spawns: [
+          { kind: 'orc', count: 2 },
+          { kind: 'archer', count: 1 },
+        ],
+      },
+      {
+        whenAliveAtMost: 1,
+        spawns: [
+          { kind: 'goblin', count: 3 },
+          { kind: 'guardian', count: 1 },
+        ],
+      },
+    ],
+  },
+  {
     id: 'toknar',
     name: 'Fosso de Rhaesis',
     subtitle: 'Toknar — o sangue alimenta o machado',
     kind: 'boss',
     boss: 'toknar',
-    theme: 'nemeia',
+    theme: 'toknar',
     doors: 2,
     rewardPool: ['apollon', 'blessing'],
   },
   {
+    id: 'build-4',
+    name: 'Forja do Sentinela',
+    subtitle: 'A última preparação antes de Caim',
+    kind: 'combat',
+    theme: 'trial',
+    doors: 2,
+    rewardPool: ['apollon', 'blessing', 'vitality'],
+    waves: [
+      {
+        whenAliveAtMost: 0,
+        spawns: [
+          { kind: 'orc', count: 1 },
+          { kind: 'recruit', count: 2 },
+          { kind: 'wyvern_wild', count: 1 },
+        ],
+      },
+      {
+        whenAliveAtMost: 1,
+        spawns: [
+          { kind: 'guardian', count: 1 },
+          { kind: 'goblin', count: 2 },
+          { kind: 'archer', count: 1 },
+        ],
+      },
+    ],
+  },
+  {
     id: 'nemeia',
-    name: 'Arena de Nemeia',
-    subtitle: 'A cidade em chamas',
+    name: 'Campo em Ruínas',
+    subtitle: 'Caim Morvaigne — as wyverns observam das rochas',
     kind: 'boss',
     boss: 'caim',
-    theme: 'nemeia',
+    theme: 'caim',
     doors: 2,
     rewardPool: ['apollon', 'vitality', 'blessing'],
   },

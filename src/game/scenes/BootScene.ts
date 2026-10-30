@@ -4,6 +4,7 @@ import { generateAllTextures, makeAtrioxFallback } from '../fx/TextureFactory';
 import { ATLAS_KEY, type AnimLibrary } from '../animation/SpriteAnimator';
 import { buildAnimations, type AtlasMeta } from '../../data/animations';
 import { CHARACTER_ATLAS_META, versionedCharacterAtlas } from '../../data/atlas';
+import { ARENA_IMAGES, PORTRAITS } from '../../data/dialogues';
 
 export const ATRIOX_POSES = ['idle', 'lunge', 'slash', 'cast', 'dash', 'hurt'] as const;
 
@@ -48,6 +49,12 @@ export class BootScene extends Phaser.Scene {
     // @ts-expect-error Runtime supports the documented inline-JSON overload.
     this.load.multiatlas(ATLAS_KEY, versionedCharacterAtlas(__ATLAS_REVISION__), 'assets/atlas/');
     this.cache.json.add('characters_meta', { meta: CHARACTER_ATLAS_META });
+    // v0.5: arenas ilustradas (Toknar, Caim) e retratos das conversas pré-chefe
+    const v = `?v=${encodeURIComponent(__ATLAS_REVISION__)}`;
+    this.load.setPath('assets/arenas/');
+    for (const a of ARENA_IMAGES) this.load.image(a, `${a}.webp${v}`);
+    this.load.setPath('assets/portraits/');
+    for (const p of PORTRAITS) this.load.image(`portrait_${p}`, `${p}.webp${v}`);
   }
 
   create(): void {

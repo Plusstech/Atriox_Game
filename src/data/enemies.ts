@@ -1,8 +1,9 @@
 /**
- * Inimigos de treinamento do Campo de Provação.
- * São criações originais do protótipo — NÃO são antagonistas canônicos da história.
+ * Inimigos comuns. Recruta/atirador/guardião: treinamento do Campo de Provação.
+ * Goblin e orc saqueador (v0.5): inimigos das primeiras fases com folhas próprias.
+ * Todos são criações originais do jogo — NÃO são antagonistas canônicos da história.
  */
-export type EnemyKind = 'recruit' | 'archer' | 'guardian';
+export type EnemyKind = 'recruit' | 'archer' | 'guardian' | 'goblin' | 'orc';
 export type EnemyAttackShape = 'sector' | 'circle' | 'projectile';
 
 export interface EnemyDef {
@@ -37,8 +38,13 @@ export interface EnemyDef {
   /** resistência a knockback (0..1) */
   knockbackResist: number;
   scale: number;
-  texture: string;
-  weaponTexture: string;
+  /** rig procedural (corpo + arma) */
+  texture?: string;
+  weaponTexture?: string;
+  /** quadros do atlas: `${anim}.run|attack|hurt|dead`; altura visual (px do mundo) para a barra de vida */
+  sprite?: { char: string; anim: string; height: number };
+  /** escudo frontal: reduz dano vindo da frente (arco em graus); golpes pesados quebram a guarda */
+  shield?: { arcDeg: number; reduction: number };
 }
 
 export const ENEMIES: Record<EnemyKind, EnemyDef> = {
@@ -114,5 +120,54 @@ export const ENEMIES: Record<EnemyKind, EnemyDef> = {
     scale: 0.84,
     texture: 'enemy_guardian',
     weaponTexture: 'weapon_mace'
+  },
+  goblin: {
+    kind: 'goblin',
+    name: 'Goblin',
+    hp: 30,
+    speed: 215,
+    radius: 15,
+    detectRange: 700,
+    attackRange: 92,
+    windup: 380,
+    active: 110,
+    recovery: 520,
+    attackCooldown: 450,
+    damage: 8,
+    knockback: 160,
+    attackShape: 'sector',
+    hitRadius: 88,
+    hitArcDeg: 80,
+    lunge: 74,
+    poise: 1,
+    hurtDuration: 240,
+    knockbackResist: 0,
+    scale: 0.62,
+    sprite: { char: 'goblin', anim: 'goblin', height: 96 }
+  },
+  orc: {
+    kind: 'orc',
+    name: 'Orc saqueador',
+    hp: 120,
+    speed: 118,
+    radius: 24,
+    detectRange: 700,
+    attackRange: 112,
+    windup: 760,
+    active: 140,
+    recovery: 900,
+    attackCooldown: 600,
+    damage: 16,
+    knockback: 340,
+    attackShape: 'sector',
+    hitRadius: 128,
+    hitArcDeg: 120,
+    lunge: 54,
+    poise: 30,
+    hurtDuration: 340,
+    knockbackResist: 0.6,
+    scale: 0.66,
+    sprite: { char: 'orc', anim: 'orc', height: 136 },
+    shield: { arcDeg: 120, reduction: 0.8 }
   }
 };

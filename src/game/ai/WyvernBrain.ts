@@ -40,6 +40,27 @@ export const WYVERN: WyvernDef = {
   hitRadius: 30
 };
 
+/**
+ * Wyvern selvagem (v0.5): inimiga das fases iniciais, distinta da invocação de Caim.
+ * Desce do céu (estado 'materialize' = descida, intangível), investe um pouco mais
+ * devagar e pousa por mais tempo depois da investida.
+ */
+export const WYVERN_WILD: WyvernDef = {
+  hp: 52,
+  materializeMs: 950,
+  windupMs: 680,
+  lockAt: 0.55,
+  chargeDistance: 430,
+  chargeSpeed: 820,
+  recoveryMs: 1150,
+  flyMinMs: 1500,
+  flyMaxMs: 2600,
+  orbitMin: 240,
+  orbitMax: 340,
+  damage: 12,
+  hitRadius: 30
+};
+
 export type WyvernEvent = 'flying' | 'windup' | 'lock' | 'charge' | 'recover';
 
 export class WyvernBrain {

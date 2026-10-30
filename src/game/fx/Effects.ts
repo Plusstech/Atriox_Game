@@ -153,6 +153,43 @@ export class Effects {
     });
   }
 
+  /**
+   * Efeito desenhado (atlas): toca os quadros `names` uma vez e some.
+   * Rastros e fissuras das folhas de VFX ficam separados do corpo do personagem.
+   */
+  atlasFx(
+    x: number,
+    y: number,
+    names: string[],
+    opts: { frameMs?: number; flipX?: boolean; rotation?: number; scale?: number; depth?: number; blend?: boolean; alpha?: number } = {}
+  ): void {
+    if (!names.length || !this.scene.textures.exists('characters')) return;
+    const tex = this.scene.textures.get('characters');
+    const frames = names.filter((n) => tex.has(n));
+    if (!frames.length) return;
+    const s = this.scene.add
+      .sprite(x, y, 'characters', frames[0])
+      .setOrigin(0.5)
+      .setFlipX(!!opts.flipX)
+      .setRotation(opts.rotation ?? 0)
+      .setScale(opts.scale ?? 1)
+      .setAlpha(opts.alpha ?? 1)
+      .setDepth(opts.depth ?? DEPTH.overlayFx - 40);
+    if (opts.blend) s.setBlendMode(Phaser.BlendModes.ADD);
+    const ms = opts.frameMs ?? 55;
+    let i = 0;
+    this.scene.time.addEvent({
+      delay: ms,
+      repeat: frames.length - 1,
+      callback: () => {
+        i++;
+        if (!s.active) return;
+        if (i >= frames.length) s.destroy();
+        else s.setFrame(frames[i]);
+      }
+    });
+  }
+
   dustPuff(x: number, y: number, n = 3): void {
     this.dust.explode(this.q(n), x, y);
   }

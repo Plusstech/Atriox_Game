@@ -1,0 +1,570 @@
+[
+  {
+    "file": "assets/sprites_e_retratos/caim_movimento_ataques_inicial.png",
+    "source": "exec-83bffb15-b57a-49f2-be36-65498bec822b.png",
+    "usage": "Caim inicial, 6x4; alternativa histórica",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "3a4c7fffc6b1ac565a1604440b33541808167be11159597ffd01b0d8d86555a2"
+  },
+  {
+    "file": "assets/historico/atriox_elmo_DESCARTADO.png",
+    "source": "exec-60269d48-9228-4273-b499-a187bc92b643.png",
+    "usage": "Design errado: elmo e armadura preta; NÃO usar em Atriox",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "7008eca893d6eaed1f98183fbfc889ffc27db97c56850fca09eb2ab668292582"
+  },
+  {
+    "file": "assets/sprites_e_retratos/atriox_corrida_12.png",
+    "source": "exec-43315586-c60f-4ff9-8088-c8558885e222.png",
+    "usage": "4x3, ciclo de 12 poses; conferir alternância",
+    "width": 1448,
+    "height": 1086,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "94904c51b7cb5ca57a115bd12f3edfe8fce677ba1c332eeb6c32854e2e26e47e"
+  },
+  {
+    "file": "assets/sprites_e_retratos/caim_magia_rubra.png",
+    "source": "exec-2462a063-9977-439a-94a8-0ca4ebe943fb.png",
+    "usage": "4x3: poça, dominação e invocação; VFX incorporados",
+    "width": 1448,
+    "height": 1086,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "1de2d1d06186d24b3ed022368134cd9f432a304b688e98e96cc3fc2955d9b581"
+  },
+  {
+    "file": "assets/sprites_e_retratos/wyvern_sanguineo.png",
+    "source": "exec-ca16e43a-7ae6-402c-bded-09fdaa88bef7.png",
+    "usage": "4x3: voo, investida, materialização",
+    "width": 1448,
+    "height": 1086,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "2943b76d54faa043d45bdea87d14c26e3e7f2151066784f3f76ad9d4a2492250"
+  },
+  {
+    "file": "assets/sprites_e_retratos/atriox_combate_stun.png",
+    "source": "exec-6ffe7b85-e808-4ecb-bcc1-92a571d70922.png",
+    "usage": "4x4: dash, dois cortes, stun sanguíneo",
+    "width": 1402,
+    "height": 1122,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "59e007e0c119bf41f9bbc5a4f2980fb2c3a502cb7b5326b643f9aed5ab21a549"
+  },
+  {
+    "file": "assets/sprites_e_retratos/apollon_bencao_atriox.png",
+    "source": "exec-91a93737-4db8-4b92-8222-a83b35eb3b34.png",
+    "usage": "3x2: bênção pós-Caim; dois personagens juntos, somente cena narrativa",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      253
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "c6320030e4001febfadd33ab9ae33867b1d731b4a4d819af7812c98b9650bc8c"
+  },
+  {
+    "file": "assets/sprites_e_retratos/atriox_ataques_solares.png",
+    "source": "exec-8a32e35a-8b83-442e-bd78-4559b7cc099a.png",
+    "usage": "4x4: meia-lua, pilar, dash solar, avatar; VFX incorporados",
+    "width": 1428,
+    "height": 1102,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "83f92e917df33f5be6955510d4328feab6a2e20f1897b1f3864fd49cdc118f73"
+  },
+  {
+    "file": "assets/sprites_e_retratos/toknar_movimento_furia.png",
+    "source": "exec-98c97634-22e4-48b2-bb99-f3aa64119aa2.png",
+    "usage": "4x4: idle4, corrida8, fúria4",
+    "width": 1226,
+    "height": 1283,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "df361ba543c0308f526d9bbe6da704007302632376f740468f9a12a0f64fd0ef"
+  },
+  {
+    "file": "assets/sprites_e_retratos/toknar_combate_inicial.png",
+    "source": "exec-4c5c3552-93ec-4891-9568-664d61fec59f.png",
+    "usage": "4x4: corte, giro, investida, cura; alternativa de 4 poses por ação",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "f3ef2cd464bc4eeac1e9a8422322f4e4a1ade6b33a81777918ee15e8583836d0"
+  },
+  {
+    "file": "assets/sprites_e_retratos/atriox_tecnicas_avancadas.png",
+    "source": "exec-d0581409-3b98-483e-93fc-e4201de4bac3.png",
+    "usage": "6x3: retorno, ascendente, marca; efeitos juntos",
+    "width": 1774,
+    "height": 887,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "68b4750fd1f882a79feb938e8244a476b093b51bea7e1203b7121d2ad561c4cd"
+  },
+  {
+    "file": "assets/sprites_e_retratos/atriox_habilidades_solares_novas.png",
+    "source": "exec-5a702cbb-62ef-46bf-90ee-9e7e7fdc7b43.png",
+    "usage": "6x3: orbital, eco solar, Sol Cativo; efeitos juntos",
+    "width": 1774,
+    "height": 887,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "24ca551bbe6727e2941ec8a45a71938a343a46994ebc38ab69f653f05bf02ebd"
+  },
+  {
+    "file": "assets/historico/atriox_combo_1_v1.png",
+    "source": "exec-fcfc3ef0-5739-4edd-993f-a08f4134f836.png",
+    "usage": "4x2, horizontal8; espada cortada e fundo opaco",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "224cb47d9070e10ddd820affa5eaad359455df6bd8d155e039d1af9e9bba0641"
+  },
+  {
+    "file": "assets/historico/atriox_combo_2_v1.png",
+    "source": "exec-c2a52348-01e4-4c45-8814-8e3c5bc37a72.png",
+    "usage": "4x2, retorno8; verificar recorte",
+    "width": 1774,
+    "height": 887,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "b0c777eedcd8f75323c29e491e0fe731e5472749bc21ee99e15f6be2c92f3978"
+  },
+  {
+    "file": "assets/sprites_e_retratos/atriox_combo_3.png",
+    "source": "exec-b322d7f2-acee-4226-bffd-54d3a5e22a19.png",
+    "usage": "4x2, finalizador diagonal8",
+    "width": 1774,
+    "height": 887,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "cc3cfee5aace23a39b7fe82540b1557c91d3762b281c2c8423a82071441257c5"
+  },
+  {
+    "file": "assets/historico/atriox_carga_v1.png",
+    "source": "exec-8ac49b43-d84c-457a-9ead-b9e754d91300.png",
+    "usage": "2x2, carga em pé4",
+    "width": 1024,
+    "height": 1536,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "9ada50204b37494af4ae27c7e5ee1398cb06e2b3a6a1332f32399a4e519f2604"
+  },
+  {
+    "file": "assets/historico/atriox_sentenca_v1.png",
+    "source": "exec-009a8378-713c-47d6-bceb-d43c311cb00c.png",
+    "usage": "4x2, ascendente8",
+    "width": 1774,
+    "height": 887,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "ddc9e6615b2f0ef5626a1c1711635723eac2bbf2086f59ef4ed2447db3082c76"
+  },
+  {
+    "file": "assets/sprites_e_retratos/atriox_combo_1_revisao.png",
+    "source": "exec-aa693a20-13e3-4046-a1d9-97777b8fbb7a.png",
+    "usage": "4x2, horizontal8; versão posterior, fundo ainda colorido",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "930f948e3157926aa3fa77329c5f5085ea965d70564b11f640d224441cc90079"
+  },
+  {
+    "file": "assets/sprites_e_retratos/atriox_combo_2_revisao.png",
+    "source": "exec-7de6abb8-49ea-40b1-9c34-49c0abda9b9a.png",
+    "usage": "4x2, retorno8; versão posterior",
+    "width": 1774,
+    "height": 887,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "79892f33dd13738bc898c30fb636623bafe6c1a904ffc158f17561671a159fdc"
+  },
+  {
+    "file": "assets/sprites_e_retratos/atriox_carga_revisao.png",
+    "source": "exec-b01f43fa-23cb-4564-a308-50c14283720e.png",
+    "usage": "2x2, carga4 EM PÉ; fundo ainda colorido",
+    "width": 1024,
+    "height": 1536,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "f7bc4626d88c0c05c3ff1136a6dd5dd6e0f6cc7d1c0128f915f5116c63957303"
+  },
+  {
+    "file": "assets/sprites_e_retratos/atriox_sentenca_revisao.png",
+    "source": "exec-9675bb2b-9ff6-4f99-b22f-aa1cccbb6d1c.png",
+    "usage": "4x2, ascendente8; versão posterior",
+    "width": 1774,
+    "height": 887,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "23e4aa40658617baf8ef02d414e92a01bbd669e388d7ac92ede5cdcd38fc8954"
+  },
+  {
+    "file": "assets/historico/toknar_ceifa_v1.png",
+    "source": "exec-35571b42-3c87-4e24-bd6d-d593ddd25af8.png",
+    "usage": "4x2, ceifa8; verificar pontas do machado",
+    "width": 1774,
+    "height": 887,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "19975fcb901ed02bf83ace1dbefdc11960114d5626cc926e1030bd92d25a938f"
+  },
+  {
+    "file": "assets/historico/toknar_fome_v1.png",
+    "source": "exec-e55bd390-a971-4680-99d1-bb449cf73662.png",
+    "usage": "4x2, golpe no chão8; verificar margens",
+    "width": 1774,
+    "height": 887,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "44784638f1a05e34c0dd51b6d905bda70297550972997472bb5f6432f3e1c007"
+  },
+  {
+    "file": "assets/historico/caim_poca_v1.png",
+    "source": "exec-f29968f2-ac53-4113-9e7d-6d118284304a.png",
+    "usage": "3x2, conjuração6 sem VFX, 3/4 direita",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "1b68c1b67b1bf2411bb1945e3514ba3a9d3a4f69bc6c62bd38643044efaee152"
+  },
+  {
+    "file": "assets/sprites_e_retratos/caim_erupcao.png",
+    "source": "exec-2f8a81d4-847f-40c5-80fc-82c95286a850.png",
+    "usage": "3x2, conjuração6 sem VFX, 3/4 direita",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "92c93c4c90e1dc4a9d848536db1978d2792294b68641b6d8562222eda5f7c926"
+  },
+  {
+    "file": "assets/sprites_e_retratos/toknar_vfx.png",
+    "source": "exec-bcfc81fa-28bc-4df9-9bbe-a3dbda189b4d.png",
+    "usage": "6x3: rastro horizontal5 e célula vazia; diagonal5 e vazia; fissura6",
+    "width": 1774,
+    "height": 887,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "45d7eba9dc80f06890535b314aac3aa5abee12e8bf2e08675800984816e5a22e"
+  },
+  {
+    "file": "assets/sprites_e_retratos/toknar_fome_revisao.png",
+    "source": "exec-7b38bb64-c52a-4d84-95d4-025bb56361d1.png",
+    "usage": "4x2, fome8; versão posterior com margens maiores",
+    "width": 1774,
+    "height": 887,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "f1eeff60db1bec617ec0c0b1173621a9a09653a342c36ee2675afbc7d2d4496e"
+  },
+  {
+    "file": "assets/sprites_e_retratos/toknar_ceifa_revisao.png",
+    "source": "exec-5372b5f5-fb14-4283-bfc6-4bec2af0c50c.png",
+    "usage": "4x2, ceifa8; versão posterior",
+    "width": 1774,
+    "height": 887,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "4a072cec79d6d49d9672f0ce4dbab014792e707b3b9d85f9c57b7a3ff807a92b"
+  },
+  {
+    "file": "assets/sprites_e_retratos/caim_poca_revisao.png",
+    "source": "exec-14e3e34d-b47f-4604-9dc8-6d485b92636b.png",
+    "usage": "3x2, poça6; revisão posterior ainda com fundo colorido",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "557ffcb21c45974161afe137fffdba83821614ea6ec5301e34077e4c82d51eb2"
+  },
+  {
+    "file": "assets/sprites_e_retratos/goblin.png",
+    "source": "exec-1a3ebc1c-bd17-45d5-95a9-2729969fa2cf.png",
+    "usage": "4x3: corrida4, ataque4, reação e queda4",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "5781dd3df238ea02ebc3c8562c06f85b8bd7468e1c9817f5f528c4e3e8952ff1"
+  },
+  {
+    "file": "assets/sprites_e_retratos/orc_saqueador.png",
+    "source": "exec-9d2454eb-da9e-44bf-984d-29e521d7c8b0.png",
+    "usage": "4x3: corrida4, ataque4, reação e queda4",
+    "width": 1447,
+    "height": 1087,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "d8a74db5fe8c1990c3366ab3ea235817196553d7fa7c66bd403e3e789122bfe9"
+  },
+  {
+    "file": "assets/sprites_e_retratos/wyvern_selvagem.png",
+    "source": "exec-51140612-a242-408d-be25-03a32a9fa983.png",
+    "usage": "4x3: voo4, ataque4, queda4",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "acb3bd7b9e405f7b7aae6f6f99b302a453daf72713f12c07322ed9be5c07e97a"
+  },
+  {
+    "file": "assets/sprites_e_retratos/retratos_atriox_toknar_caim.png",
+    "source": "exec-887bf53d-5609-4151-9b97-e3af92568c26.png",
+    "usage": "3x2, colunas Atriox/Toknar/Caim; duas expressões cada",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "f80dec9f0d1291d8350930a2a0fa55f0be1c7c640c4b408c96eaa0d1e485257d"
+  },
+  {
+    "file": "assets/sprites_e_retratos/carrasco_base.png",
+    "source": "exec-333ac8d8-80b8-4d01-9247-9e9bb2e41050.png",
+    "usage": "Pose-base corpo inteiro; referência principal do Carrasco novo",
+    "width": 1223,
+    "height": 1286,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "232a0a3041e4e0fc43cc5c9b0c8b357b219fdfb33ac12019e3594520b94d0cbd"
+  },
+  {
+    "file": "assets/sprites_e_retratos/carrasco_retrato.png",
+    "source": "exec-d30e660b-5788-4596-bb8c-a38b59b96a5b.png",
+    "usage": "Retrato para diálogo",
+    "width": 1354,
+    "height": 1161,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "7f08f2766d564f1ea7f54b7f4a7b7a1103ea9a98c93ed077c872cdd567851ee0"
+  },
+  {
+    "file": "assets/sprites_e_retratos/carrasco_movimento.png",
+    "source": "exec-e98f58e8-7902-41a1-afde-34fc2e6c0458.png",
+    "usage": "4x4: idle4, corrida8, postura quebrada4",
+    "width": 1402,
+    "height": 1122,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "f829d662285c1d5f3c951e4721dbd40b6d991f2cefd68ed431c13fb7dd96b331"
+  },
+  {
+    "file": "assets/sprites_e_retratos/carrasco_golpes.png",
+    "source": "exec-91044aab-b8c4-4a91-8bae-28a3effbdfb2.png",
+    "usage": "4x4: linhas1-2 varredura8, linhas3-4 execução vertical8",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "ce2f40561bf400bf5813d87e413e3e433043dccb19af08db429c557a3d5c1c4d"
+  },
+  {
+    "file": "assets/sprites_e_retratos/carrasco_investida_dano_morte.png",
+    "source": "exec-7c1a6c88-118f-4662-a6c3-05bc26728bd2.png",
+    "usage": "4x4: linhas1-2 investida8, linha3 dano4, linha4 morte4",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "f3fefba70d968e0f0865ed97a0dea799bafd1a5e2608f1c3f40efba0e503f43e"
+  },
+  {
+    "file": "assets/sprites_e_retratos/carrasco_vfx.png",
+    "source": "exec-ba5744e1-1fef-43a4-a4e8-8d84c557fed8.png",
+    "usage": "6x3: rastro horizontal6, diagonal6, impacto6",
+    "width": 1774,
+    "height": 887,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "has_transparent_pixels": true,
+    "sha256": "cb5cec36bd03606c6f6ac96b61a0f58ff256824dea6df0632f2bdca6750863d2"
+  },
+  {
+    "file": "assets/arenas/arena_caim.png",
+    "source": "exec-a6cc4093-6403-4eff-8c45-83313c251aa5.png",
+    "usage": "Cenário inteiro: campo aberto, wyverns pintadas observando nas bordas",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGB",
+    "alpha_extrema": null,
+    "has_transparent_pixels": false,
+    "sha256": "eab03f95c3a35d3bcf975a690f34b0ee676ea303cae232da15bd9eb8f286156f"
+  },
+  {
+    "file": "assets/arenas/arena_toknar.png",
+    "source": "exec-2e27ccb8-5674-4a8a-bf86-b98868da55fe.png",
+    "usage": "Cenário inteiro: plateia de orcs, entradas de reforços nas laterais superiores",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGB",
+    "alpha_extrema": null,
+    "has_transparent_pixels": false,
+    "sha256": "b0c0a1ae76c8830713d9092a473aafbe8cc607726ef3d320c2360cb107f8cf71"
+  }
+]

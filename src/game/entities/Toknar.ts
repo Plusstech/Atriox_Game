@@ -64,7 +64,7 @@ export class Toknar implements Combatant {
       .setDisplaySize(145, 43)
       .setDepth(DEPTH.shadow);
     this.g = scene.add.graphics().setDepth(DEPTH.telegraph);
-    this.brain.start();
+    // a luta começa em startFight() (depois da conversa); até lá fica em 'intro'
   }
   get dead(): boolean {
     return this.brain.state === 'dead';
@@ -76,7 +76,21 @@ export class Toknar implements Combatant {
     return this.y - 110;
   }
   update(dt: number, p: { x: number; y: number; dead: boolean }): void {
-    if (this.removed || this.dead) return;
+    if (this.removed) return;
+    if (this.dead) {
+      this.anim.update(dt);
+      return;
+    }
+    if (this.brain.state === 'intro') {
+      // aguardando a conversa: respira em guarda, olhando para Atriox
+      this.facing = p.x >= this.x ? 1 : -1;
+      this.anim.play('toknar.idle');
+      this.anim.update(dt);
+      this.anim.sprite.setPosition(this.x, this.y).setDepth(this.y).setFlipX(this.facing < 0);
+      this.shadow.setPosition(this.x, this.y);
+      Object.assign(this.hurtbox, { x: this.x, y: this.y, invulnerable: true });
+      return;
+    }
     const b = this.brain;
     const dist = length(p.x - this.x, p.y - this.y);
     for (const ev of b.update(dt, p.dead ? 99999 : dist, this.hpRatio)) {
@@ -128,18 +142,23 @@ export class Toknar implements Combatant {
       b.state = 'recovery';
       b.timer = 0;
     }
+    // Golpes: a fase da IA escolhe o quadro (sincronizado). Giro, investida e Banquete
+    // têm um trecho ativo longo: ali tocam loops próprios em vez de esticar uma pose.
+    const looping = st === 'active' && (b.move === 'spin' || b.move === 'charge' || b.move === 'feast');
     const key =
       st === 'transition'
         ? 'rage'
         : st === 'chase'
           ? 'run'
-          : st === 'windup' || st === 'active' || st === 'recovery'
-            ? b.move
-            : st === 'broken'
-              ? 'feast'
-              : 'idle';
+          : looping
+            ? `${b.move}_loop`
+            : st === 'windup' || st === 'active' || st === 'recovery'
+              ? b.move
+              : st === 'broken'
+                ? 'broken'
+                : 'idle';
     this.anim.play(`toknar.${key}`);
-    if (st === 'windup' || st === 'active' || st === 'recovery')
+    if (!looping && (st === 'windup' || st === 'active' || st === 'recovery'))
       this.anim.sync(
         st === 'windup' ? 'windup' : st === 'active' ? 'active' : 'recovery',
         b.timer /
@@ -152,6 +171,12 @@ export class Toknar implements Combatant {
                 : TOKNAR.moves[b.move].active),
       );
     else this.anim.update(dt);
+    // antecipação viva: Rhaesis pulsa em vermelho enquanto o golpe carrega
+    if (st === 'windup') {
+      const k = 0.5 + 0.5 * Math.sin(this.scene.time.now / 70);
+      this.anim.sprite.setTint(Phaser.Display.Color.GetColor(255, Math.round(205 + 50 * (1 - k)), Math.round(190 + 65 * (1 - k))));
+    } else if (st === 'broken') this.anim.sprite.setTint(0xc8f0e8);
+    else this.anim.sprite.clearTint();
     this.anim.sprite
       .setPosition(this.x, this.y)
       .setDepth(this.y)
@@ -212,6 +237,35 @@ export class Toknar implements Combatant {
       }),
     );
     Sfx.swing(2);
+    // rastros e fissura desenhados (toknar_vfx), separados do corpo
+    const mv = this.brain.move;
+    const fx = this.ctx.effects;
+    const ax = this.x + Math.cos(this.angle) * 95;
+    const ay = this.y + Math.sin(this.angle) * 60 - 70;
+    const seq = (p: string, n: number) => Array.from({ length: n }, (_, i) => `${p}_${String(i).padStart(2, '0')}`);
+    if (mv === 'cleave') {
+      const third = this.brain.strikes >= 3;
+      fx.atlasFx(ax, ay, seq(third ? 'fxt_slash_d' : 'fxt_slash_h', 5), {
+        flipX: Math.cos(this.angle) < 0,
+        frameMs: 50,
+        scale: third ? 1.15 : 1,
+        depth: this.y + 5,
+      });
+    } else if (mv === 'hunger') {
+      const gx = this.x + Math.cos(this.angle) * 110;
+      const gy = this.y + Math.sin(this.angle) * 70;
+      fx.atlasFx(gx, gy, seq('fxt_fissure', 6), { frameMs: 75, scale: 1.25, depth: DEPTH.groundFx + 30 });
+      fx.shake(260, 0.012);
+      Sfx.slam();
+    } else if (mv === 'spin') {
+      fx.atlasFx(this.x, this.y - 70, seq('fxt_slash_h', 5), { frameMs: 60, scale: 1.3, depth: this.y + 5 });
+    }
+  }
+
+  /** Início da luta (após a conversa pré-chefe). */
+  startFight(): void {
+    this.scripted = false;
+    if (this.brain.state === 'intro') this.brain.start();
   }
   confirmedDrain(dealt: number): void {
     const n = this.brain.drain(dealt);
@@ -250,9 +304,12 @@ export class Toknar implements Combatant {
       this.cancel();
       this.hurtbox.alive = false;
       this.g.clear();
+      this.anim.sprite.clearTint();
+      this.anim.play('toknar.dead', true);
       this.scene.tweens.add({
         targets: this.anim.sprite,
         alpha: 0,
+        delay: 900,
         duration: 1100,
       });
       this.ctx.onDeath();

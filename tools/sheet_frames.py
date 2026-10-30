@@ -105,13 +105,18 @@ def extract(name, rgba=None):
         comp = lab[sl] == ci
         cid = cell_id[sl]
         markers = None
-        for it in range(2, 26, 2):
+        # split_all (opt-in per sheet): keep eroding until each cell holding a real
+        # share of this component has its own piece (several figures chained by blades)
+        need = 2
+        if SHEETS[name].get("split_all"):
+            need = max(2, int((sums[ci] >= 0.15 * tot[ci]).sum()))
+        for it in range(2, 60 if need > 2 else 26, 2):
             er = ndimage.binary_erosion(comp, iterations=it)
             ml, mn = ndimage.label(er, structure=np.ones((3, 3)))
             if mn >= 2:
                 sizes = ndimage.sum(er, ml, range(1, mn + 1))
                 keep = [k + 1 for k, sz in enumerate(sizes) if sz >= 0.04 * comp.sum()]
-                if len(keep) >= 2:
+                if len(keep) >= need:
                     markers = (ml, keep)
                     break
         if markers is None:

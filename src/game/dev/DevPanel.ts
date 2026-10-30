@@ -35,7 +35,9 @@ export function attachDevPanel(game: Phaser.Game): void {
       <button id="dv-kill">matar inimigos</button>
       <button id="dv-toknar">ir: Toknar</button><button id="dv-build">build completa</button><button id="dv-eternity">Eternidade</button>
       <button id="dv-exec">ir: Carrasco</button>
-      <button id="dv-nemeia">ir: Nemeia (Caim)</button>
+      <button id="dv-nemeia">ir: Caim</button>
+      <button id="dv-wyv">ir: Ninho das Wyverns</button>
+      <button id="dv-goblin">+ goblin</button><button id="dv-orc">+ orc</button><button id="dv-wild">+ wyvern selvagem</button>
       <button id="dv-boss50">chefe −50%</button>
       <button id="dv-heal">curar</button>
       <button id="dv-pool">poça no jogador</button>
@@ -93,6 +95,14 @@ export function attachDevPanel(game: Phaser.Game): void {
   $('dv-exec').onclick = () => arena()?.devGotoRoom('executioner');
   $('dv-nemeia').onclick = () => arena()?.devGotoRoom('nemeia');
   $('dv-pool').onclick = () => arena()?.devSpawnPoolAtPlayer();
+  $('dv-wyv').onclick = () => arena()?.devGotoRoom('build-2');
+  const near = (): { x: number; y: number } | null => {
+    const a = arena();
+    return a ? { x: a.player.x + 260, y: a.player.y - 60 } : null;
+  };
+  $('dv-goblin').onclick = () => { const p = near(); if (p) arena()?.spawnEnemy('goblin', p.x, p.y); };
+  $('dv-orc').onclick = () => { const p = near(); if (p) arena()?.spawnEnemy('orc', p.x, p.y); };
+  $('dv-wild').onclick = () => { const p = near(); if (p) arena()?.spawnWyvern(p.x, p.y, 'wild'); };
   $('dv-insp').onclick = () => {
     for (const k of ['ArenaScene', 'UIScene', 'MenuScene']) if (game.scene.isActive(k)) game.scene.stop(k);
     game.scene.start('AnimInspectorScene');

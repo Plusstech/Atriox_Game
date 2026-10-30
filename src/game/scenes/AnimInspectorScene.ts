@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import { ATRIOX_COMBO } from '../../data/attacks';
-import { SKILLS } from '../../data/v03';
+import { SKILLS, TOKNAR } from '../../data/v03';
+import { EXECUTIONER } from '../../data/bosses';
+import { ENEMIES } from '../../data/enemies';
 import { ATRIOX_SCALE, CAIM_SCALE, COLORS, FONT_UI, GAME_H, GAME_W, WYVERN_SCALE } from '../config/constants';
 import { SpriteAnimator, getLibrary, type AnimLibrary } from '../animation/SpriteAnimator';
 import { FrameTimeline } from '../animation/FrameTimeline';
@@ -11,6 +13,10 @@ const CHARS: { id: string; label: string; scale: number; collider: number; flyin
   { id: 'toknar', label: 'Toknar', scale: 0.72, collider: 38 },
   { id: 'caim', label: 'Caim', scale: CAIM_SCALE, collider: 26 },
   { id: 'wyvern', label: 'Wyvern', scale: WYVERN_SCALE, collider: 30, flying: true },
+  { id: 'carrasco', label: 'Carrasco (v0.5)', scale: 0.8, collider: 40 },
+  { id: 'goblin', label: 'Goblin', scale: 0.62, collider: 15 },
+  { id: 'orc', label: 'Orc saqueador', scale: 0.66, collider: 24 },
+  { id: 'wyvern_wild', label: 'Wyvern selvagem', scale: WYVERN_SCALE, collider: 30, flying: true },
   { id: 'apollon', label: 'Bênção (composto)', scale: ATRIOX_SCALE, collider: 16 }
 ];
 
@@ -158,6 +164,20 @@ export class AnimInspectorScene extends Phaser.Scene {
     const step = ATRIOX_COMBO.find((s) => key === `atriox.${s.id}` || (key === 'atriox.attack_3_glory' && s.id === 'attack_3'));
     if (step) return { windup: step.windup, active: step.active, recovery: step.recovery };
     if(key==='atriox.ascending'||key==='atriox.return_cut')return {windup:SKILLS.chargeWindup,active:SKILLS.chargeActive,recovery:key==='atriox.return_cut'?270:SKILLS.chargeRecovery};
+    // v0.5: chefes e inimigos com as durações reais da IA
+    const [who, move] = key.split('.');
+    if (who === 'toknar' && move in TOKNAR.moves) {
+      const m = TOKNAR.moves[move as keyof typeof TOKNAR.moves];
+      return { windup: m.windup, active: move === 'cleave' ? 1280 : m.active, recovery: m.recovery };
+    }
+    if (who === 'carrasco') {
+      const m = EXECUTIONER.moves.find((x) => x.id === move);
+      if (m) return { windup: m.windup, active: m.active, recovery: m.recovery };
+    }
+    if ((who === 'goblin' || who === 'orc') && move === 'attack') {
+      const e = ENEMIES[who];
+      return { windup: e.windup, active: e.active, recovery: e.recovery };
+    }
     if (key === 'atriox.cast' || key === 'atriox.cast_sun' || key.startsWith('caim.')) {
       const d = this.anim?.timeline.def;
       if (d?.frames.some((f) => f.phase)) return { windup: 420, active: 160, recovery: 380 };

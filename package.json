@@ -1,8 +1,8 @@
 {
   "name": "atriox-cinder",
   "private": true,
-  "version": "0.3.0",
-  "description": "Atriox Cinder: Lâmina sem Deus — vertical slice 0.3 (action roguelite 2D, Phaser 3)",
+  "version": "0.5.0",
+  "description": "Atriox Cinder: Lâmina sem Deus — vertical slice 0.5 (action roguelite 2D, Phaser 3)",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,10 +11,10 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "sprites": "python tools/extract_sprites.py",
-    "test:e2e": "node tests/e2e/smoke.mjs && node tests/e2e/v03.mjs && node tests/e2e/atlas-cache.mjs && node tests/e2e/combat-art.mjs",
+    "test:e2e": "node tests/e2e/smoke.mjs && node tests/e2e/v03.mjs && node tests/e2e/atlas-cache.mjs && node tests/e2e/combat-art.mjs && node tests/e2e/v05.mjs",
     "check": "npm run test && npm run build && npm run test:e2e",
-    "atlas": "python tools/build_atlases.py && python tools/build_v03_atlas.py && python tools/build_v04_atlas.py",
-    "sprites:combat": "python tools/prepare_atriox_v04.py && python tools/build_v04_atlas.py"
+    "atlas": "python tools/build_atlases.py && python tools/build_v03_atlas.py && python tools/build_v04_atlas.py && python tools/build_v05_atlas.py",
+    "sprites:combat": "python tools/prepare_atriox_v04.py && python tools/build_v04_atlas.py && python tools/build_v05_atlas.py"
   },
   "dependencies": {
     "phaser": "3.90.0"

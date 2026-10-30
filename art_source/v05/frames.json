@@ -1,0 +1,1910 @@
+{
+ "carrasco_idle_00": {
+  "sheet": "carrasco_movimento",
+  "sourceBounds": [
+   25,
+   7,
+   328,
+   277
+  ],
+  "scale": 0.82943,
+  "pivot": [
+   101.0,
+   218.0
+  ]
+ },
+ "carrasco_idle_01": {
+  "sheet": "carrasco_movimento",
+  "sourceBounds": [
+   382,
+   6,
+   681,
+   277
+  ],
+  "scale": 0.82943,
+  "pivot": [
+   97.0,
+   219.0
+  ]
+ },
+ "carrasco_idle_02": {
+  "sheet": "carrasco_movimento",
+  "sourceBounds": [
+   716,
+   6,
+   1025,
+   277
+  ],
+  "scale": 0.82943,
+  "pivot": [
+   106.0,
+   219.0
+  ]
+ },
+ "carrasco_idle_03": {
+  "sheet": "carrasco_movimento",
+  "sourceBounds": [
+   1066,
+   8,
+   1385,
+   277
+  ],
+  "scale": 0.82943,
+  "pivot": [
+   107.0,
+   218.0
+  ]
+ },
+ "carrasco_run_00": {
+  "sheet": "carrasco_movimento",
+  "sourceBounds": [
+   19,
+   295,
+   353,
+   544
+  ],
+  "scale": 0.82943,
+  "pivot": [
+   125.0,
+   203.0
+  ]
+ },
+ "carrasco_run_01": {
+  "sheet": "carrasco_movimento",
+  "sourceBounds": [
+   377,
+   294,
+   710,
+   545
+  ],
+  "scale": 0.82943,
+  "pivot": [
+   120.0,
+   204.0
+  ]
+ },
+ "carrasco_run_02": {
+  "sheet": "carrasco_movimento",
+  "sourceBounds": [
+   726,
+   293,
+   1082,
+   538
+  ],
+  "scale": 0.82943,
+  "pivot": [
+   129.0,
+   194.0
+  ]
+ },
+ "carrasco_run_03": {
+  "sheet": "carrasco_movimento",
+  "sourceBounds": [
+   1082,
+   292,
+   1401,
+   543
+  ],
+  "scale": 0.82943,
+  "pivot": [
+   125.0,
+   203.0
+  ]
+ },
+ "carrasco_run_04": {
+  "sheet": "carrasco_movimento",
+  "sourceBounds": [
+   15,
+   559,
+   354,
+   813
+  ],
+  "scale": 0.82943,
+  "pivot": [
+   122.0,
+   203.0
+  ]
+ },
+ "carrasco_run_05": {
+  "sheet": "carrasco_movimento",
+  "sourceBounds": [
+   359,
+   566,
+   709,
+   813
+  ],
+  "scale": 0.82943,
+  "pivot": [
+   127.0,
+   196.0
+  ]
+ },
+ "carrasco_run_06": {
+  "sheet": "carrasco_movimento",
+  "sourceBounds": [
+   713,
+   564,
+   1055,
+   815
+  ],
+  "scale": 0.82943,
+  "pivot": [
+   119.0,
+   203.0
+  ]
+ },
+ "carrasco_run_07": {
+  "sheet": "carrasco_movimento",
+  "sourceBounds": [
+   1066,
+   563,
+   1402,
+   814
+  ],
+  "scale": 0.82943,
+  "pivot": [
+   123.0,
+   203.0
+  ]
+ },
+ "carrasco_broken_00": {
+  "sheet": "carrasco_movimento",
+  "sourceBounds": [
+   18,
+   829,
+   341,
+   1098
+  ],
+  "scale": 0.82943,
+  "pivot": [
+   109.0,
+   217.0
+  ]
+ },
+ "carrasco_broken_01": {
+  "sheet": "carrasco_movimento",
+  "sourceBounds": [
+   388,
+   828,
+   697,
+   1098
+  ],
+  "scale": 0.82943,
+  "pivot": [
+   103.0,
+   218.0
+  ]
+ },
+ "carrasco_broken_02": {
+  "sheet": "carrasco_movimento",
+  "sourceBounds": [
+   742,
+   833,
+   1047,
+   1098
+  ],
+  "scale": 0.82943,
+  "pivot": [
+   115.0,
+   215.0
+  ]
+ },
+ "carrasco_broken_03": {
+  "sheet": "carrasco_movimento",
+  "sourceBounds": [
+   1094,
+   829,
+   1393,
+   1098
+  ],
+  "scale": 0.82943,
+  "pivot": [
+   101.0,
+   217.0
+  ]
+ },
+ "carrasco_sweep_00": {
+  "sheet": "carrasco_golpes",
+  "sourceBounds": [
+   56,
+   39,
+   366,
+   261
+  ],
+  "scale": 1.01449,
+  "pivot": [
+   118.0,
+   219.0
+  ]
+ },
+ "carrasco_sweep_01": {
+  "sheet": "carrasco_golpes",
+  "sourceBounds": [
+   422,
+   3,
+   676,
+   263
+  ],
+  "scale": 1.01449,
+  "pivot": [
+   154.0,
+   258.0
+  ]
+ },
+ "carrasco_sweep_02": {
+  "sheet": "carrasco_golpes",
+  "sourceBounds": [
+   767,
+   10,
+   1059,
+   262
+  ],
+  "scale": 1.01449,
+  "pivot": [
+   186.0,
+   250.0
+  ]
+ },
+ "carrasco_sweep_03": {
+  "sheet": "carrasco_golpes",
+  "sourceBounds": [
+   1132,
+   66,
+   1536,
+   264
+  ],
+  "scale": 1.01449,
+  "pivot": [
+   168.0,
+   195.0
+  ]
+ },
+ "carrasco_sweep_04": {
+  "sheet": "carrasco_golpes",
+  "sourceBounds": [
+   37,
+   298,
+   399,
+   501
+  ],
+  "scale": 1.01449,
+  "pivot": [
+   142.0,
+   200.0
+  ]
+ },
+ "carrasco_sweep_05": {
+  "sheet": "carrasco_golpes",
+  "sourceBounds": [
+   423,
+   295,
+   810,
+   501
+  ],
+  "scale": 1.01449,
+  "pivot": [
+   145.0,
+   203.0
+  ]
+ },
+ "carrasco_sweep_06": {
+  "sheet": "carrasco_golpes",
+  "sourceBounds": [
+   823,
+   292,
+   1144,
+   507
+  ],
+  "scale": 1.01449,
+  "pivot": [
+   127.0,
+   211.0
+  ]
+ },
+ "carrasco_sweep_07": {
+  "sheet": "carrasco_golpes",
+  "sourceBounds": [
+   1212,
+   290,
+   1525,
+   511
+  ],
+  "scale": 1.01449,
+  "pivot": [
+   123.0,
+   218.0
+  ]
+ },
+ "carrasco_execute_00": {
+  "sheet": "carrasco_golpes",
+  "sourceBounds": [
+   49,
+   579,
+   379,
+   789
+  ],
+  "scale": 1.01449,
+  "pivot": [
+   131.0,
+   207.0
+  ]
+ },
+ "carrasco_execute_01": {
+  "sheet": "carrasco_golpes",
+  "sourceBounds": [
+   449,
+   502,
+   693,
+   788
+  ],
+  "scale": 1.01449,
+  "pivot": [
+   123.0,
+   285.0
+  ]
+ },
+ "carrasco_execute_02": {
+  "sheet": "carrasco_golpes",
+  "sourceBounds": [
+   807,
+   514,
+   1044,
+   790
+  ],
+  "scale": 1.01449,
+  "pivot": [
+   120.0,
+   274.0
+  ]
+ },
+ "carrasco_execute_03": {
+  "sheet": "carrasco_golpes",
+  "sourceBounds": [
+   1169,
+   616,
+   1520,
+   795
+  ],
+  "scale": 1.01449,
+  "pivot": [
+   130.0,
+   175.0
+  ]
+ },
+ "carrasco_execute_04": {
+  "sheet": "carrasco_golpes",
+  "sourceBounds": [
+   49,
+   830,
+   375,
+   1010
+  ],
+  "scale": 1.01449,
+  "pivot": [
+   118.0,
+   177.0
+  ]
+ },
+ "carrasco_execute_05": {
+  "sheet": "carrasco_golpes",
+  "sourceBounds": [
+   444,
+   794,
+   764,
+   1010
+  ],
+  "scale": 1.01449,
+  "pivot": [
+   125.0,
+   212.0
+  ]
+ },
+ "carrasco_execute_06": {
+  "sheet": "carrasco_golpes",
+  "sourceBounds": [
+   819,
+   795,
+   1156,
+   1010
+  ],
+  "scale": 1.01449,
+  "pivot": [
+   149.0,
+   213.0
+  ]
+ },
+ "carrasco_execute_07": {
+  "sheet": "carrasco_golpes",
+  "sourceBounds": [
+   1207,
+   789,
+   1513,
+   1010
+  ],
+  "scale": 1.01449,
+  "pivot": [
+   119.0,
+   218.0
+  ]
+ },
+ "carrasco_charge_00": {
+  "sheet": "carrasco_investida_dano_morte",
+  "sourceBounds": [
+   7,
+   80,
+   360,
+   252
+  ],
+  "scale": 0.88421,
+  "pivot": [
+   183.0,
+   146.0
+  ]
+ },
+ "carrasco_charge_01": {
+  "sheet": "carrasco_investida_dano_morte",
+  "sourceBounds": [
+   396,
+   46,
+   687,
+   253
+  ],
+  "scale": 0.88421,
+  "pivot": [
+   156.0,
+   178.0
+  ]
+ },
+ "carrasco_charge_02": {
+  "sheet": "carrasco_investida_dano_morte",
+  "sourceBounds": [
+   766,
+   42,
+   1076,
+   253
+  ],
+  "scale": 0.88421,
+  "pivot": [
+   155.0,
+   181.0
+  ]
+ },
+ "carrasco_charge_03": {
+  "sheet": "carrasco_investida_dano_morte",
+  "sourceBounds": [
+   1164,
+   26,
+   1472,
+   253
+  ],
+  "scale": 0.88421,
+  "pivot": [
+   155.0,
+   194.0
+  ]
+ },
+ "carrasco_charge_04": {
+  "sheet": "carrasco_investida_dano_morte",
+  "sourceBounds": [
+   24,
+   269,
+   357,
+   505
+  ],
+  "scale": 0.88421,
+  "pivot": [
+   164.0,
+   203.0
+  ]
+ },
+ "carrasco_charge_05": {
+  "sheet": "carrasco_investida_dano_morte",
+  "sourceBounds": [
+   412,
+   284,
+   713,
+   505
+  ],
+  "scale": 0.88421,
+  "pivot": [
+   151.0,
+   189.0
+  ]
+ },
+ "carrasco_charge_06": {
+  "sheet": "carrasco_investida_dano_morte",
+  "sourceBounds": [
+   798,
+   278,
+   1192,
+   508
+  ],
+  "scale": 0.88421,
+  "pivot": [
+   137.0,
+   198.0
+  ]
+ },
+ "carrasco_charge_07": {
+  "sheet": "carrasco_investida_dano_morte",
+  "sourceBounds": [
+   1226,
+   259,
+   1511,
+   510
+  ],
+  "scale": 0.88421,
+  "pivot": [
+   96.0,
+   216.0
+  ]
+ },
+ "carrasco_hurt_00": {
+  "sheet": "carrasco_investida_dano_morte",
+  "sourceBounds": [
+   68,
+   526,
+   404,
+   768
+  ],
+  "scale": 0.88421,
+  "pivot": [
+   96.0,
+   209.0
+  ]
+ },
+ "carrasco_hurt_01": {
+  "sheet": "carrasco_investida_dano_morte",
+  "sourceBounds": [
+   448,
+   532,
+   760,
+   774
+  ],
+  "scale": 0.88421,
+  "pivot": [
+   113.0,
+   208.0
+  ]
+ },
+ "carrasco_hurt_02": {
+  "sheet": "carrasco_investida_dano_morte",
+  "sourceBounds": [
+   832,
+   543,
+   1160,
+   768
+  ],
+  "scale": 0.88421,
+  "pivot": [
+   108.0,
+   193.0
+  ]
+ },
+ "carrasco_hurt_03": {
+  "sheet": "carrasco_investida_dano_morte",
+  "sourceBounds": [
+   1226,
+   516,
+   1511,
+   768
+  ],
+  "scale": 0.88421,
+  "pivot": [
+   96.0,
+   217.0
+  ]
+ },
+ "carrasco_death_00": {
+  "sheet": "carrasco_investida_dano_morte",
+  "sourceBounds": [
+   60,
+   805,
+   404,
+   1002
+  ],
+  "scale": 0.88421,
+  "pivot": [
+   117.0,
+   168.0
+  ]
+ },
+ "carrasco_death_01": {
+  "sheet": "carrasco_investida_dano_morte",
+  "sourceBounds": [
+   443,
+   806,
+   769,
+   989
+  ],
+  "scale": 0.88421,
+  "pivot": [
+   117.0,
+   158.0
+  ]
+ },
+ "carrasco_death_02": {
+  "sheet": "carrasco_investida_dano_morte",
+  "sourceBounds": [
+   769,
+   858,
+   1144,
+   1002
+  ],
+  "scale": 0.88421,
+  "pivot": [
+   143.0,
+   122.0
+  ]
+ },
+ "carrasco_death_03": {
+  "sheet": "carrasco_investida_dano_morte",
+  "sourceBounds": [
+   1142,
+   868,
+   1529,
+   985
+  ],
+  "scale": 0.88421,
+  "pivot": [
+   156.0,
+   100.0
+  ]
+ },
+ "toknar_ceifa_00": {
+  "sheet": "toknar_ceifa_revisao",
+  "sourceBounds": [
+   92,
+   147,
+   420,
+   424
+  ],
+  "scale": 1.03131,
+  "pivot": [
+   135.0,
+   279.0
+  ]
+ },
+ "toknar_ceifa_01": {
+  "sheet": "toknar_ceifa_revisao",
+  "sourceBounds": [
+   458,
+   62,
+   784,
+   425
+  ],
+  "scale": 1.03131,
+  "pivot": [
+   183.0,
+   367.0
+  ]
+ },
+ "toknar_ceifa_02": {
+  "sheet": "toknar_ceifa_revisao",
+  "sourceBounds": [
+   928,
+   63,
+   1198,
+   425
+  ],
+  "scale": 1.03131,
+  "pivot": [
+   131.0,
+   365.0
+  ]
+ },
+ "toknar_ceifa_03": {
+  "sheet": "toknar_ceifa_revisao",
+  "sourceBounds": [
+   1311,
+   176,
+   1743,
+   423
+  ],
+  "scale": 1.03131,
+  "pivot": [
+   196.0,
+   249.0
+  ]
+ },
+ "toknar_ceifa_04": {
+  "sheet": "toknar_ceifa_revisao",
+  "sourceBounds": [
+   65,
+   560,
+   512,
+   822
+  ],
+  "scale": 1.03131,
+  "pivot": [
+   201.0,
+   263.0
+  ]
+ },
+ "toknar_ceifa_05": {
+  "sheet": "toknar_ceifa_revisao",
+  "sourceBounds": [
+   552,
+   545,
+   896,
+   822
+  ],
+  "scale": 1.03131,
+  "pivot": [
+   193.0,
+   279.0
+  ]
+ },
+ "toknar_ceifa_06": {
+  "sheet": "toknar_ceifa_revisao",
+  "sourceBounds": [
+   981,
+   500,
+   1285,
+   822
+  ],
+  "scale": 1.03131,
+  "pivot": [
+   141.0,
+   325.0
+  ]
+ },
+ "toknar_ceifa_07": {
+  "sheet": "toknar_ceifa_revisao",
+  "sourceBounds": [
+   1399,
+   548,
+   1731,
+   822
+  ],
+  "scale": 1.03131,
+  "pivot": [
+   138.0,
+   276.0
+  ]
+ },
+ "toknar_fome_00": {
+  "sheet": "toknar_fome_revisao",
+  "sourceBounds": [
+   66,
+   185,
+   368,
+   430
+  ],
+  "scale": 1.10672,
+  "pivot": [
+   160.0,
+   265.0
+  ]
+ },
+ "toknar_fome_01": {
+  "sheet": "toknar_fome_revisao",
+  "sourceBounds": [
+   531,
+   149,
+   797,
+   430
+  ],
+  "scale": 1.10672,
+  "pivot": [
+   140.0,
+   305.0
+  ]
+ },
+ "toknar_fome_02": {
+  "sheet": "toknar_fome_revisao",
+  "sourceBounds": [
+   957,
+   99,
+   1218,
+   430
+  ],
+  "scale": 1.10672,
+  "pivot": [
+   149.0,
+   359.0
+  ]
+ },
+ "toknar_fome_03": {
+  "sheet": "toknar_fome_revisao",
+  "sourceBounds": [
+   1409,
+   215,
+   1736,
+   441
+  ],
+  "scale": 1.10672,
+  "pivot": [
+   155.0,
+   244.0
+  ]
+ },
+ "toknar_fome_04": {
+  "sheet": "toknar_fome_revisao",
+  "sourceBounds": [
+   68,
+   605,
+   368,
+   835
+  ],
+  "scale": 1.10672,
+  "pivot": [
+   165.0,
+   248.0
+  ]
+ },
+ "toknar_fome_05": {
+  "sheet": "toknar_fome_revisao",
+  "sourceBounds": [
+   538,
+   604,
+   836,
+   836
+  ],
+  "scale": 1.10672,
+  "pivot": [
+   160.0,
+   250.0
+  ]
+ },
+ "toknar_fome_06": {
+  "sheet": "toknar_fome_revisao",
+  "sourceBounds": [
+   971,
+   574,
+   1274,
+   832
+  ],
+  "scale": 1.10672,
+  "pivot": [
+   150.0,
+   280.0
+  ]
+ },
+ "toknar_fome_07": {
+  "sheet": "toknar_fome_revisao",
+  "sourceBounds": [
+   1424,
+   563,
+   1725,
+   831
+  ],
+  "scale": 1.10672,
+  "pivot": [
+   159.0,
+   291.0
+  ]
+ },
+ "caim_pool3q_00": {
+  "sheet": "caim_poca_revisao",
+  "sourceBounds": [
+   143,
+   64,
+   376,
+   474
+  ],
+  "scale": 0.58984,
+  "pivot": [
+   81.0,
+   237.0
+  ]
+ },
+ "caim_pool3q_01": {
+  "sheet": "caim_poca_revisao",
+  "sourceBounds": [
+   635,
+   77,
+   895,
+   475
+  ],
+  "scale": 0.58984,
+  "pivot": [
+   88.0,
+   230.0
+  ]
+ },
+ "caim_pool3q_02": {
+  "sheet": "caim_poca_revisao",
+  "sourceBounds": [
+   1131,
+   74,
+   1413,
+   473
+  ],
+  "scale": 0.58984,
+  "pivot": [
+   92.0,
+   230.0
+  ]
+ },
+ "caim_pool3q_03": {
+  "sheet": "caim_poca_revisao",
+  "sourceBounds": [
+   103,
+   585,
+   470,
+   958
+  ],
+  "scale": 0.58984,
+  "pivot": [
+   97.0,
+   215.0
+  ]
+ },
+ "caim_pool3q_04": {
+  "sheet": "caim_poca_revisao",
+  "sourceBounds": [
+   608,
+   618,
+   983,
+   956
+  ],
+  "scale": 0.58984,
+  "pivot": [
+   100.0,
+   194.0
+  ]
+ },
+ "caim_pool3q_05": {
+  "sheet": "caim_poca_revisao",
+  "sourceBounds": [
+   1141,
+   554,
+   1388,
+   957
+  ],
+  "scale": 0.58984,
+  "pivot": [
+   80.0,
+   233.0
+  ]
+ },
+ "caim_erupt3q_00": {
+  "sheet": "caim_erupcao",
+  "sourceBounds": [
+   110,
+   9,
+   385,
+   490
+  ],
+  "scale": 0.5,
+  "pivot": [
+   76.0,
+   235.0
+  ]
+ },
+ "caim_erupt3q_01": {
+  "sheet": "caim_erupcao",
+  "sourceBounds": [
+   607,
+   50,
+   929,
+   488
+  ],
+  "scale": 0.5,
+  "pivot": [
+   89.0,
+   214.0
+  ]
+ },
+ "caim_erupt3q_02": {
+  "sheet": "caim_erupcao",
+  "sourceBounds": [
+   1099,
+   67,
+   1406,
+   488
+  ],
+  "scale": 0.5,
+  "pivot": [
+   87.0,
+   205.0
+  ]
+ },
+ "caim_erupt3q_03": {
+  "sheet": "caim_erupcao",
+  "sourceBounds": [
+   68,
+   486,
+   497,
+   999
+  ],
+  "scale": 0.5,
+  "pivot": [
+   117.0,
+   251.0
+  ]
+ },
+ "caim_erupt3q_04": {
+  "sheet": "caim_erupcao",
+  "sourceBounds": [
+   588,
+   503,
+   999,
+   999
+  ],
+  "scale": 0.5,
+  "pivot": [
+   101.0,
+   242.4
+  ]
+ },
+ "caim_erupt3q_05": {
+  "sheet": "caim_erupcao",
+  "sourceBounds": [
+   1113,
+   515,
+   1389,
+   996
+  ],
+  "scale": 0.5,
+  "pivot": [
+   77.0,
+   235.7
+  ]
+ },
+ "goblin_run_00": {
+  "sheet": "goblin",
+  "sourceBounds": [
+   58,
+   48,
+   324,
+   325
+  ],
+  "scale": 0.56391,
+  "pivot": [
+   78.0,
+   152.0
+  ]
+ },
+ "goblin_run_01": {
+  "sheet": "goblin",
+  "sourceBounds": [
+   452,
+   62,
+   697,
+   331
+  ],
+  "scale": 0.56391,
+  "pivot": [
+   70.0,
+   147.0
+  ]
+ },
+ "goblin_run_02": {
+  "sheet": "goblin",
+  "sourceBounds": [
+   831,
+   57,
+   1105,
+   321
+  ],
+  "scale": 0.56391,
+  "pivot": [
+   81.0,
+   146.0
+  ]
+ },
+ "goblin_run_03": {
+  "sheet": "goblin",
+  "sourceBounds": [
+   1234,
+   61,
+   1487,
+   332
+  ],
+  "scale": 0.56391,
+  "pivot": [
+   75.0,
+   149.0
+  ]
+ },
+ "goblin_attack_00": {
+  "sheet": "goblin",
+  "sourceBounds": [
+   39,
+   370,
+   312,
+   671
+  ],
+  "scale": 0.56391,
+  "pivot": [
+   88.0,
+   166.0
+  ]
+ },
+ "goblin_attack_01": {
+  "sheet": "goblin",
+  "sourceBounds": [
+   402,
+   413,
+   787,
+   670
+  ],
+  "scale": 0.56391,
+  "pivot": [
+   114.0,
+   140.0
+  ]
+ },
+ "goblin_attack_02": {
+  "sheet": "goblin",
+  "sourceBounds": [
+   781,
+   425,
+   1226,
+   667
+  ],
+  "scale": 0.56391,
+  "pivot": [
+   115.0,
+   132.0
+  ]
+ },
+ "goblin_attack_03": {
+  "sheet": "goblin",
+  "sourceBounds": [
+   1235,
+   418,
+   1472,
+   682
+  ],
+  "scale": 0.56391,
+  "pivot": [
+   72.0,
+   145.0
+  ]
+ },
+ "goblin_fall_00": {
+  "sheet": "goblin",
+  "sourceBounds": [
+   51,
+   712,
+   323,
+   992
+  ],
+  "scale": 0.56391,
+  "pivot": [
+   77.0,
+   154.0
+  ]
+ },
+ "goblin_fall_01": {
+  "sheet": "goblin",
+  "sourceBounds": [
+   427,
+   756,
+   691,
+   976
+  ],
+  "scale": 0.56391,
+  "pivot": [
+   87.0,
+   120.0
+  ]
+ },
+ "goblin_fall_02": {
+  "sheet": "goblin",
+  "sourceBounds": [
+   784,
+   824,
+   1128,
+   975
+  ],
+  "scale": 0.56391,
+  "pivot": [
+   89.0,
+   82.0
+  ]
+ },
+ "goblin_fall_03": {
+  "sheet": "goblin",
+  "sourceBounds": [
+   1175,
+   858,
+   1507,
+   982
+  ],
+  "scale": 0.56391,
+  "pivot": [
+   92.0,
+   67.0
+  ]
+ },
+ "orc_run_00": {
+  "sheet": "orc_saqueador",
+  "sourceBounds": [
+   38,
+   24,
+   334,
+   349
+  ],
+  "scale": 0.80975,
+  "pivot": [
+   134.0,
+   256.0
+  ]
+ },
+ "orc_run_01": {
+  "sheet": "orc_saqueador",
+  "sourceBounds": [
+   414,
+   35,
+   686,
+   336
+  ],
+  "scale": 0.80975,
+  "pivot": [
+   120.0,
+   238.0
+  ]
+ },
+ "orc_run_02": {
+  "sheet": "orc_saqueador",
+  "sourceBounds": [
+   786,
+   39,
+   1046,
+   351
+  ],
+  "scale": 0.80975,
+  "pivot": [
+   105.0,
+   248.0
+  ]
+ },
+ "orc_run_03": {
+  "sheet": "orc_saqueador",
+  "sourceBounds": [
+   1141,
+   36,
+   1411,
+   351
+  ],
+  "scale": 0.80975,
+  "pivot": [
+   116.0,
+   246.0
+  ]
+ },
+ "orc_attack_00": {
+  "sheet": "orc_saqueador",
+  "sourceBounds": [
+   47,
+   462,
+   345,
+   743
+  ],
+  "scale": 0.80975,
+  "pivot": [
+   134.0,
+   221.0
+  ]
+ },
+ "orc_attack_01": {
+  "sheet": "orc_saqueador",
+  "sourceBounds": [
+   412,
+   365,
+   680,
+   745
+  ],
+  "scale": 0.80975,
+  "pivot": [
+   120.0,
+   301.5
+  ]
+ },
+ "orc_attack_02": {
+  "sheet": "orc_saqueador",
+  "sourceBounds": [
+   747,
+   473,
+   1078,
+   740
+  ],
+  "scale": 0.80975,
+  "pivot": [
+   132.0,
+   211.0
+  ]
+ },
+ "orc_attack_03": {
+  "sheet": "orc_saqueador",
+  "sourceBounds": [
+   1105,
+   474,
+   1428,
+   737
+  ],
+  "scale": 0.80975,
+  "pivot": [
+   136.0,
+   208.0
+  ]
+ },
+ "orc_fall_00": {
+  "sheet": "orc_saqueador",
+  "sourceBounds": [
+   51,
+   796,
+   318,
+   1062
+  ],
+  "scale": 0.80975,
+  "pivot": [
+   127.0,
+   210.0
+  ]
+ },
+ "orc_fall_01": {
+  "sheet": "orc_saqueador",
+  "sourceBounds": [
+   395,
+   842,
+   687,
+   1066
+  ],
+  "scale": 0.80975,
+  "pivot": [
+   132.0,
+   176.0
+  ]
+ },
+ "orc_fall_02": {
+  "sheet": "orc_saqueador",
+  "sourceBounds": [
+   720,
+   882,
+   1057,
+   1062
+  ],
+  "scale": 0.80975,
+  "pivot": [
+   158.0,
+   141.0
+  ]
+ },
+ "orc_fall_03": {
+  "sheet": "orc_saqueador",
+  "sourceBounds": [
+   1075,
+   922,
+   1426,
+   1065
+  ],
+  "scale": 0.80975,
+  "pivot": [
+   146.0,
+   110.0
+  ]
+ },
+ "wyvwild_fly_00": {
+  "sheet": "wyvern_selvagem",
+  "sourceBounds": [
+   40,
+   17,
+   399,
+   318
+  ],
+  "scale": 0.65543,
+  "pivot": [
+   130.0,
+   83.0
+  ]
+ },
+ "wyvwild_fly_01": {
+  "sheet": "wyvern_selvagem",
+  "sourceBounds": [
+   420,
+   87,
+   755,
+   310
+  ],
+  "scale": 0.65543,
+  "pivot": [
+   113.0,
+   61.0
+  ]
+ },
+ "wyvwild_fly_02": {
+  "sheet": "wyvern_selvagem",
+  "sourceBounds": [
+   774,
+   107,
+   1151,
+   340
+  ],
+  "scale": 0.65543,
+  "pivot": [
+   153.0,
+   72.0
+  ]
+ },
+ "wyvwild_fly_03": {
+  "sheet": "wyvern_selvagem",
+  "sourceBounds": [
+   1177,
+   33,
+   1523,
+   316
+  ],
+  "scale": 0.65543,
+  "pivot": [
+   123.0,
+   78.0
+  ]
+ },
+ "wyvwild_attack_00": {
+  "sheet": "wyvern_selvagem",
+  "sourceBounds": [
+   86,
+   370,
+   395,
+   655
+  ],
+  "scale": 0.65543,
+  "pivot": [
+   92.0,
+   77.0
+  ]
+ },
+ "wyvwild_attack_01": {
+  "sheet": "wyvern_selvagem",
+  "sourceBounds": [
+   401,
+   372,
+   746,
+   623
+  ],
+  "scale": 0.65543,
+  "pivot": [
+   141.0,
+   68.0
+  ]
+ },
+ "wyvwild_attack_02": {
+  "sheet": "wyvern_selvagem",
+  "sourceBounds": [
+   767,
+   371,
+   1180,
+   636
+  ],
+  "scale": 0.65543,
+  "pivot": [
+   146.0,
+   84.0
+  ]
+ },
+ "wyvwild_attack_03": {
+  "sheet": "wyvern_selvagem",
+  "sourceBounds": [
+   1182,
+   379,
+   1510,
+   662
+  ],
+  "scale": 0.65543,
+  "pivot": [
+   122.0,
+   63.0
+  ]
+ },
+ "wyvwild_fall_00": {
+  "sheet": "wyvern_selvagem",
+  "sourceBounds": [
+   122,
+   706,
+   368,
+   1001
+  ],
+  "scale": 0.65543,
+  "pivot": [
+   81.0,
+   81.0
+  ]
+ },
+ "wyvwild_fall_01": {
+  "sheet": "wyvern_selvagem",
+  "sourceBounds": [
+   436,
+   659,
+   725,
+   983
+  ],
+  "scale": 0.65543,
+  "pivot": [
+   117.0,
+   130.0
+  ]
+ },
+ "wyvwild_fall_02": {
+  "sheet": "wyvern_selvagem",
+  "sourceBounds": [
+   765,
+   804,
+   1140,
+   964
+  ],
+  "scale": 0.65543,
+  "pivot": [
+   146.0,
+   60.0
+  ]
+ },
+ "wyvwild_fall_03": {
+  "sheet": "wyvern_selvagem",
+  "sourceBounds": [
+   1172,
+   840,
+   1521,
+   953
+  ],
+  "scale": 0.65543,
+  "pivot": [
+   124.0,
+   39.0
+  ]
+ },
+ "fxt_slash_h_00": {
+  "sheet": "toknar_vfx",
+  "scale": 0.62,
+  "cell": [
+   0,
+   0,
+   257,
+   279
+  ]
+ },
+ "fxt_slash_h_01": {
+  "sheet": "toknar_vfx",
+  "scale": 0.62,
+  "cell": [
+   257,
+   0,
+   545,
+   279
+  ]
+ },
+ "fxt_slash_h_02": {
+  "sheet": "toknar_vfx",
+  "scale": 0.62,
+  "cell": [
+   545,
+   0,
+   884,
+   279
+  ]
+ },
+ "fxt_slash_h_03": {
+  "sheet": "toknar_vfx",
+  "scale": 0.62,
+  "cell": [
+   884,
+   0,
+   1183,
+   279
+  ]
+ },
+ "fxt_slash_h_04": {
+  "sheet": "toknar_vfx",
+  "scale": 0.62,
+  "cell": [
+   1183,
+   0,
+   1484,
+   279
+  ]
+ },
+ "fxt_slash_d_00": {
+  "sheet": "toknar_vfx",
+  "scale": 0.62,
+  "cell": [
+   0,
+   279,
+   257,
+   575
+  ]
+ },
+ "fxt_slash_d_01": {
+  "sheet": "toknar_vfx",
+  "scale": 0.62,
+  "cell": [
+   257,
+   279,
+   578,
+   575
+  ]
+ },
+ "fxt_slash_d_02": {
+  "sheet": "toknar_vfx",
+  "scale": 0.62,
+  "cell": [
+   578,
+   279,
+   899,
+   575
+  ]
+ },
+ "fxt_slash_d_03": {
+  "sheet": "toknar_vfx",
+  "scale": 0.62,
+  "cell": [
+   899,
+   279,
+   1202,
+   575
+  ]
+ },
+ "fxt_slash_d_04": {
+  "sheet": "toknar_vfx",
+  "scale": 0.62,
+  "cell": [
+   1202,
+   279,
+   1496,
+   575
+  ]
+ },
+ "fxt_fissure_00": {
+  "sheet": "toknar_vfx",
+  "scale": 0.62,
+  "cell": [
+   0,
+   575,
+   244,
+   887
+  ]
+ },
+ "fxt_fissure_01": {
+  "sheet": "toknar_vfx",
+  "scale": 0.62,
+  "cell": [
+   244,
+   575,
+   548,
+   887
+  ]
+ },
+ "fxt_fissure_02": {
+  "sheet": "toknar_vfx",
+  "scale": 0.62,
+  "cell": [
+   548,
+   575,
+   902,
+   887
+  ]
+ },
+ "fxt_fissure_03": {
+  "sheet": "toknar_vfx",
+  "scale": 0.62,
+  "cell": [
+   902,
+   575,
+   1197,
+   887
+  ]
+ },
+ "fxt_fissure_04": {
+  "sheet": "toknar_vfx",
+  "scale": 0.62,
+  "cell": [
+   1197,
+   575,
+   1508,
+   887
+  ]
+ },
+ "fxt_fissure_05": {
+  "sheet": "toknar_vfx",
+  "scale": 0.62,
+  "cell": [
+   1508,
+   575,
+   1774,
+   887
+  ]
+ },
+ "fxc_slash_h_00": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   0,
+   0,
+   277,
+   283
+  ]
+ },
+ "fxc_slash_h_01": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   277,
+   0,
+   574,
+   283
+  ]
+ },
+ "fxc_slash_h_02": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   574,
+   0,
+   907,
+   283
+  ]
+ },
+ "fxc_slash_h_03": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   907,
+   0,
+   1209,
+   283
+  ]
+ },
+ "fxc_slash_h_04": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   1209,
+   0,
+   1509,
+   283
+  ]
+ },
+ "fxc_slash_h_05": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   1509,
+   0,
+   1774,
+   283
+  ]
+ },
+ "fxc_slash_d_00": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   0,
+   283,
+   268,
+   595
+  ]
+ },
+ "fxc_slash_d_01": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   268,
+   283,
+   580,
+   595
+  ]
+ },
+ "fxc_slash_d_02": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   580,
+   283,
+   921,
+   595
+  ]
+ },
+ "fxc_slash_d_03": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   921,
+   283,
+   1220,
+   595
+  ]
+ },
+ "fxc_slash_d_04": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   1220,
+   283,
+   1514,
+   595
+  ]
+ },
+ "fxc_slash_d_05": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   1514,
+   283,
+   1774,
+   595
+  ]
+ },
+ "fxc_impact_00": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   0,
+   595,
+   267,
+   887
+  ]
+ },
+ "fxc_impact_01": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   267,
+   595,
+   570,
+   887
+  ]
+ },
+ "fxc_impact_02": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   570,
+   595,
+   903,
+   887
+  ]
+ },
+ "fxc_impact_03": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   903,
+   595,
+   1202,
+   887
+  ]
+ },
+ "fxc_impact_04": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   1202,
+   595,
+   1506,
+   887
+  ]
+ },
+ "fxc_impact_05": {
+  "sheet": "carrasco_vfx",
+  "scale": 0.62,
+  "cell": [
+   1506,
+   595,
+   1774,
+   887
+  ]
+ }
+}

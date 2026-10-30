@@ -84,6 +84,14 @@ export const TOKNAR = {
   drain: 0.8,
   drainCap: 24,
   feastHeal: 105,
+  /**
+   * Reforços reais (v0.5): entram pelos acessos superiores laterais da arena do clã
+   * quando Toknar ruge na troca de fase. A plateia pintada é só cenário.
+   */
+  reinforcements: {
+    2: ['orc', 'goblin'],
+    3: ['orc', 'goblin', 'goblin'],
+  } as Record<number, ('orc' | 'goblin')[]>,
   moves: {
     cleave: {
       name: 'Ceifa Voraz',
@@ -103,7 +111,7 @@ export const TOKNAR = {
     },
     charge: {
       name: 'Investida do Carrasco',
-      windup: 1000,
+      windup: 820,
       active: 620,
       recovery: 1300,
       damage: 25,
@@ -111,7 +119,7 @@ export const TOKNAR = {
     },
     hunger: {
       name: 'Rhaesis tem fome',
-      windup: 1250,
+      windup: 980,
       active: 180,
       recovery: 1300,
       damage: 29,

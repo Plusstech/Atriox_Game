@@ -251,12 +251,27 @@ export function buildAnimations(meta: AtlasMeta): Record<string, AnimDef> {
   const guardFrames = Array.from({ length: 4 }, (_, i) =>
     f(`atriox_guard_${String(i).padStart(2, '0')}`, 180),
   );
+  // v0.5: finalizador diagonal próprio (atriox_combo_3). O quadro 05 não é usado:
+  // a ponta da espada da pose vizinha atravessa a perna na folha original.
+  const diagonal = (key: string): AnimDef => ({
+    key,
+    loop: false,
+    frames: [
+      f('atriox_diagonal_00', 60, 'windup'),
+      f('atriox_diagonal_01', 60, 'windup'),
+      f('atriox_diagonal_02', 80, 'windup'),
+      f('atriox_diagonal_03', 45, 'active', 'hit'),
+      f('atriox_diagonal_04', 75, 'active'),
+      f('atriox_diagonal_06', 60, 'recovery'),
+      f('atriox_diagonal_07', 60, 'recovery'),
+    ],
+  });
   defs.push(
     { key: 'atriox.idle', loop: true, frames: guardFrames },
     cleanMelee('atriox.attack_1', 'atriox_horizontal'),
     cleanMelee('atriox.attack_2', 'atriox_return'),
-    cleanMelee('atriox.attack_3', 'atriox_ascending'),
-    cleanMelee('atriox.attack_3_glory', 'atriox_ascending'),
+    diagonal('atriox.attack_3'),
+    diagonal('atriox.attack_3_glory'),
   );
   const advanced = (key: string, sheet: string, start: number): AnimDef => ({
     key,
@@ -304,23 +319,199 @@ export function buildAnimations(meta: AtlasMeta): Record<string, AnimDef> {
       frames: [12, 13, 14, 15].map((i) => f(tm(i), 230)),
     },
   );
-  for (const [move, start] of [
-    ['cleave', 0],
-    ['spin', 4],
-    ['charge', 8],
-    ['hunger', 0],
-    ['feast', 12],
-  ] as const)
-    defs.push({
-      key: `toknar.${move}`,
+  // v0.5 — no modo sincronizado o `ms` é o PESO do quadro dentro da fase.
+  // A antecipação é distribuída por vários quadros (sem pose congelada por ~1 s).
+  const tk = (i: number) => `toknar_ceifa_${String(i).padStart(2, '0')}`;
+  const tf = (i: number) => `toknar_fome_${String(i).padStart(2, '0')}`;
+  defs.push(
+    {
+      // Ceifa Voraz: 3 cortes em 1280 ms (impactos em 0, 400 e 1080 ms — ToknarBrain).
+      // Corte 1 horizontal; corte 2 é o retorno baixo; o 3º sobe de novo e espera (atrasado).
+      key: 'toknar.cleave',
       loop: false,
       frames: [
-        f(tc(start), 180, 'windup'),
-        f(tc(start + 1), 150, 'active', 'hit'),
-        f(tc(start + 2), 150, 'active'),
-        f(tc(start + 3), 260, 'recovery'),
+        f(tk(0), 200, 'windup'),
+        f(tk(1), 230, 'windup'),
+        f(tk(2), 250, 'windup'),
+        f(tk(3), 80, 'active', 'hit'),
+        f(tk(4), 120, 'active'),
+        f(tk(5), 200, 'active'),
+        f(tk(6), 160, 'active', 'hit'),
+        f(tk(1), 200, 'active'),
+        f(tk(2), 320, 'active'),
+        f(tk(3), 80, 'active', 'hit'),
+        f(tk(4), 120, 'active'),
+        f(tk(5), 300, 'recovery'),
+        f(tk(6), 380, 'recovery'),
+        f(tk(7), 420, 'recovery'),
       ],
-    });
+    },
+    {
+      // Rhaesis tem fome: preparação própria e golpe no chão (não reaproveita a Ceifa).
+      key: 'toknar.hunger',
+      loop: false,
+      frames: [
+        f(tf(0), 220, 'windup'),
+        f(tf(1), 380, 'windup'),
+        f(tf(2), 650, 'windup'),
+        f(tf(3), 70, 'active', 'hit'),
+        f(tf(4), 110, 'active'),
+        f(tf(5), 420, 'recovery'),
+        f(tf(6), 420, 'recovery'),
+        f(tf(7), 460, 'recovery'),
+      ],
+    },
+    {
+      key: 'toknar.spin',
+      loop: false,
+      frames: [
+        f(tc(4), 450, 'windup'),
+        f(tc(5), 450, 'windup'),
+        f(tc(6), 1, 'active'),
+        f(tc(7), 500, 'recovery'),
+        f(tm(12), 850, 'recovery'),
+      ],
+    },
+    // Carnificina: giro contínuo em loop durante a fase ativa
+    { key: 'toknar.spin_loop', loop: true, frames: [6, 7, 4, 5].map((i) => f(tc(i), 75)) },
+    {
+      key: 'toknar.charge',
+      loop: false,
+      frames: [
+        f(tm(0), 300, 'windup'),
+        f(tc(8), 700, 'windup'),
+        f(tc(9), 1, 'active'),
+        f(tc(10), 450, 'recovery'),
+        f(tc(11), 450, 'recovery'),
+        f(tm(0), 400, 'recovery'),
+      ],
+    },
+    // Investida: corrida acelerada durante o deslocamento comprometido
+    { key: 'toknar.charge_loop', loop: true, frames: [4, 5, 6, 7, 8, 9, 10, 11].map((i) => f(tm(i), 58)) },
+    {
+      key: 'toknar.feast',
+      loop: false,
+      frames: [
+        f(tc(12), 500, 'windup'),
+        f(tc(13), 500, 'windup'),
+        f(tc(14), 1, 'active'),
+        f(tc(15), 700, 'recovery'),
+        f(tm(0), 600, 'recovery'),
+      ],
+    },
+    // Banquete: canalização com o machado fincado (loop interrompível por postura)
+    { key: 'toknar.feast_loop', loop: true, frames: [f(tc(13), 260), f(tc(14), 320)] },
+    // Postura quebrada: curvado sobre o machado, ofegante
+    { key: 'toknar.broken', loop: true, frames: [f(tf(4), 300), f(tf(5), 300)] },
+    { key: 'toknar.dead', loop: false, frames: [f(tf(4), 260), f(tc(14), 99999)] },
+  );
+
+  // ------------------------------------------------------------------ CAIM 3/4 (v0.5)
+  const cp = (i: number) => `caim_pool3q_${String(i).padStart(2, '0')}`;
+  const ce = (i: number) => `caim_erupt3q_${String(i).padStart(2, '0')}`;
+  defs.push(
+    {
+      key: 'caim.pool',
+      loop: false,
+      frames: [
+        f(cp(0), 1, 'windup'),
+        f(cp(1), 1, 'windup'),
+        f(cp(2), 1.2, 'windup'),
+        f(cp(3), 1, 'active', 'release'),
+        f(cp(4), 1, 'active'),
+        f(cp(5), 1, 'recovery'),
+      ],
+    },
+    {
+      key: 'caim.eruption',
+      loop: false,
+      frames: [
+        f(ce(0), 0.8, 'windup'),
+        f(ce(1), 1, 'windup'),
+        f(ce(2), 1.2, 'windup'),
+        f(ce(3), 1, 'active', 'release'),
+        f(ce(4), 1, 'active'),
+        f(ce(5), 1, 'recovery'),
+      ],
+    },
+    // defesas (loops enquanto duram): Manto da Servidão e Colheita dos Servos
+    { key: 'caim.shield', loop: true, frames: [f(cp(3), 380), f(cp(4), 420)] },
+    { key: 'caim.ritual', loop: true, frames: [f(ce(3), 420), f(ce(4), 480)] },
+  );
+
+  // ------------------------------------------------------------------ CARRASCO (v0.5)
+  const cr = (k: string, i: number) => `carrasco_${k}_${String(i).padStart(2, '0')}`;
+  const heavy = (key: string, k: string): AnimDef => ({
+    key,
+    loop: false,
+    frames: [
+      f(cr(k, 0), 0.7, 'windup'),
+      f(cr(k, 1), 1, 'windup'),
+      f(cr(k, 2), 1.3, 'windup'),
+      f(cr(k, 3), 1, 'active', 'hit'),
+      f(cr(k, 4), 1, 'active'),
+      f(cr(k, 5), 1, 'recovery'),
+      f(cr(k, 6), 1, 'recovery'),
+      f(cr(k, 7), 1.2, 'recovery'),
+    ],
+  });
+  defs.push(
+    { key: 'carrasco.idle', loop: true, frames: [0, 1, 2, 3].map((i) => f(cr('idle', i), 220)) },
+    { key: 'carrasco.run', loop: true, frames: [0, 1, 2, 3, 4, 5, 6, 7].map((i) => f(cr('run', i), 105)) },
+    heavy('carrasco.sweep', 'sweep'),
+    heavy('carrasco.overhead', 'execute'),
+    heavy('carrasco.inferno', 'execute'),
+    {
+      key: 'carrasco.charge',
+      loop: false,
+      frames: [
+        f(cr('idle', 3), 0.35, 'windup'),
+        f(cr('charge', 0), 0.65, 'windup'),
+        f(cr('charge', 1), 1, 'active'),
+        f(cr('charge', 6), 1, 'recovery'),
+        f(cr('charge', 7), 1.4, 'recovery'),
+      ],
+    },
+    { key: 'carrasco.charge_loop', loop: true, frames: [1, 2, 3, 4, 5].map((i) => f(cr('charge', i), 70)) },
+    { key: 'carrasco.broken', loop: true, frames: [0, 1, 2, 3].map((i) => f(cr('broken', i), 240)) },
+    { key: 'carrasco.hurt', loop: false, frames: [f(cr('hurt', 0), 70), f(cr('hurt', 1), 90), f(cr('hurt', 2), 90), f(cr('hurt', 3), 90)] },
+    { key: 'carrasco.rage', loop: true, frames: [f(cr('execute', 1), 300), f(cr('execute', 2), 500)] },
+    { key: 'carrasco.dead', loop: false, frames: [0, 1, 2, 3].map((i) => f(cr('death', i), i === 3 ? 99999 : 260)) },
+  );
+
+  // ------------------------------------------------------------------ GOBLIN / ORC (v0.5)
+  const melee4 = (char: string, runMs: number): AnimDef[] => {
+    const n = (k: string, i: number) => `${char}_${k}_${String(i).padStart(2, '0')}`;
+    return [
+      { key: `${char}.run`, loop: true, frames: [0, 1, 2, 3].map((i) => f(n('run', i), runMs)) },
+      {
+        key: `${char}.attack`,
+        loop: false,
+        frames: [
+          f(n('run', 3), 0.6, 'windup'),
+          f(n('attack', 0), 1.4, 'windup'),
+          f(n('attack', 1), 1, 'active', 'hit'),
+          f(n('attack', 2), 1, 'active'),
+          f(n('attack', 3), 1, 'recovery'),
+          f(n('run', 0), 0.6, 'recovery'),
+        ],
+      },
+      { key: `${char}.hurt`, loop: true, frames: [f(n('fall', 0), 9999)] },
+      { key: `${char}.dead`, loop: false, frames: [f(n('fall', 0), 120), f(n('fall', 1), 160), f(n('fall', 2), 180), f(n('fall', 3), 99999)] },
+    ];
+  };
+  defs.push(...melee4('goblin', 85), ...melee4('orc', 120));
+
+  // ------------------------------------------------------------------ WYVERN SELVAGEM (v0.5)
+  const ww = (k: string, i: number) => `wyvwild_${k}_${String(i).padStart(2, '0')}`;
+  defs.push(
+    { key: 'wyvern_wild.materialize', loop: true, frames: [0, 1, 2, 3].map((i) => f(ww('fly', i), 120)) },
+    { key: 'wyvern_wild.fly', loop: true, frames: [0, 1, 2, 3].map((i) => f(ww('fly', i), 115)) },
+    { key: 'wyvern_wild.windup', loop: true, frames: [f(ww('attack', 0), 260), f(ww('attack', 1), 9999)] },
+    { key: 'wyvern_wild.charge', loop: true, frames: [f(ww('attack', 2), 120), f(ww('attack', 3), 120)] },
+    { key: 'wyvern_wild.recovery', loop: true, frames: [f(ww('fall', 0), 260), f(ww('fly', 2), 260), f(ww('fly', 3), 260)] },
+    { key: 'wyvern_wild.dissolve', loop: false, frames: [0, 1, 2, 3].map((i) => f(ww('fall', i), i === 3 ? 99999 : 170)) },
+  );
   const out: Record<string, AnimDef> = {};
   for (const d of defs) out[d.key] = d;
   return out;
