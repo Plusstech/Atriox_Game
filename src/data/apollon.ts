@@ -45,7 +45,7 @@ export const APOLLON_GIFTS: ApollonGift[] = [
     id: 'avatar',
     name: 'Avatar de Apollon',
     category: 'Especial',
-    description: 'F (com Glória cheia): a emanação de Apollon surge atrás de Atriox e libera um feixe de luz à frente.',
+    description: 'F (com Glória cheia): o tempo dos inimigos para; Apollon libera um feixe à frente e uma explosão solar ao redor de Atriox.',
     key: 'F',
     color: 0xf5e6ff,
     glyph: '❂'
@@ -59,7 +59,17 @@ export function getGift(id: string): ApollonGift | undefined {
 export const GLORY_BLADE = { damage: 22, speed: 760, range: 480, radius: 46 };
 export const SECOND_SUN = { cooldown: 7000, castMs: 420, delay: 600, radius: 92, damage: 42, maxRange: 460 };
 export const RADIANT_IMPETUS = { damage: 10, purifyMs: 1500, width: 40 };
-export const AVATAR = { gloryMax: 100, gloryPerHit: 3, gloryPerKill: 10, beamLength: 560, beamWidth: 130, tickMs: 180, tickDamage: 15, castMs: 2300, beamFrom: 800, beamTo: 1700 };
+/**
+ * Especial: enquanto dura, o tempo dos inimigos para (IA, golpes, projéteis e poças congelados).
+ * Feixe horizontal + explosão solar em volta de Atriox no fim; carência ao sair.
+ */
+export const AVATAR = {
+  gloryMax: 100, gloryPerHit: 3, gloryPerKill: 10,
+  beamLength: 620, beamWidth: 180, tickMs: 180, tickDamage: 26,
+  castMs: 2300, beamFrom: 800, beamTo: 1700,
+  novaAt: 1750, novaRadius: 300, novaDamage: 50,
+  graceMs: 900
+};
 
 /** Bênção final (persistente entre partidas): o dash purifica o sangue mesmo sem o Ímpeto. */
 export const BLESSING_OF_GLORY = {

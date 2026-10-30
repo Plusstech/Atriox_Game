@@ -35,6 +35,7 @@ export interface PlayerHooks {
   onSunRelease(x: number, y: number): void;
   onAvatarStart(facing: number): void;
   onAvatarBeam(facing: number): void;
+  onAvatarNova(): void;
   onDash(dir: Vec, radiant: boolean): void;
   onDashTick(fromX: number, fromY: number, toX: number, toY: number): void;
   onDamaged(amount: number, hit: HitInfo): void;
@@ -88,6 +89,7 @@ export class Player implements Combatant {
   postHitInvuln = 0;
   avatarT = -1;
   private avatarBeamFired = false;
+  private avatarNovaFired = false;
   private sunTarget = { x: 0, y: 0 };
   private knock = { x: 0, y: 0 };
   private lunge = { x: 0, y: 0, t: 0 };
@@ -165,7 +167,7 @@ export class Player implements Combatant {
       if (input.dashPressed) this.buffers.dash = INPUT_BUFFER;
       if (input.castPressed) this.buffers.cast = INPUT_BUFFER;
       if (input.sunPressed && this.gifts.has('second_sun')) this.buffers.sun = INPUT_BUFFER;
-      if (input.avatarPressed && this.gifts.has('avatar')) this.buffers.avatar = INPUT_BUFFER;
+      if (input.avatarPressed && this.gifts.has('avatar')) this.buffers.avatar = INPUT_BUFFER * 2.5; // sobrevive ao fim do dash
     } else {
       this.clearInput();
     }
@@ -194,12 +196,16 @@ export class Player implements Combatant {
     const dashing = this.dash.state === 'dashing';
     const castReady = !dashing && !this.spell.casting && !this.sun.casting && (!this.combo.attacking || this.combo.canCancel());
 
-    if (canAct && this.buffers.avatar > 0 && castReady && this.glory >= AVATAR.gloryMax) {
-      if (this.combo.attacking) this.combo.cancel();
+    // especial: cancela golpe ou magia em andamento (só espera o dash terminar)
+    if (canAct && this.buffers.avatar > 0 && !dashing && this.glory >= AVATAR.gloryMax) {
+      if (this.combo.attacking) this.combo.interrupt();
+      if (this.spell.casting) this.spell.cancel();
+      if (this.sun.casting) this.sun.cancel();
       this.buffers.avatar = 0;
       this.glory = 0;
       this.avatarT = 0;
       this.avatarBeamFired = false;
+      this.avatarNovaFired = false;
       this.vx = this.vy = 0;
       this.facing = Math.cos(this.aimAngle) >= 0 ? 1 : -1;
       this.hooks.onAvatarStart(this.facing);
@@ -266,7 +272,15 @@ export class Player implements Combatant {
         this.avatarBeamFired = true;
         this.hooks.onAvatarBeam(this.facing);
       }
-      if (this.avatarT >= AVATAR.castMs) this.avatarT = -1;
+      if (!this.avatarNovaFired && this.avatarT >= AVATAR.novaAt) {
+        this.avatarNovaFired = true;
+        this.hooks.onAvatarNova();
+      }
+      if (this.avatarT >= AVATAR.castMs) {
+        this.avatarT = -1;
+        // carência ao sair do especial: os inimigos acabaram de voltar a agir
+        this.postHitInvuln = Math.max(this.postHitInvuln, AVATAR.graceMs);
+      }
     }
 
     // ---------------- movimento

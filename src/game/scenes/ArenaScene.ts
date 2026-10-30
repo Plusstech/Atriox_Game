@@ -205,6 +205,7 @@ export class ArenaScene extends Phaser.Scene {
       onSunRelease: (x, y) => this.onSunRelease(x, y),
       onAvatarStart: () => this.onAvatarStart(),
       onAvatarBeam: (facing) => this.onAvatarBeam(facing),
+      onAvatarNova: () => this.onAvatarNova(),
       onDash: (dir, radiant) => this.onDash(dir, radiant),
       onDashTick: (x0, y0, x1, y1) => this.onDashTick(x0, y0, x1, y1),
       onDamaged: (amount, hit) => this.onPlayerDamaged(amount, hit),
@@ -390,7 +391,9 @@ export class ArenaScene extends Phaser.Scene {
     if (!this.run.over && !this.cinematic) this.runTime += sdt;
 
     // sangue: poças, exposição e dominação — antes do jogador, para o stun valer no mesmo quadro
-    this.pools.update(sdt);
+    const frozen = this.timeStopped;
+    const edt = frozen ? 0 : sdt;
+    this.pools.update(edt);
     const inBlood = !this.player.dead && !!this.pools.activeAt(this.player.x, this.player.y, this.player.radius);
     const protectedNow = this.player.dead || this.player.dash.invulnerable || this.player.avatarT >= 0 || this.player.cinematic;
     for (const ev of this.exposure.update(sdt, inBlood, protectedNow)) {
@@ -402,20 +405,21 @@ export class ArenaScene extends Phaser.Scene {
     const collide = (x: number, y: number, r: number): { x: number; y: number; blocked: boolean } => resolveCircle(x, y, r, FLOOR, this.layout.obstacles);
     this.player.update(sdt, input, collide);
 
-    for (const e of this.enemies) e.update(sdt, this.player);
-    for (const w of this.wyverns) w.update(sdt, this.player);
+    // durante o Avatar a IA não roda (dt 0 mantém sprites e barras sincronizados)
+    for (const e of this.enemies) e.update(edt, this.player);
+    for (const w of this.wyverns) w.update(edt, this.player);
     if (this.boss) {
       if (this.introWalk === 'executioner') {
-        if (this.boss.walkTo(this.layout.gatePos.x, FLOOR.y + 260, sdt, 95)) this.introWalk = null;
-      } else this.boss.update(sdt, this.player);
+        if (!frozen && this.boss.walkTo(this.layout.gatePos.x, FLOOR.y + 260, sdt, 95)) this.introWalk = null;
+      } else this.boss.update(edt, this.player);
     }
     if (this.caim) {
       if (this.introWalk === 'caim') {
-        if (this.caim.walkTo(this.layout.gatePos.x, FLOOR.y + 280, sdt)) this.introWalk = null;
-      } else this.caim.update(sdt, this.player);
+        if (!frozen && this.caim.walkTo(this.layout.gatePos.x, FLOOR.y + 280, sdt)) this.introWalk = null;
+      } else this.caim.update(edt, this.player);
     }
     this.separateBodies();
-    this.bloodRenderer.draw(this.pools, sdt);
+    this.bloodRenderer.draw(this.pools, edt);
     this.drawExposure();
 
     const hurtboxes = this.collectHurtboxes();
@@ -630,6 +634,36 @@ export class ArenaScene extends Phaser.Scene {
   private onAvatarStart(): void {
     Sfx.blessing();
     this.effects.flash(200, 255, 230, 160);
+    // o tempo dos inimigos para: golpes em andamento e projéteis inimigos são anulados
+    for (const box of this.hitboxes.all) if (box.spec.team === 'enemy') box.cancel();
+    this.projectiles.clearTeam('enemy');
+    const cam = this.cameras.main;
+    const veil = this.add.rectangle(cam.width / 2, cam.height / 2, cam.width * 2, cam.height * 2, 0xffd77a, 1)
+      .setScrollFactor(0).setDepth(DEPTH.overlayFx - 1).setBlendMode(Phaser.BlendModes.ADD).setAlpha(0);
+    this.tweens.add({ targets: veil, alpha: 0.13, duration: 220 });
+    this.tweens.add({ targets: veil, alpha: 0, delay: AVATAR.castMs - 350, duration: 350, onComplete: () => veil.destroy() });
+  }
+
+  private onAvatarNova(): void {
+    const p = this.player;
+    this.hitboxes.spawn({
+      shape: { kind: 'circle', x: p.x, y: p.y - 10, radius: AVATAR.novaRadius },
+      team: 'player',
+      damage: AVATAR.novaDamage * p.stats.get('damageMul'),
+      knockback: 320,
+      duration: 120,
+      tag: 'avatar_nova',
+      meta: { hitstop: 70 }
+    });
+    this.effects.explosion(p.x, p.y - 10, AVATAR.novaRadius);
+    this.effects.flash(160, 255, 240, 190);
+    this.effects.shake(260, 0.012);
+    Sfx.explosion();
+  }
+
+  /** Avatar ativo: inimigos, wyverns, chefes, projéteis inimigos e poças ficam congelados. */
+  private get timeStopped(): boolean {
+    return this.player.avatarT >= 0 && !this.player.dead;
   }
 
   private onAvatarBeam(facing: number): void {

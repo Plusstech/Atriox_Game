@@ -289,6 +289,31 @@ async function main() {
     check('wyvern anuncia e investe', await waitFor(page, () => window.__ATRIOX__.arena.wyverns.some((w) => w.brain.state === 'charge'), null, 15000, 20));
     await page.screenshot({ path: path.join(SHOTS, '04-wyverns.png') });
 
+    // Avatar de Apollon: especial que para o tempo dos inimigos
+    await A(page, () => {
+      const a = window.__ATRIOX__.arena;
+      a.applyGift('avatar');
+      a.player.glory = 100;
+    });
+    // reenvia F até o Avatar começar (Atriox pode estar no meio de outra ação)
+    const avatarOn = await waitFor(page, () => {
+      const a = window.__ATRIOX__.arena;
+      if (a.player.avatarT < 0) a.queued.avatar = true;
+      return a.player.avatarT >= 200;
+    }, null, 6000, 20);
+    const pos = () => {
+      const a = window.__ATRIOX__.arena;
+      return { t: Math.round(a.player.avatarT), stop: a.timeStopped, hp: a.player.health.current, caim: [Math.round(a.caim.x), Math.round(a.caim.y), a.caim.brain.state], wy: a.wyverns.map((w) => [Math.round(w.x), Math.round(w.y), w.brain.state]).join('|') };
+    };
+    const f0 = await A(page, pos);
+    await sleep(700);
+    const f1 = await A(page, pos);
+    check('Avatar congela Caim e wyverns', avatarOn && JSON.stringify(f0.caim) === JSON.stringify(f1.caim) && f0.wy === f1.wy, `${JSON.stringify(f0)} → ${JSON.stringify(f1)}`);
+    await waitFor(page, () => window.__ATRIOX__.arena.player.avatarT < 0, null, 5000, 30);
+    const f2 = await A(page, pos);
+    check('Atriox não toma dano durante o Avatar', f2.hp >= f0.hp, `${f0.hp} → ${f2.hp}`);
+    check('carência ao sair do Avatar', await A(page, () => window.__ATRIOX__.arena.player.postHitInvuln > 0));
+
     // morte de Caim com projéteis ativos
     await A(page, () => {
       const a = window.__ATRIOX__.arena;

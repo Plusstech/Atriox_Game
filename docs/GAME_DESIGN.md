@@ -110,7 +110,7 @@ Fase 2 a 50% de vida: mais poças (4), recargas e reações mais curtas.
 | Lâmina da Glória | Combo | O finalizador lança uma meia-lua solar: 22 de dano, 760 px/s, alcance 480, atravessa (1 acerto por alvo). |
 | Juízo do Segundo Sol | Magia (Q) | Marca a área no cursor (≤ 460 px). O pilar cai 0,6 s depois da conjuração: 42 de dano em raio de 92 px. O indicador é exatamente a área de dano. Recarga de 7 s. |
 | Ímpeto Radiante | Mobilidade | Dash radiante: rastro solar (10 de dano, 1× por alvo); purifica o sangue cruzado por 1,5 s. Invulnerabilidade inalterada. |
-| Avatar de Apollon | Especial (F) | Recurso **Glória** (+3 por acerto, +10 por abate; começa em 50%). A emanação surge atrás de Atriox e libera um feixe horizontal (560×130 px, 15 de dano a cada 180 ms por 0,9 s). Atriox fica invulnerável durante a conjuração de 2,3 s. |
+| Avatar de Apollon | Especial (F) | Recurso **Glória** (+3 por acerto, +10 por abate; começa em 50%). Cancela golpe ou magia em andamento. Durante os 2,3 s **o tempo dos inimigos para**: IA, wyverns, chefes, poças e projéteis inimigos congelam, e golpes inimigos em curso são anulados. Feixe horizontal (620×180 px, 26 de dano a cada 180 ms por 0,9 s) e, no fim, explosão solar ao redor de Atriox (raio 300, 50 de dano). Invulnerável durante o especial e por 0,9 s depois. |
 
 As 6 bênçãos experimentais da v0.1 continuam nas portas ✦.
 
