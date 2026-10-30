@@ -1,0 +1,85 @@
+{
+  "source": "art_source/atriox_concept_sheet.png",
+  "scale": 0.5,
+  "facing": "right",
+  "poses": {
+    "idle": {
+      "file": "idle.png",
+      "width": 151,
+      "height": 253,
+      "originX": 0.4894,
+      "originY": 0.998,
+      "flipped": true,
+      "description": "Em pé, espada baixa, mão com brilho vermelho (anel)",
+      "sourceCell": [
+        0,
+        0
+      ]
+    },
+    "lunge": {
+      "file": "lunge.png",
+      "width": 240,
+      "height": 230,
+      "originX": 0.4663,
+      "originY": 0.987,
+      "flipped": true,
+      "description": "Avanço/corrida com espada estendida à frente",
+      "sourceCell": [
+        1,
+        0
+      ]
+    },
+    "slash": {
+      "file": "slash.png",
+      "width": 252,
+      "height": 243,
+      "originX": 0.3717,
+      "originY": 0.9979,
+      "flipped": false,
+      "description": "Corte horizontal com arco de fogo solar",
+      "sourceCell": [
+        2,
+        0
+      ]
+    },
+    "cast": {
+      "file": "cast.png",
+      "width": 234,
+      "height": 254,
+      "originX": 0.5322,
+      "originY": 0.9901,
+      "flipped": true,
+      "description": "Conjuração: esfera de luz/fogo na mão",
+      "sourceCell": [
+        0,
+        1
+      ]
+    },
+    "dash": {
+      "file": "dash.png",
+      "width": 256,
+      "height": 209,
+      "originX": 0.4239,
+      "originY": 0.988,
+      "flipped": true,
+      "description": "Investida baixa com afterimages douradas",
+      "sourceCell": [
+        1,
+        1
+      ]
+    },
+    "hurt": {
+      "file": "hurt.png",
+      "width": 235,
+      "height": 252,
+      "originX": 0.5522,
+      "originY": 0.9881,
+      "flipped": false,
+      "description": "Recebendo golpe, recuo",
+      "sourceCell": [
+        2,
+        1
+      ]
+    }
+  }
+}

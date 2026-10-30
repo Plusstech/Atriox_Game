@@ -1,0 +1,65 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #070506;
+  overflow: hidden;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+#game {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#game canvas {
+  display: block;
+  cursor: crosshair;
+}
+#boot-error {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(10, 6, 6, 0.94);
+  color: #f1e3c4;
+  padding: 32px;
+  text-align: center;
+  z-index: 10;
+}
+#boot-error[hidden] { display: none; }
+#boot-error h1 { color: #e8b24a; font-size: 22px; margin: 0; letter-spacing: 2px; }
+#boot-error pre {
+  max-width: 900px;
+  white-space: pre-wrap;
+  color: #c9a47a;
+  font-size: 13px;
+  background: #1a1010;
+  padding: 12px;
+  border: 1px solid #5a3b22;
+}
+#boot-error button {
+  background: #2a1a12; color: #f1e3c4; border: 1px solid #e8b24a; padding: 8px 18px;
+  font-family: inherit; cursor: pointer;
+}
+/* Painel de desenvolvimento (somente em builds com DEV_TOOLS) */
+#dev-panel {
+  position: fixed; top: 8px; right: 8px; width: 250px; z-index: 20;
+  background: rgba(14, 10, 12, 0.92); color: #e9dcc0; border: 1px solid #7a5a2a;
+  font: 12px/1.4 Consolas, monospace; padding: 8px; border-radius: 4px;
+  max-height: calc(100vh - 16px); overflow-y: auto;
+}
+#dev-panel h3 { margin: 0 0 6px; font-size: 12px; color: #e8b24a; letter-spacing: 1px; }
+#dev-panel button {
+  background: #2a1d16; color: #f1e3c4; border: 1px solid #5f4526; margin: 2px; padding: 2px 6px;
+  font: inherit; cursor: pointer;
+}
+#dev-panel button:hover { border-color: #e8b24a; }
+#dev-panel label { display: block; margin: 4px 0; }
+#dev-panel input[type=range] { width: 100%; }
+#dev-panel .row { display: flex; flex-wrap: wrap; }

@@ -1,0 +1,26 @@
+{
+  "name": "atriox-cinder",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Atriox Cinder: Lâmina sem Deus — vertical slice 0.1 (action roguelite 2D, Phaser 3)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "sprites": "python tools/extract_sprites.py",
+    "test:e2e": "node tests/e2e/smoke.mjs",
+    "check": "npm run test && npm run build && npm run test:e2e"
+  },
+  "dependencies": {
+    "phaser": "3.90.0"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.64.1",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5",
+    "vitest": "^3.2.4"
+  }
+}
