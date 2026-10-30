@@ -233,6 +233,31 @@ export function buildAnimations(meta: AtlasMeta): Record<string, AnimDef> {
       ),
     },
   ];
+  // Clean-body sheets supplied after v0.3. Preserve reading order: 3 anticipation,
+  // 2 impact/follow-through and 3 recovery frames. The same rising cut is reused
+  // for the heavy finisher and Sentença; the combat controllers define timing.
+  const cleanMelee = (key: string, sheet: string): AnimDef => ({
+    key,
+    loop: false,
+    frames: Array.from({ length: 8 }, (_, i) =>
+      f(
+        `${sheet}_${String(i).padStart(2, '0')}`,
+        60,
+        i < 3 ? 'windup' : i < 5 ? 'active' : 'recovery',
+        i === 3 ? 'hit' : undefined,
+      ),
+    ),
+  });
+  const guardFrames = Array.from({ length: 4 }, (_, i) =>
+    f(`atriox_guard_${String(i).padStart(2, '0')}`, 180),
+  );
+  defs.push(
+    { key: 'atriox.idle', loop: true, frames: guardFrames },
+    cleanMelee('atriox.attack_1', 'atriox_horizontal'),
+    cleanMelee('atriox.attack_2', 'atriox_return'),
+    cleanMelee('atriox.attack_3', 'atriox_ascending'),
+    cleanMelee('atriox.attack_3_glory', 'atriox_ascending'),
+  );
   const advanced = (key: string, sheet: string, start: number): AnimDef => ({
     key,
     loop: false,
@@ -246,8 +271,8 @@ export function buildAnimations(meta: AtlasMeta): Record<string, AnimDef> {
     ),
   });
   defs.push(
-    advanced('atriox.return_cut', 'atriox_advanced', 0),
-    advanced('atriox.ascending', 'atriox_advanced', 6),
+    cleanMelee('atriox.return_cut', 'atriox_horizontal'),
+    cleanMelee('atriox.ascending', 'atriox_ascending'),
     advanced('atriox.execution_mark', 'atriox_advanced', 12),
     advanced('atriox.orbit', 'atriox_advanced_solar', 0),
     advanced('atriox.second_step', 'atriox_advanced_solar', 6),
@@ -255,7 +280,9 @@ export function buildAnimations(meta: AtlasMeta): Record<string, AnimDef> {
     {
       key: 'atriox.charge_hold',
       loop: true,
-      frames: [f('atriox_advanced_07', 160), f('atriox_advanced_08', 160)],
+      frames: Array.from({ length: 4 }, (_, i) =>
+        f(`atriox_charge_${String(i).padStart(2, '0')}`, 160),
+      ),
     },
   );
   const tm = (i: number) => `toknar_move_${String(i).padStart(2, '0')}`;

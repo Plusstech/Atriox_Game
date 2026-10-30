@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ATRIOX_COMBO } from '../../data/attacks';
+import { SKILLS } from '../../data/v03';
 import { ATRIOX_SCALE, CAIM_SCALE, COLORS, FONT_UI, GAME_H, GAME_W, WYVERN_SCALE } from '../config/constants';
 import { SpriteAnimator, getLibrary, type AnimLibrary } from '../animation/SpriteAnimator';
 import { FrameTimeline } from '../animation/FrameTimeline';
@@ -156,6 +157,7 @@ export class AnimInspectorScene extends Phaser.Scene {
   private syncedTiming(key: string): { windup: number; active: number; recovery: number } | null {
     const step = ATRIOX_COMBO.find((s) => key === `atriox.${s.id}` || (key === 'atriox.attack_3_glory' && s.id === 'attack_3'));
     if (step) return { windup: step.windup, active: step.active, recovery: step.recovery };
+    if(key==='atriox.ascending'||key==='atriox.return_cut')return {windup:SKILLS.chargeWindup,active:SKILLS.chargeActive,recovery:key==='atriox.return_cut'?270:SKILLS.chargeRecovery};
     if (key === 'atriox.cast' || key === 'atriox.cast_sun' || key.startsWith('caim.')) {
       const d = this.anim?.timeline.def;
       if (d?.frames.some((f) => f.phase)) return { windup: 420, active: 160, recovery: 380 };

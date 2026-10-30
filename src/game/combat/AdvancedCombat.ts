@@ -61,8 +61,6 @@ export class AdvancedCombat {
     this.precise = false;
     if (this.orbitMs > 0) {
       this.orbitMs = 0;
-      this.a.player.skillAnim = 'orbit';
-      this.a.player.skillAnimMs = 300;
       this.a.hitboxes.spawn({
         shape: {
           kind: 'circle',
@@ -112,14 +110,8 @@ export class AdvancedCombat {
     if (forged) {
       damage += SKILLS.forgeDamage + (this.level('forge') - 1) * 5;
       this.forgeCharges--;
-      p.skillAnim = 'orbit';
-      p.skillAnimMs = 240;
     }
     if (step.finisher && this.level('orbit')) this.orbitMs = SKILLS.orbitMs;
-    if (step.finisher && this.level('execution_mark')) {
-      p.skillAnim = 'execution_mark';
-      p.skillAnimMs = 300;
-    }
     if (this.echoMs > 0) {
       this.echoMs = 0;
       this.echo = {
@@ -276,8 +268,6 @@ export class AdvancedCombat {
         this.precise = true;
         if (this.level('second_step')) {
           this.echoMs = SKILLS.echoMs;
-          p.skillAnim = 'second_step';
-          p.skillAnimMs = 300;
         }
         this.glory('precise_dash', 12);
         this.a.ui()?.toast('Esquiva precisa!');
@@ -285,6 +275,10 @@ export class AdvancedCombat {
     }
     const g = this.gfx;
     g.clear();
+    if (this.forgeMs > 0 && this.forgeCharges > 0) {
+      g.lineStyle(2, 0xffd77a, 0.7);
+      g.strokeCircle(p.x + p.facing * 18, p.y - 66, 8);
+    }
     if (p.advanced.charging) {
       g.lineStyle(
         4,

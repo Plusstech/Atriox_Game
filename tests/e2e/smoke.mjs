@@ -147,7 +147,7 @@ async function main() {
     check('combo completo (3 golpes) com buffer', steps.size === 3, [...steps].join(','));
     const activeFrames = [...new Set(combo.frames.filter((f) => f.endsWith(':active')).map((f) => f.split(':')[1]))];
     check('golpes visualmente distintos', activeFrames.length >= 3, activeFrames.join(' '));
-    const windupHasHit = combo.frames.some((f) => f.endsWith(':windup') && /combat_0[569]|combat_10/.test(f));
+    const windupHasHit = combo.frames.some((f) => f.endsWith(':windup') && /atriox_(?:horizontal|return|ascending)_0[34]/.test(f));
     check('quadro de impacto não aparece na antecipação', !windupHasHit);
     check('cada golpe atinge o alvo no máximo uma vez', combo.hits.length > 0 && combo.hits.every((h) => h.endsWith(':1')), combo.hits.join(' '));
 

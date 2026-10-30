@@ -371,6 +371,7 @@ export class Player implements Combatant {
       !this.spell.casting &&
       !this.sun.casting &&
       this.hurtTimer <= 0;
+    const previousAdvanced = this.advanced.action;
     const action = this.advanced.update(dt, {
       held: !!input.attackHeld,
       released: !!input.attackReleased,
@@ -386,14 +387,21 @@ export class Player implements Combatant {
       counterGift: this.gifts.has('return_cut'),
       ready: advancedReady,
     });
+    if (!previousAdvanced && this.advanced.action) {
+      this.attackAngle = this.aimAngle;
+      this.facing = Math.cos(this.attackAngle) >= 0 ? 1 : -1;
+    }
     if (this.advanced.action) this.buffers.attack = 0;
     if (action.hit) {
-      this.attackAngle = this.aimAngle;
-      this.hooks.onAdvanced(action.hit, this.aimAngle, this.advanced.perfect);
+      this.hooks.onAdvanced(
+        action.hit,
+        this.attackAngle,
+        this.advanced.perfect,
+      );
       if (action.hit === 'counter')
         this.lunge = {
-          x: (Math.cos(this.aimAngle) * SKILLS.counterTravel) / 0.14,
-          y: (Math.sin(this.aimAngle) * SKILLS.counterTravel) / 0.14,
+          x: (Math.cos(this.attackAngle) * SKILLS.counterTravel) / 0.14,
+          y: (Math.sin(this.attackAngle) * SKILLS.counterTravel) / 0.14,
           t: 140,
         };
     }
@@ -533,8 +541,10 @@ export class Player implements Combatant {
       this.hooks.onDashTick(px, py, this.x, this.y);
 
     // ---------------- orientação (o sprite só espelha; não gira para mirar)
-    if (this.combo.attacking)
+    if (this.combo.attacking || this.advanced.action)
       this.facing = Math.cos(this.attackAngle) >= 0 ? 1 : -1;
+    else if (this.advanced.charging)
+      this.facing = Math.cos(this.aimAngle) >= 0 ? 1 : -1;
     else if (this.spell.casting)
       this.facing = Math.cos(this.aimAngle) >= 0 ? 1 : -1;
     else if (
@@ -567,7 +577,9 @@ export class Player implements Combatant {
             : (this.advanced.elapsed -
                 SKILLS.chargeWindup -
                 SKILLS.chargeActive) /
-              SKILLS.chargeRecovery;
+              (this.advanced.action === 'counter'
+                ? 270
+                : SKILLS.chargeRecovery);
     } else if (this.combo.attacking && this.combo.current) {
       const s = this.combo.current;
       const e = this.combo.elapsed;
@@ -611,7 +623,6 @@ export class Player implements Combatant {
     if (this.advanced.action)
       return this.advanced.action === 'charged' ? 'ascending' : 'return_cut';
     if (this.advanced.charging) return 'charge_hold';
-    if (this.skillAnim && this.skillAnimMs > 0) return this.skillAnim;
     if (this.sun.casting) return 'cast_sun';
     if (this.spell.casting) return 'cast';
     if (this.combo.attacking && this.combo.current) {
@@ -620,6 +631,7 @@ export class Player implements Combatant {
         ? 'attack_3_glory'
         : id;
     }
+    if (this.skillAnim && this.skillAnimMs > 0) return this.skillAnim;
     if (this.dash.state === 'recovering')
       return this.radiant ? 'dash_radiant' : 'dash';
     // pequena margem evita alternar idle/run em velocidades mínimas

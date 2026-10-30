@@ -2,6 +2,8 @@
 
 **v0.3 em revisão local:** altar complementar, dons nas portas, nove dons avançados, Toknar antes de Caim, Caim com novas defesas e infecção, e Provação da Eternidade. Veja [mudanças, controles, validação e limitações](docs/V03.md).
 
+As novas folhas de combate de Atriox foram normalizadas em 512×512 e integradas, incluindo carga em pé. Veja [mapeamento das fontes, preparação e testes](docs/COMBAT_ART_UPDATE.md).
+
 Roguelite de ação 2D em fantasia sombria para navegador: Phaser 3, TypeScript e Vite. **v0.2**: animações por quadros reais (atlas), combo de 3 golpes com buffer, dash de 2 cargas, salas com portas e recompensas, dons de Apollon, **Caim Morvaigne** com sangue que domina e wyverns, e a cena final em que Apollon abençoa Atriox.
 
 O build é estático: roda em qualquer hospedagem, como a Hostinger, sem Node.js no servidor.

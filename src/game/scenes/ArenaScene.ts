@@ -277,6 +277,7 @@ export class ArenaScene extends Phaser.Scene {
     this.caim = null;
     this.dummies = [];
     this.queued = NO_INPUT();
+    this.attackHeld = false;
     this.attackReleased = false;
     this.pendingSpawns = 0;
     this.hitstopTimer = 0;
@@ -399,6 +400,7 @@ export class ArenaScene extends Phaser.Scene {
       R: 'R',
     }) as typeof this.keys;
     this.input.on('pointerup', this.onPointerUp, this);
+    this.input.on('pointerupoutside', this.onPointerUp, this);
     kb.addCapture(['SPACE', 'TAB', 'UP', 'DOWN', 'LEFT', 'RIGHT']);
     this.input.mouse?.disableContextMenu();
     this.input.on('pointerdown', this.onPointerDown, this);
@@ -435,6 +437,7 @@ export class ArenaScene extends Phaser.Scene {
 
   private cleanup(): void {
     this.input.off('pointerup', this.onPointerUp, this);
+    this.input.off('pointerupoutside', this.onPointerUp, this);
     this.input.off('pointerdown', this.onPointerDown, this);
     this.keys.ESC.off('down', this.openPause, this);
     this.keys.E.off('down', this.interact, this);
@@ -468,15 +471,22 @@ export class ArenaScene extends Phaser.Scene {
   }
 
   private attackReleased = false;
+  private attackHeld = false;
   private onPointerUp(p: Phaser.Input.Pointer): void {
-    if (p.button === 0) this.attackReleased = true;
+    if (p.button === 0) {
+      this.attackHeld = false;
+      this.attackReleased = true;
+    }
   }
 
   private onPointerDown(p: Phaser.Input.Pointer): void {
     Sfx.unlock();
     if (this.trySkipCinematic()) return;
     if (p.rightButtonDown()) this.queued.cast = true;
-    else if (p.leftButtonDown()) this.queued.attack = true;
+    else if (p.leftButtonDown()) {
+      this.attackHeld = true;
+      this.queued.attack = true;
+    }
   }
 
   private queueDash(): void {
@@ -523,7 +533,7 @@ export class ArenaScene extends Phaser.Scene {
   private onBlur(): void {
     this.input.keyboard?.resetKeys();
     this.queued = NO_INPUT();
-    this.player?.clearInput();
+    this.cancelAdvancedInput();
     if (
       this.scene.isActive() &&
       !this.ending &&
@@ -552,7 +562,7 @@ export class ArenaScene extends Phaser.Scene {
     this.attackReleased = false;
     const captive = q.captive;
     return {
-      attackHeld: this.input.activePointer.leftButtonDown(),
+      attackHeld: this.attackHeld,
       attackReleased: released,
       captivePressed: captive,
       move,
@@ -569,8 +579,22 @@ export class ArenaScene extends Phaser.Scene {
   private openPause(): void {
     if (this.ending || this.player.dead || this.transitioning) return;
     if (this.trySkipCinematic()) return;
+    this.cancelAdvancedInput();
     this.scene.pause();
     this.scene.launch('PauseScene');
+  }
+
+  private cancelAdvancedInput(): void {
+    this.attackHeld = false;
+    this.attackReleased = false;
+    this.queued.attack = false;
+    this.player?.clearInput();
+    for (const box of this.hitboxes.all)
+      if (
+        box.spec.team === 'player' &&
+        ['charged', 'counter'].includes(box.spec.tag)
+      )
+        box.cancel();
   }
 
   private interact(): void {
@@ -885,6 +909,13 @@ export class ArenaScene extends Phaser.Scene {
         posture: (kind === 'charged' ? SKILLS.chargedPosture : 32) * mul,
       },
     });
+    this.meleeTrace(
+      angle,
+      kind === 'charged' ? 158 : 138,
+      138,
+      SKILLS.chargeActive,
+      false,
+    );
     Sfx.swing(2);
   }
 
@@ -912,7 +943,15 @@ export class ArenaScene extends Phaser.Scene {
       follow: () => ({ x: p.x, y: p.y }),
       meta: { hitstop: step.hitstop, heavy: !!step.finisher, basic: true },
     });
-    // os arcos dourados estão pintados nos quadros: não duplicamos o efeito no renderer
+    // The new body frames contain no painted arcs. Render the actual reach as
+    // a separate, short trail; solar forging never substitutes the body sprite.
+    this.meleeTrace(
+      angle,
+      transformed.range,
+      step.arcDeg,
+      step.active,
+      transformed.damage > step.damage,
+    );
     if (step.shake) this.effects.shake(step.finisher ? 150 : 80, step.shake);
     if (step.finisher) {
       this.effects.dustPuff(
@@ -923,6 +962,35 @@ export class ArenaScene extends Phaser.Scene {
       this.fireBlessings('comboFinisher', { x: p.x, y: p.y, angle });
       if (p.gifts.has('glory_blade')) this.launchGloryCrescent(angle);
     }
+  }
+
+  private meleeTrace(
+    angle: number,
+    range: number,
+    arcDeg: number,
+    duration: number,
+    solar: boolean,
+  ): void {
+    const p = this.player;
+    const g = this.add
+      .graphics()
+      .setPosition(p.x, p.y - 40)
+      .setDepth(p.y + 2);
+    g.lineStyle(
+      solar ? 3 : 1.5,
+      solar ? 0xffd77a : 0xd7dce0,
+      solar ? 0.65 : 0.38,
+    );
+    const half = degToRad(arcDeg / 2);
+    g.beginPath();
+    g.arc(0, 0, range, angle - half, angle + half);
+    g.strokePath();
+    this.tweens.add({
+      targets: g,
+      alpha: 0,
+      duration,
+      onComplete: () => g.destroy(),
+    });
   }
 
   /** Lâmina da Glória: meia-lua solar que atravessa inimigos (1 acerto por alvo). */
@@ -1047,6 +1115,7 @@ export class ArenaScene extends Phaser.Scene {
   }
 
   private onAvatarStart(): void {
+    this.cancelAdvancedInput();
     Sfx.blessing();
     this.effects.flash(200, 255, 230, 160);
     // o tempo dos inimigos para: golpes em andamento e projéteis inimigos são anulados
@@ -1263,6 +1332,12 @@ export class ArenaScene extends Phaser.Scene {
   }
 
   private onPlayerDamaged(amount: number, hit: HitInfo): void {
+    for (const box of this.hitboxes.all)
+      if (
+        box.spec.team === 'player' &&
+        ['charged', 'counter'].includes(box.spec.tag)
+      )
+        box.cancel();
     if (amount > 0 && hit.tag === 'caim_servitude')
       this.exposure.value = Math.min(0.85, this.exposure.value + 0.28);
     if (
@@ -1305,6 +1380,8 @@ export class ArenaScene extends Phaser.Scene {
 
   // ------------------------------------------------------------------ sangue
   private onDominated(): void {
+    this.cancelAdvancedInput();
+    for (const box of this.hitboxes.all) if (box.spec.meta?.basic) box.cancel();
     this.player.setStunned(true);
     this.queued = NO_INPUT();
     Sfx.bossRoar();
@@ -1655,6 +1732,8 @@ export class ArenaScene extends Phaser.Scene {
 
   /** Remove inimigos, perigos e efeitos temporários da sala. */
   private clearRoomEntities(): void {
+    this.attackHeld = false;
+    this.attackReleased = false;
     this.roomEpoch++;
     this.skills?.reset();
     this.toknar?.destroy();

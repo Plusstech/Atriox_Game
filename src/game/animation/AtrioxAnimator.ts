@@ -23,7 +23,7 @@ export type AnimState =
 export type AttackPhase = AnimPhase;
 
 export const ANIM_STATES: AnimState[] = [
-  'idle', 'run', 'attack_1', 'attack_2', 'attack_3', 'attack_3_glory', 'dash', 'dash_radiant', 'cast', 'cast_sun', 'avatar', 'hurt', 'bloodStunned', 'dead'
+  'idle', 'run', 'attack_1', 'attack_2', 'attack_3', 'attack_3_glory', 'charge_hold', 'ascending', 'return_cut', 'dash', 'dash_radiant', 'cast', 'cast_sun', 'avatar', 'hurt', 'bloodStunned', 'dead'
 ];
 
 /**
