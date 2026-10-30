@@ -44,7 +44,7 @@ export class MenuScene extends Phaser.Scene {
     this.add.text(96, 104, 'ATRIOX CINDER', { fontFamily: FONT_TITLE, fontSize: '68px', color: COLORS.hex.gold, stroke: '#0b0607', strokeThickness: 8 });
     this.add.text(100, 184, 'Lâmina sem Deus', { fontFamily: FONT_TITLE, fontSize: '30px', fontStyle: 'italic', color: COLORS.hex.ivory, stroke: '#0b0607', strokeThickness: 5 });
     ornament(this, 330, 236, 470);
-    this.add.text(100, 250, 'v0.2 — Do Campo de Provação à Arena de Nemeia', { fontFamily: FONT_UI, fontSize: '15px', color: COLORS.hex.dim });
+    this.add.text(100, 250, 'v0.3 — Do Campo de Provação à Arena de Nemeia', { fontFamily: FONT_UI, fontSize: '15px', color: COLORS.hex.dim });
 
     this.showMain();
 
@@ -80,7 +80,7 @@ export class MenuScene extends Phaser.Scene {
       this.add.text(
         x - 150,
         500,
-        `Tentativas: ${r.attempts}    Vitórias: ${r.bossVictories}\nMaior onda: ${r.highestWave > 2 ? 'Carrasco' : r.highestWave}    Melhor tempo: ${r.bestTime !== null ? formatTime(r.bestTime) : '—'}${save.volatile ? '\n(armazenamento local indisponível: progresso não será salvo)' : ''}`,
+        `Tentativas: ${r.attempts}    Vitórias: ${r.bossVictories}\nMaior sala: ${r.highestWave} · Eternidade: ${r.eternityBest}    Melhor tempo: ${r.bestTime !== null ? formatTime(r.bestTime) : '—'}${save.volatile ? '\n(armazenamento local indisponível: progresso não será salvo)' : ''}`,
         { fontFamily: FONT_UI, fontSize: '14px', color: COLORS.hex.dim, lineSpacing: 6 }
       )
     );

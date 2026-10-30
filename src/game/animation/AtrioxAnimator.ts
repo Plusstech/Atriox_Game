@@ -4,6 +4,7 @@ import { SpriteAnimator, type AnimLibrary } from './SpriteAnimator';
 import type { AnimPhase, TimelineEvent } from './FrameTimeline';
 
 export type AnimState =
+  | 'return_cut' | 'ascending' | 'charge_hold' | 'execution_mark' | 'orbit' | 'second_step' | 'captive_sun'
   | 'idle'
   | 'run'
   | 'attack_1'
@@ -30,6 +31,7 @@ export const ANIM_STATES: AnimState[] = [
  * O Player decide o estado a cada quadro (set), então a prioridade protege chamadas externas.
  */
 export const ANIM_PRIORITY: Record<AnimState, number> = {
+  return_cut: 5, ascending: 5, charge_hold: 4, execution_mark: 5, orbit: 5, second_step: 5, captive_sun: 6,
   idle: 0,
   run: 1,
   attack_1: 5,
@@ -48,7 +50,7 @@ export const ANIM_PRIORITY: Record<AnimState, number> = {
 };
 
 /** Estados cujos quadros são escolhidos pela fase do combate (sincronizados). */
-const SYNCED: Partial<Record<AnimState, true>> = { attack_1: true, attack_2: true, attack_3: true, attack_3_glory: true, cast: true, cast_sun: true };
+const SYNCED: Partial<Record<AnimState, true>> = { return_cut: true, ascending: true, attack_1: true, attack_2: true, attack_3: true, attack_3_glory: true, cast: true, cast_sun: true };
 
 /**
  * AnimationController do Atriox (quadros reais do atlas).

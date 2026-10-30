@@ -127,7 +127,7 @@ export const EXECUTIONER: BossDef = {
 export const CAIM: CaimDef & { name: string; title: string } = {
   name: 'Caim Morvaigne',
   title: 'Arcano de Drevagna',
-  hp: 1250,
+  hp: 2050,
   speed: 205,
   radius: 22,
   preferredMin: 210,
@@ -136,8 +136,8 @@ export const CAIM: CaimDef & { name: string; title: string } = {
   cast: { pool: 450, eruption: 600, claw: 160, blink: 420, summon: 900 },
   recovery: { pool: 650, eruption: 750, claw: 700, blink: 250, summon: 700 },
   cooldowns: { pool: 2600, eruption: 7000, claw: 1400, blink: 3200, summon: 11000 },
-  maxWyverns: [2, 3],
-  phase2At: 0.5,
+  maxWyverns: [1, 2, 3],
+  phase2At: 0.7,
   reactionMs: 520,
-  staggerDamage: 60
+  staggerDamage: 110
 };

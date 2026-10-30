@@ -1,0 +1,954 @@
+{
+  "toknar_move_00": {
+    "sourceBounds": [
+      31,
+      21,
+      321,
+      318
+    ],
+    "pivot": [
+      157.0,
+      280.0
+    ],
+    "scale": 0.9655,
+    "ms": 180
+  },
+  "toknar_move_01": {
+    "sourceBounds": [
+      320,
+      20,
+      612,
+      320
+    ],
+    "pivot": [
+      155.0,
+      281.0
+    ],
+    "scale": 0.9655,
+    "ms": 180
+  },
+  "toknar_move_02": {
+    "sourceBounds": [
+      618,
+      21,
+      910,
+      319
+    ],
+    "pivot": [
+      157.0,
+      280.0
+    ],
+    "scale": 0.9655,
+    "ms": 180
+  },
+  "toknar_move_03": {
+    "sourceBounds": [
+      909,
+      21,
+      1207,
+      319
+    ],
+    "pivot": [
+      161.0,
+      280.0
+    ],
+    "scale": 0.9655,
+    "ms": 180
+  },
+  "toknar_move_04": {
+    "sourceBounds": [
+      25,
+      346,
+      318,
+      616
+    ],
+    "pivot": [
+      148.0,
+      254.0
+    ],
+    "scale": 0.9655,
+    "ms": 95
+  },
+  "toknar_move_05": {
+    "sourceBounds": [
+      326,
+      341,
+      600,
+      614
+    ],
+    "pivot": [
+      147.0,
+      256.0
+    ],
+    "scale": 0.9655,
+    "ms": 95
+  },
+  "toknar_move_06": {
+    "sourceBounds": [
+      623,
+      338,
+      897,
+      617
+    ],
+    "pivot": [
+      147.0,
+      262.0
+    ],
+    "scale": 0.9655,
+    "ms": 95
+  },
+  "toknar_move_07": {
+    "sourceBounds": [
+      916,
+      337,
+      1208,
+      614
+    ],
+    "pivot": [
+      158.0,
+      258.0
+    ],
+    "scale": 0.9655,
+    "ms": 95
+  },
+  "toknar_move_08": {
+    "sourceBounds": [
+      46,
+      640,
+      331,
+      913
+    ],
+    "pivot": [
+      153.0,
+      255.0
+    ],
+    "scale": 0.9655,
+    "ms": 95
+  },
+  "toknar_move_09": {
+    "sourceBounds": [
+      348,
+      638,
+      625,
+      915
+    ],
+    "pivot": [
+      147.0,
+      261.0
+    ],
+    "scale": 0.9655,
+    "ms": 95
+  },
+  "toknar_move_10": {
+    "sourceBounds": [
+      641,
+      640,
+      917,
+      916
+    ],
+    "pivot": [
+      149.0,
+      259.0
+    ],
+    "scale": 0.9655,
+    "ms": 95
+  },
+  "toknar_move_11": {
+    "sourceBounds": [
+      946,
+      634,
+      1226,
+      903
+    ],
+    "pivot": [
+      155.0,
+      253.0
+    ],
+    "scale": 0.9655,
+    "ms": 95
+  },
+  "toknar_move_12": {
+    "sourceBounds": [
+      16,
+      982,
+      333,
+      1260
+    ],
+    "pivot": [
+      168.0,
+      259.0
+    ],
+    "scale": 0.9655,
+    "ms": 230
+  },
+  "toknar_move_13": {
+    "sourceBounds": [
+      331,
+      901,
+      611,
+      1263
+    ],
+    "pivot": [
+      135.0,
+      341.0
+    ],
+    "scale": 0.9655,
+    "ms": 230
+  },
+  "toknar_move_14": {
+    "sourceBounds": [
+      614,
+      897,
+      902,
+      1270
+    ],
+    "pivot": [
+      143.0,
+      354.0
+    ],
+    "scale": 0.9655,
+    "ms": 230
+  },
+  "toknar_move_15": {
+    "sourceBounds": [
+      907,
+      995,
+      1226,
+      1262
+    ],
+    "pivot": [
+      171.0,
+      251.0
+    ],
+    "scale": 0.9655,
+    "ms": 230
+  },
+  "toknar_combat_00": {
+    "sourceBounds": [
+      0,
+      0,
+      384,
+      293
+    ],
+    "pivot": [
+      298.0,
+      364.0
+    ],
+    "scale": 1.2963,
+    "ms": 180
+  },
+  "toknar_combat_01": {
+    "sourceBounds": [
+      384,
+      0,
+      768,
+      293
+    ],
+    "pivot": [
+      229.0,
+      355.0
+    ],
+    "scale": 1.2963,
+    "ms": 150
+  },
+  "toknar_combat_02": {
+    "sourceBounds": [
+      768,
+      0,
+      1152,
+      293
+    ],
+    "pivot": [
+      362.0,
+      323.0
+    ],
+    "scale": 1.2963,
+    "ms": 150
+  },
+  "toknar_combat_03": {
+    "sourceBounds": [
+      1152,
+      0,
+      1536,
+      293
+    ],
+    "pivot": [
+      234.0,
+      374.0
+    ],
+    "scale": 1.2963,
+    "ms": 260
+  },
+  "toknar_combat_04": {
+    "sourceBounds": [
+      0,
+      293,
+      384,
+      533
+    ],
+    "pivot": [
+      262.0,
+      295.44
+    ],
+    "scale": 1.2963,
+    "ms": 180
+  },
+  "toknar_combat_05": {
+    "sourceBounds": [
+      384,
+      293,
+      768,
+      533
+    ],
+    "pivot": [
+      235.0,
+      295.0
+    ],
+    "scale": 1.2963,
+    "ms": 150
+  },
+  "toknar_combat_06": {
+    "sourceBounds": [
+      768,
+      293,
+      1152,
+      533
+    ],
+    "pivot": [
+      252.0,
+      284.0
+    ],
+    "scale": 1.2963,
+    "ms": 150
+  },
+  "toknar_combat_07": {
+    "sourceBounds": [
+      1152,
+      293,
+      1536,
+      533
+    ],
+    "pivot": [
+      287.0,
+      290.0
+    ],
+    "scale": 1.2963,
+    "ms": 260
+  },
+  "toknar_combat_08": {
+    "sourceBounds": [
+      0,
+      533,
+      384,
+      730
+    ],
+    "pivot": [
+      239.0,
+      229.0
+    ],
+    "scale": 1.2963,
+    "ms": 180
+  },
+  "toknar_combat_09": {
+    "sourceBounds": [
+      384,
+      533,
+      768,
+      730
+    ],
+    "pivot": [
+      270.0,
+      237.0
+    ],
+    "scale": 1.2963,
+    "ms": 150
+  },
+  "toknar_combat_10": {
+    "sourceBounds": [
+      768,
+      533,
+      1152,
+      730
+    ],
+    "pivot": [
+      222.0,
+      247.0
+    ],
+    "scale": 1.2963,
+    "ms": 150
+  },
+  "toknar_combat_11": {
+    "sourceBounds": [
+      1152,
+      533,
+      1536,
+      730
+    ],
+    "pivot": [
+      268.0,
+      250.0
+    ],
+    "scale": 1.2963,
+    "ms": 260
+  },
+  "toknar_combat_12": {
+    "sourceBounds": [
+      0,
+      730,
+      384,
+      1024
+    ],
+    "pivot": [
+      277.0,
+      334.0
+    ],
+    "scale": 1.2963,
+    "ms": 180
+  },
+  "toknar_combat_13": {
+    "sourceBounds": [
+      384,
+      730,
+      768,
+      1024
+    ],
+    "pivot": [
+      254.0,
+      322.0
+    ],
+    "scale": 1.2963,
+    "ms": 150
+  },
+  "toknar_combat_14": {
+    "sourceBounds": [
+      768,
+      730,
+      1152,
+      1024
+    ],
+    "pivot": [
+      257.0,
+      340.0
+    ],
+    "scale": 1.2963,
+    "ms": 150
+  },
+  "toknar_combat_15": {
+    "sourceBounds": [
+      1152,
+      730,
+      1536,
+      1024
+    ],
+    "pivot": [
+      248.0,
+      347.0
+    ],
+    "scale": 1.2963,
+    "ms": 260
+  },
+  "atriox_advanced_00": {
+    "sourceBounds": [
+      14,
+      1,
+      224,
+      319
+    ],
+    "pivot": [
+      86.0,
+      256.0
+    ],
+    "scale": 0.8246,
+    "ms": 160
+  },
+  "atriox_advanced_01": {
+    "sourceBounds": [
+      244,
+      99,
+      607,
+      320
+    ],
+    "pivot": [
+      132.0,
+      176.0
+    ],
+    "scale": 0.8246,
+    "ms": 110
+  },
+  "atriox_advanced_02": {
+    "sourceBounds": [
+      579,
+      85,
+      818,
+      319
+    ],
+    "pivot": [
+      117.0,
+      186.0
+    ],
+    "scale": 0.8246,
+    "ms": 110
+  },
+  "atriox_advanced_03": {
+    "sourceBounds": [
+      839,
+      58,
+      1148,
+      321
+    ],
+    "pivot": [
+      112.0,
+      211.0
+    ],
+    "scale": 0.8246,
+    "ms": 110
+  },
+  "atriox_advanced_04": {
+    "sourceBounds": [
+      1145,
+      39,
+      1562,
+      319
+    ],
+    "pivot": [
+      117.0,
+      224.0
+    ],
+    "scale": 0.8246,
+    "ms": 110
+  },
+  "atriox_advanced_05": {
+    "sourceBounds": [
+      1564,
+      12,
+      1755,
+      321
+    ],
+    "pivot": [
+      75.0,
+      247.0
+    ],
+    "scale": 0.8246,
+    "ms": 110
+  },
+  "atriox_advanced_06": {
+    "sourceBounds": [
+      13,
+      392,
+      279,
+      616
+    ],
+    "pivot": [
+      87.0,
+      180.0
+    ],
+    "scale": 0.8246,
+    "ms": 160
+  },
+  "atriox_advanced_07": {
+    "sourceBounds": [
+      283,
+      420,
+      596,
+      621
+    ],
+    "pivot": [
+      101.0,
+      158.0
+    ],
+    "scale": 0.8246,
+    "ms": 110
+  },
+  "atriox_advanced_08": {
+    "sourceBounds": [
+      592,
+      406,
+      849,
+      626
+    ],
+    "pivot": [
+      94.0,
+      169.0
+    ],
+    "scale": 0.8246,
+    "ms": 110
+  },
+  "atriox_advanced_09": {
+    "sourceBounds": [
+      891,
+      315,
+      1175,
+      622
+    ],
+    "pivot": [
+      98.0,
+      246.0
+    ],
+    "scale": 0.8246,
+    "ms": 110
+  },
+  "atriox_advanced_10": {
+    "sourceBounds": [
+      1209,
+      285,
+      1507,
+      619
+    ],
+    "pivot": [
+      100.0,
+      269.0
+    ],
+    "scale": 0.8246,
+    "ms": 110
+  },
+  "atriox_advanced_11": {
+    "sourceBounds": [
+      1552,
+      322,
+      1755,
+      621
+    ],
+    "pivot": [
+      84.0,
+      242.0
+    ],
+    "scale": 0.8246,
+    "ms": 110
+  },
+  "atriox_advanced_12": {
+    "sourceBounds": [
+      19,
+      630,
+      244,
+      877
+    ],
+    "pivot": [
+      79.0,
+      200.0
+    ],
+    "scale": 0.8246,
+    "ms": 160
+  },
+  "atriox_advanced_13": {
+    "sourceBounds": [
+      263,
+      616,
+      524,
+      879
+    ],
+    "pivot": [
+      109.0,
+      211.0
+    ],
+    "scale": 0.8246,
+    "ms": 110
+  },
+  "atriox_advanced_14": {
+    "sourceBounds": [
+      557,
+      662,
+      891,
+      881
+    ],
+    "pivot": [
+      126.0,
+      175.0
+    ],
+    "scale": 0.8246,
+    "ms": 110
+  },
+  "atriox_advanced_15": {
+    "sourceBounds": [
+      877,
+      622,
+      1206,
+      881
+    ],
+    "pivot": [
+      94.0,
+      208.0
+    ],
+    "scale": 0.8246,
+    "ms": 110
+  },
+  "atriox_advanced_16": {
+    "sourceBounds": [
+      1175,
+      617,
+      1587,
+      887
+    ],
+    "pivot": [
+      104.0,
+      213.0
+    ],
+    "scale": 0.8246,
+    "ms": 110
+  },
+  "atriox_advanced_17": {
+    "sourceBounds": [
+      1569,
+      621,
+      1756,
+      884
+    ],
+    "pivot": [
+      76.0,
+      211.0
+    ],
+    "scale": 0.8246,
+    "ms": 110
+  },
+  "atriox_advanced_solar_00": {
+    "sourceBounds": [
+      5,
+      18,
+      240,
+      294
+    ],
+    "pivot": [
+      105.0,
+      226.0
+    ],
+    "scale": 0.8413,
+    "ms": 160
+  },
+  "atriox_advanced_solar_01": {
+    "sourceBounds": [
+      246,
+      14,
+      580,
+      294
+    ],
+    "pivot": [
+      135.0,
+      231.0
+    ],
+    "scale": 0.8413,
+    "ms": 110
+  },
+  "atriox_advanced_solar_02": {
+    "sourceBounds": [
+      570,
+      18,
+      852,
+      295
+    ],
+    "pivot": [
+      129.0,
+      227.0
+    ],
+    "scale": 0.8413,
+    "ms": 110
+  },
+  "atriox_advanced_solar_03": {
+    "sourceBounds": [
+      849,
+      55,
+      1236,
+      275
+    ],
+    "pivot": [
+      174.0,
+      178.0
+    ],
+    "scale": 0.8413,
+    "ms": 110
+  },
+  "atriox_advanced_solar_04": {
+    "sourceBounds": [
+      1147,
+      74,
+      1530,
+      294
+    ],
+    "pivot": [
+      238.0,
+      179.0
+    ],
+    "scale": 0.8413,
+    "ms": 110
+  },
+  "atriox_advanced_solar_05": {
+    "sourceBounds": [
+      1513,
+      17,
+      1767,
+      294
+    ],
+    "pivot": [
+      132.0,
+      227.0
+    ],
+    "scale": 0.8413,
+    "ms": 110
+  },
+  "atriox_advanced_solar_06": {
+    "sourceBounds": [
+      40,
+      307,
+      218,
+      578
+    ],
+    "pivot": [
+      75.0,
+      227
+    ],
+    "scale": 0.8413,
+    "ms": 160
+  },
+  "atriox_advanced_solar_07": {
+    "sourceBounds": [
+      5,
+      309,
+      548,
+      585
+    ],
+    "pivot": [
+      247.0,
+      224.0
+    ],
+    "scale": 0.8413,
+    "ms": 110
+  },
+  "atriox_advanced_solar_08": {
+    "sourceBounds": [
+      531,
+      309,
+      901,
+      577
+    ],
+    "pivot": [
+      213.0,
+      219.0
+    ],
+    "scale": 0.8413,
+    "ms": 110
+  },
+  "atriox_advanced_solar_09": {
+    "sourceBounds": [
+      911,
+      309,
+      1186,
+      583
+    ],
+    "pivot": [
+      117.0,
+      225.0
+    ],
+    "scale": 0.8413,
+    "ms": 110
+  },
+  "atriox_advanced_solar_10": {
+    "sourceBounds": [
+      1134,
+      302,
+      1762,
+      583
+    ],
+    "pivot": [
+      376.0,
+      230.0
+    ],
+    "scale": 0.8413,
+    "ms": 110
+  },
+  "atriox_advanced_solar_11": {
+    "sourceBounds": [
+      1563,
+      346,
+      1753,
+      577
+    ],
+    "pivot": [
+      80.0,
+      193
+    ],
+    "scale": 0.8413,
+    "ms": 110
+  },
+  "atriox_advanced_solar_12": {
+    "sourceBounds": [
+      4,
+      592,
+      238,
+      873
+    ],
+    "pivot": [
+      99.0,
+      231.0
+    ],
+    "scale": 0.8413,
+    "ms": 160
+  },
+  "atriox_advanced_solar_13": {
+    "sourceBounds": [
+      224,
+      613,
+      590,
+      866
+    ],
+    "pivot": [
+      129.0,
+      208.0
+    ],
+    "scale": 0.8413,
+    "ms": 110
+  },
+  "atriox_advanced_solar_14": {
+    "sourceBounds": [
+      568,
+      606,
+      902,
+      867
+    ],
+    "pivot": [
+      104.0,
+      213.0
+    ],
+    "scale": 0.8413,
+    "ms": 110
+  },
+  "atriox_advanced_solar_15": {
+    "sourceBounds": [
+      880,
+      603,
+      1191,
+      869
+    ],
+    "pivot": [
+      99.0,
+      218.0
+    ],
+    "scale": 0.8413,
+    "ms": 110
+  },
+  "atriox_advanced_solar_16": {
+    "sourceBounds": [
+      1149,
+      576,
+      1549,
+      867
+    ],
+    "pivot": [
+      142.0,
+      239.0
+    ],
+    "scale": 0.8413,
+    "ms": 110
+  },
+  "atriox_advanced_solar_17": {
+    "sourceBounds": [
+      1501,
+      599,
+      1762,
+      873
+    ],
+    "pivot": [
+      109.0,
+      225.0
+    ],
+    "scale": 0.8413,
+    "ms": 110
+  }
+}

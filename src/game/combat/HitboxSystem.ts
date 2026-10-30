@@ -1,3 +1,4 @@
+import { ETERNITY } from '../../data/v03';
 import { shapeHitsCircle, type Shape, type Vec } from './geometry';
 
 export type Team = 'player' | 'enemy';
@@ -82,7 +83,7 @@ export class HitboxSystem {
 
   spawn(spec: HitboxSpec): ActiveHitbox {
     const box = new ActiveHitbox({ ...spec, shape: { ...spec.shape } as Shape });
-    this.boxes.push(box);
+    if(this.boxes.length<ETERNITY.hitboxCap)this.boxes.push(box);else box.cancel();
     return box;
   }
 

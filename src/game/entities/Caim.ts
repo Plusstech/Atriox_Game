@@ -1,15 +1,26 @@
+import { CaimDefense } from '../ai/CaimDefense';
+import { FINAL_BOSS } from '../../data/v03';
 import Phaser from 'phaser';
 import { CAIM } from '../../data/bosses';
 import { CaimBrain, type CaimAction } from '../ai/CaimBrain';
 import { Health } from '../combat/DamageSystem';
-import type { ActiveHitbox, HitboxSystem, Hurtbox } from '../combat/HitboxSystem';
+import type {
+  ActiveHitbox,
+  HitboxSystem,
+  Hurtbox,
+} from '../combat/HitboxSystem';
 import type { BloodPoolSystem } from '../combat/Blood';
 import { degToRad, length, normalize } from '../combat/geometry';
 import type { Effects } from '../fx/Effects';
 import { CAIM_SCALE, DEPTH, FLOOR } from '../config/constants';
 import { SpriteAnimator, type AnimLibrary } from '../animation/SpriteAnimator';
 import { Sfx } from '../audio/Sfx';
-import { newEntityId, type CollideFn, type Combatant, type HitInfo } from './types';
+import {
+  newEntityId,
+  type CollideFn,
+  type Combatant,
+  type HitInfo,
+} from './types';
 
 export interface CaimContext {
   hitboxes: HitboxSystem;
@@ -23,10 +34,19 @@ export interface CaimContext {
   onDamaged(amount: number): void;
 }
 
-const CLAW = { radius: 118, arcDeg: 130, damage: 14, knockback: 300, lunge: 46 };
+const CLAW = {
+  radius: 118,
+  arcDeg: 130,
+  damage: 14,
+  knockback: 300,
+  lunge: 46,
+};
 
 /** Caim Morvaigne — chefe da Arena de Nemeia. */
 export class Caim implements Combatant {
+  private visuals: Phaser.GameObjects.GameObject[] = [];
+  readonly defense = new CaimDefense();
+  private volleyCd = 2800;
   readonly id = newEntityId();
   readonly brain: CaimBrain;
   readonly health: Health;
@@ -58,14 +78,25 @@ export class Caim implements Combatant {
     x: number,
     y: number,
     private readonly ctx: CaimContext,
-    rng: () => number = Math.random
+    rng: () => number = Math.random,
   ) {
     this.x = x;
     this.y = y;
     this.brain = new CaimBrain(CAIM, rng);
     this.health = new Health(CAIM.hp);
-    this.hurtbox = { id: this.id, team: 'enemy', x, y, radius: CAIM.radius + 4, alive: true, invulnerable: true };
-    this.shadow = scene.add.image(x, y, 'shadow').setDepth(DEPTH.shadow).setDisplaySize(84, 26);
+    this.hurtbox = {
+      id: this.id,
+      team: 'enemy',
+      x,
+      y,
+      radius: CAIM.radius + 4,
+      alive: true,
+      invulnerable: true,
+    };
+    this.shadow = scene.add
+      .image(x, y, 'shadow')
+      .setDepth(DEPTH.shadow)
+      .setDisplaySize(84, 26);
     this.telegraph = scene.add.graphics().setDepth(DEPTH.telegraph);
     this.anim = new SpriteAnimator(scene, lib, 'caim', x, y, 'caim.idle');
     this.anim.sprite.setScale(CAIM_SCALE);
@@ -76,7 +107,7 @@ export class Caim implements Combatant {
       lifespan: { min: 500, max: 900 },
       scale: { start: 1.2, end: 0 },
       alpha: { start: 0.8, end: 0 },
-      frequency: 90
+      frequency: 90,
     });
     this.aura.setDepth(DEPTH.groundFx + 3);
   }
@@ -118,19 +149,136 @@ export class Caim implements Combatant {
   }
 
   update(dt: number, player: { x: number; y: number; dead: boolean }): void {
+    this.visuals = this.visuals.filter((v) => !!v.scene);
     if (this.removed || this.scripted) return;
     if (this.dead) {
       this.anim.update(dt);
       this.sync(dt);
       return;
     }
+    const distance = length(player.x - this.x, player.y - this.y);
+    const defenseEvent = this.defense.update(
+      dt,
+      distance,
+      this.brain.phase,
+      this.ctx.wyvernCount() + this.ctx.pools.liveCount,
+      this.brain.state === 'reposition',
+    );
+    if (defenseEvent === 'wave') {
+      this.ctx.effects.shockRing(
+        this.x,
+        this.y,
+        FINAL_BOSS.waveRadius,
+        0xff3040,
+        220,
+      );
+      this.ctx.hitboxes.spawn({
+        shape: {
+          kind: 'circle',
+          x: this.x,
+          y: this.y,
+          radius: FINAL_BOSS.waveRadius,
+        },
+        team: 'enemy',
+        damage: FINAL_BOSS.waveDamage,
+        knockback: 180,
+        duration: 130,
+        tag: 'caim_servitude',
+      });
+    }
+    if (defenseEvent === 'ritualComplete') {
+      this.ctx.pools.rules.maxActive = FINAL_BOSS.poolMax[this.brain.phase - 1];
+      for (const ang of [0, Math.PI])
+        this.ctx.pools.spawn(
+          player.x + Math.cos(ang) * 300,
+          player.y + Math.sin(ang) * 300,
+          FINAL_BOSS.poolRadius,
+        );
+    }
+    if (this.defense.mode !== 'none') {
+      this.cancelAttacksForDefense();
+      this.anim.play(
+        this.defense.mode === 'ritual' ? 'caim.summon' : 'caim.pool',
+      );
+      this.anim.update(dt);
+      this.telegraph.clear();
+      const wave = this.defense.mode === 'rupture';
+      this.telegraph.lineStyle(3, wave ? 0xffe0c0 : 0xff3040, 0.9);
+      this.telegraph.strokeCircle(
+        this.x,
+        this.y,
+        wave ? FINAL_BOSS.waveRadius : 65,
+      );
+
+      this.sync(dt);
+      return;
+    }
+    this.volleyCd -= dt;
+    // The volley has a committed direction, delayed hitbox, visible line, and no full-arena spread.
+    if (
+      this.volleyCd <= 0 &&
+      this.brain.state === 'reposition' &&
+      this.ctx.wyvernCount() <= 1 &&
+      this.ctx.pools.liveCount < 3
+    ) {
+      this.volleyCd = this.brain.phase >= 2 ? 3400 : 4800;
+      const aim = Math.atan2(player.y - this.y, player.x - this.x);
+      for (const offset of this.brain.phase >= 2 ? [-0.2, 0, 0.2] : [0]) {
+        const angle = aim + offset,
+          x = this.x,
+          y = this.y;
+        this.owned.push(
+          this.ctx.hitboxes.spawn({
+            shape: { kind: 'circle', x, y, radius: 17 },
+            team: 'enemy',
+            damage: FINAL_BOSS.volleyDamage,
+            knockback: 100,
+            delay: 750,
+            duration: 1600,
+            velocity: { x: Math.cos(angle) * 360, y: Math.sin(angle) * 360 },
+            tag: 'caim_infected',
+          }),
+        );
+        const g = this.scene.add.graphics().setDepth(DEPTH.telegraph);
+        g.lineStyle(2, 0xff4050, 0.5);
+        g.lineBetween(
+          x,
+          y,
+          x + Math.cos(angle) * 570,
+          y + Math.sin(angle) * 570,
+        );
+        const orb = this.scene.add
+          .image(x, y - 35, 'blessing_orb')
+          .setScale(0.28)
+          .setTint(0xff3040)
+          .setDepth(y + 5);
+        this.visuals.push(g, orb);
+        this.scene.tweens.add({
+          targets: orb,
+          x: x + Math.cos(angle) * 576,
+          y: y - 35 + Math.sin(angle) * 576,
+          delay: 750,
+          duration: 1600,
+          onStart: () => g.destroy(),
+          onComplete: () => orb.destroy(),
+        });
+        this.scene.time.delayedCall(2400, () => g.destroy());
+      }
+    }
     const dx = player.x - this.x;
     const dy = player.y - this.y;
     const dist = player.dead ? 9999 : length(dx, dy);
     const toP = Math.atan2(dy, dx);
-    const canPool = this.ctx.pools.canPlace(player.x, player.y) || this.ctx.pools.liveCount < this.ctx.pools.rules.maxActive;
+    const canPool =
+      this.ctx.pools.canPlace(player.x, player.y) ||
+      this.ctx.pools.liveCount < this.ctx.pools.rules.maxActive;
 
-    for (const ev of this.brain.update(dt, { distance: dist, hpRatio: this.health.ratio, wyverns: this.ctx.wyvernCount(), canPool })) {
+    for (const ev of this.brain.update(dt, {
+      distance: dist,
+      hpRatio: this.health.ratio,
+      wyverns: this.ctx.wyvernCount(),
+      canPool,
+    })) {
       if (ev.type === 'windup') this.beginWindup(ev.action, toP, player);
       else if (ev.type === 'cast') this.cast(ev.action, player);
       else if (ev.type === 'end') this.endAction(ev.action);
@@ -151,32 +299,52 @@ export class Caim implements Combatant {
       let radial = 0;
       if (dist < CAIM.preferredMin) radial = -1;
       else if (dist > CAIM.preferredMax) radial = 1;
-      const sp = CAIM.speed * (this.brain.phase === 2 ? 1.15 : 1);
+      const sp = CAIM.speed * (this.brain.phase >= 2 ? 1.15 : 1);
       tvx = (n.x * radial - n.y * this.strafe * 0.7) * sp;
       tvy = (n.y * radial + n.x * this.strafe * 0.7) * sp;
       this.facing = dx >= 0 ? 1 : -1;
     } else if (st === 'cast' && this.brain.action === 'blink') {
-      const n = normalize(this.blinkTarget.x - this.x, this.blinkTarget.y - this.y);
-      const d = length(this.blinkTarget.x - this.x, this.blinkTarget.y - this.y);
-      const sp = Math.min(1100, (d / Math.max(16, CAIM.cast.blink - this.brain.timer)) * 1000);
+      const n = normalize(
+        this.blinkTarget.x - this.x,
+        this.blinkTarget.y - this.y,
+      );
+      const d = length(
+        this.blinkTarget.x - this.x,
+        this.blinkTarget.y - this.y,
+      );
+      const sp = Math.min(
+        1100,
+        (d / Math.max(16, CAIM.cast.blink - this.brain.timer)) * 1000,
+      );
       tvx = n.x * sp;
       tvy = n.y * sp;
     }
     const k = st === 'cast' ? 1 : Math.min(1, dt / 120);
     this.vx += (tvx - this.vx) * k;
     this.vy += (tvy - this.vy) * k;
-    const r = this.ctx.collide(this.x + (this.vx * dt) / 1000, this.y + (this.vy * dt) / 1000, CAIM.radius);
+    const r = this.ctx.collide(
+      this.x + (this.vx * dt) / 1000,
+      this.y + (this.vy * dt) / 1000,
+      CAIM.radius,
+    );
     this.x = r.x;
     this.y = r.y;
 
     // ---------------- animação (estados → animações; ações sincronizadas pela fase)
     const a = this.brain.action;
-    if (st === 'reposition') this.anim.play(length(this.vx, this.vy) > 40 ? 'caim.run' : 'caim.idle');
+    if (st === 'reposition')
+      this.anim.play(length(this.vx, this.vy) > 40 ? 'caim.run' : 'caim.idle');
     else if (st === 'reaction') this.anim.play('caim.reaction');
     else if (a) {
       this.anim.play(`caim.${a}`);
-      const total = st === 'windup' ? CAIM.windup[a] : st === 'cast' ? CAIM.cast[a] : CAIM.recovery[a];
-      const phase = st === 'windup' ? 'windup' : st === 'cast' ? 'active' : 'recovery';
+      const total =
+        st === 'windup'
+          ? CAIM.windup[a]
+          : st === 'cast'
+            ? CAIM.cast[a]
+            : CAIM.recovery[a];
+      const phase =
+        st === 'windup' ? 'windup' : st === 'cast' ? 'active' : 'recovery';
       this.anim.sync(phase, this.brain.timer / total);
     }
     if (st === 'reposition' || st === 'reaction') this.anim.update(dt);
@@ -185,7 +353,11 @@ export class Caim implements Combatant {
     this.sync(dt);
   }
 
-  private beginWindup(a: CaimAction, toP: number, player: { x: number; y: number }): void {
+  private beginWindup(
+    a: CaimAction,
+    toP: number,
+    player: { x: number; y: number },
+  ): void {
     this.aim = toP;
     this.facing = Math.cos(toP) >= 0 ? 1 : -1;
     this.vx *= 0.2;
@@ -195,11 +367,21 @@ export class Caim implements Combatant {
       this.ctx.effects.telegraphPulse(this.x, this.chestY, 0xd01a2a);
     } else if (a === 'blink') {
       // salta para longe do jogador, dentro da arena
-      const away = Math.atan2(this.y - player.y, this.x - player.x) + (Math.random() - 0.5) * 1.4;
+      const away =
+        Math.atan2(this.y - player.y, this.x - player.x) +
+        (Math.random() - 0.5) * 1.4;
       const d = CAIM.preferredMax;
       this.blinkTarget = {
-        x: Phaser.Math.Clamp(player.x + Math.cos(away) * d, FLOOR.x + 80, FLOOR.x + FLOOR.w - 80),
-        y: Phaser.Math.Clamp(player.y + Math.sin(away) * d, FLOOR.y + 80, FLOOR.y + FLOOR.h - 80)
+        x: Phaser.Math.Clamp(
+          player.x + Math.cos(away) * d,
+          FLOOR.x + 80,
+          FLOOR.x + FLOOR.w - 80,
+        ),
+        y: Phaser.Math.Clamp(
+          player.y + Math.sin(away) * d,
+          FLOOR.y + 80,
+          FLOOR.y + FLOOR.h - 80,
+        ),
       };
     } else {
       Sfx.telegraph(a === 'summon');
@@ -213,10 +395,22 @@ export class Caim implements Combatant {
       case 'pool': {
         // poça no jogador; se não couber, tenta pontos próximos — nunca sobrepõe poças existentes
         const tries: [number, number][] = [[0, 0]];
-        for (let i = 0; i < 8; i++) tries.push([Math.cos((i / 8) * Math.PI * 2) * 140, Math.sin((i / 8) * Math.PI * 2) * 140]);
+        for (let i = 0; i < 8; i++)
+          tries.push([
+            Math.cos((i / 8) * Math.PI * 2) * 140,
+            Math.sin((i / 8) * Math.PI * 2) * 140,
+          ]);
         for (const [ox, oy] of tries) {
-          const px = Phaser.Math.Clamp(player.x + ox, FLOOR.x + 100, FLOOR.x + FLOOR.w - 100);
-          const py = Phaser.Math.Clamp(player.y + oy, FLOOR.y + 100, FLOOR.y + FLOOR.h - 100);
+          const px = Phaser.Math.Clamp(
+            player.x + ox,
+            FLOOR.x + 100,
+            FLOOR.x + FLOOR.w - 100,
+          );
+          const py = Phaser.Math.Clamp(
+            player.y + oy,
+            FLOOR.y + 100,
+            FLOOR.y + FLOOR.h - 100,
+          );
           if (pools.spawn(px, py)) break;
         }
         Sfx.fireball();
@@ -226,9 +420,17 @@ export class Caim implements Combatant {
         const base = Math.random() * Math.PI * 2;
         for (let i = 0; i < 3; i++) {
           const ang = base + (i / 3) * Math.PI * 2;
-          const px = Phaser.Math.Clamp(player.x + Math.cos(ang) * 250, FLOOR.x + 100, FLOOR.x + FLOOR.w - 100);
-          const py = Phaser.Math.Clamp(player.y + Math.sin(ang) * 250, FLOOR.y + 100, FLOOR.y + FLOOR.h - 100);
-          pools.spawn(px, py, 95);
+          const px = Phaser.Math.Clamp(
+            player.x + Math.cos(ang) * 250,
+            FLOOR.x + 100,
+            FLOOR.x + FLOOR.w - 100,
+          );
+          const py = Phaser.Math.Clamp(
+            player.y + Math.sin(ang) * 250,
+            FLOOR.y + 100,
+            FLOOR.y + FLOOR.h - 100,
+          );
+          pools.spawn(px, py, FINAL_BOSS.poolRadius);
         }
         Sfx.explosion();
         break;
@@ -239,16 +441,30 @@ export class Caim implements Combatant {
         this.vy = Math.sin(this.aim) * sp;
         this.owned.push(
           this.ctx.hitboxes.spawn({
-            shape: { kind: 'sector', x: this.x, y: this.y, radius: CLAW.radius, angle: this.aim, halfArc: degToRad(CLAW.arcDeg / 2) },
+            shape: {
+              kind: 'sector',
+              x: this.x,
+              y: this.y,
+              radius: CLAW.radius,
+              angle: this.aim,
+              halfArc: degToRad(CLAW.arcDeg / 2),
+            },
             team: 'enemy',
             damage: CLAW.damage,
             knockback: CLAW.knockback,
             duration: CAIM.cast.claw,
             tag: 'caim_claw',
-            follow: () => ({ x: this.x, y: this.y })
-          })
+            follow: () => ({ x: this.x, y: this.y }),
+          }),
         );
-        this.ctx.effects.slash(this.x, this.y - 50, this.aim, 'slash_enemy', CLAW.radius, { duration: 170, flipY: this.facing < 0, tint: 0xff4050 });
+        this.ctx.effects.slash(
+          this.x,
+          this.y - 50,
+          this.aim,
+          'slash_enemy',
+          CLAW.radius,
+          { duration: 170, flipY: this.facing < 0, tint: 0xff4050 },
+        );
         Sfx.enemyAttack();
         break;
       }
@@ -263,8 +479,16 @@ export class Caim implements Combatant {
           // nunca diretamente sobre Atriox
           for (let t = 0; t < 20; t++) {
             const ang = Math.random() * Math.PI * 2;
-            const px = Phaser.Math.Clamp(this.x + Math.cos(ang) * 160, FLOOR.x + 100, FLOOR.x + FLOOR.w - 100);
-            const py = Phaser.Math.Clamp(this.y + Math.sin(ang) * 120, FLOOR.y + 100, FLOOR.y + FLOOR.h - 100);
+            const px = Phaser.Math.Clamp(
+              this.x + Math.cos(ang) * 160,
+              FLOOR.x + 100,
+              FLOOR.x + FLOOR.w - 100,
+            );
+            const py = Phaser.Math.Clamp(
+              this.y + Math.sin(ang) * 120,
+              FLOOR.y + 100,
+              FLOOR.y + FLOOR.h - 100,
+            );
             if (length(px - player.x, py - player.y) >= 300) {
               this.ctx.spawnWyvern(px, py);
               break;
@@ -300,13 +524,34 @@ export class Caim implements Combatant {
     const half = degToRad(CLAW.arcDeg / 2);
     const red = 0xd01a2a;
     g.fillStyle(red, 0.12);
-    g.slice(this.x, this.y, CLAW.radius, this.aim - half, this.aim + half, false);
+    g.slice(
+      this.x,
+      this.y,
+      CLAW.radius,
+      this.aim - half,
+      this.aim + half,
+      false,
+    );
     g.fillPath();
     g.fillStyle(red, 0.3);
-    g.slice(this.x, this.y, CLAW.radius * p, this.aim - half, this.aim + half, false);
+    g.slice(
+      this.x,
+      this.y,
+      CLAW.radius * p,
+      this.aim - half,
+      this.aim + half,
+      false,
+    );
     g.fillPath();
     g.lineStyle(2, red, 0.7);
-    g.slice(this.x, this.y, CLAW.radius, this.aim - half, this.aim + half, false);
+    g.slice(
+      this.x,
+      this.y,
+      CLAW.radius,
+      this.aim - half,
+      this.aim + half,
+      false,
+    );
     g.strokePath();
   }
 
@@ -321,19 +566,33 @@ export class Caim implements Combatant {
     this.hurtbox.y = this.y;
     this.hurtbox.alive = !this.dead;
     // invulnerável na introdução e durante o salto (esquiva)
-    this.hurtbox.invulnerable = this.scripted || (this.brain.state === 'cast' && this.brain.action === 'blink');
+    this.hurtbox.invulnerable =
+      this.scripted ||
+      (this.brain.state === 'cast' && this.brain.action === 'blink');
     if (this.flash > 0) {
       this.flash -= dt;
       sp.setTintFill(0xffffff);
     } else if (!this.dead) {
-      if (this.brain.state === 'windup' && this.brain.windupProgress > 0.7) sp.setTint(0xffc0c0);
+      if (this.brain.state === 'windup' && this.brain.windupProgress > 0.7)
+        sp.setTint(0xffc0c0);
       else sp.clearTint();
     }
   }
 
   receiveHit(hit: HitInfo): number {
     if (this.dead || this.hurtbox.invulnerable) return 0;
-    const dealt = this.health.damage(Math.round(hit.damage));
+    if (
+      this.defense.absorb(
+        hit.damage,
+        hit.posture ?? (hit.tag === 'charged' ? 85 : hit.heavy ? 40 : 12),
+      )
+    ) {
+      this.flash = 50;
+      return 0;
+    }
+    const dealt = this.health.damage(
+      Math.round(hit.damage * (this.defense.mode === 'punish' ? 1.25 : 1)),
+    );
     if (dealt <= 0) return 0;
     this.flash = hit.tag === 'burn' ? 30 : 60;
     if (hit.tag !== 'burn' && this.brain.onDamage(dealt)) {
@@ -345,6 +604,12 @@ export class Caim implements Combatant {
     return dealt;
   }
 
+  private cancelAttacksForDefense(): void {
+    this.clearVisuals();
+    this.cancelOwned();
+    this.vx = this.vy = 0;
+  }
+
   private cancelOwned(): void {
     for (const h of this.owned) h.cancel();
     this.owned = [];
@@ -353,24 +618,44 @@ export class Caim implements Combatant {
   private die(): void {
     if (this.dead) return;
     this.brain.kill();
+    this.clearVisuals();
     this.cancelOwned();
     this.telegraph.clear();
     this.hurtbox.alive = false;
     this.aura.stop();
     this.anim.play('caim.dead', true);
-    this.scene.tweens.add({ targets: this.anim.sprite, alpha: 0, delay: 1400, duration: 1100 });
-    this.scene.tweens.add({ targets: this.shadow, alpha: 0, delay: 1400, duration: 1100 });
+    this.scene.tweens.add({
+      targets: this.anim.sprite,
+      alpha: 0,
+      delay: 1400,
+      duration: 1100,
+    });
+    this.scene.tweens.add({
+      targets: this.shadow,
+      alpha: 0,
+      delay: 1400,
+      duration: 1100,
+    });
     this.ctx.onDeath();
   }
 
   destroy(): void {
     if (this.removed) return;
     this.removed = true;
+    this.clearVisuals();
     this.cancelOwned();
     this.scene.tweens.killTweensOf([this.anim.sprite, this.shadow]);
     this.anim.destroy();
     this.shadow.destroy();
     this.telegraph.destroy();
     this.aura.destroy();
+  }
+
+  private clearVisuals(): void {
+    for (const v of this.visuals) {
+      this.scene.tweens.killTweensOf(v);
+      v.destroy();
+    }
+    this.visuals = [];
   }
 }

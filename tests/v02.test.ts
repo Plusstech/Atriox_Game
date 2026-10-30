@@ -200,7 +200,7 @@ describe('Caim', () => {
     b.start();
     const ev = b.update(16, { ...ctx, hpRatio: 0.45 });
     expect(ev.some((e) => e.type === 'phase2')).toBe(true);
-    expect(b.maxWyverns).toBe(3);
+    expect(b.maxWyverns).toBe(CAIM.maxWyverns[1]);
     expect(b.onDamage(CAIM.staggerDamage + 1)).toBe(true);
     expect(b.state).toBe('reaction');
   });

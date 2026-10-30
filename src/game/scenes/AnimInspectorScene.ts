@@ -7,6 +7,7 @@ import { degToRad } from '../combat/geometry';
 
 const CHARS: { id: string; label: string; scale: number; collider: number; flying?: boolean }[] = [
   { id: 'atriox', label: 'Atriox', scale: ATRIOX_SCALE, collider: 16 },
+  { id: 'toknar', label: 'Toknar', scale: 0.72, collider: 38 },
   { id: 'caim', label: 'Caim', scale: CAIM_SCALE, collider: 26 },
   { id: 'wyvern', label: 'Wyvern', scale: WYVERN_SCALE, collider: 30, flying: true },
   { id: 'apollon', label: 'Bênção (composto)', scale: ATRIOX_SCALE, collider: 16 }

@@ -1,5 +1,7 @@
 # Game Design — v0.2
 
+Documento histórico da v0.2. Para as regras atuais de progressão, dons, chefes e Eternidade, consulte [V03.md](V03.md).
+
 **Atriox Cinder: Lâmina sem Deus.** Roguelite de ação 2D top-down oblíquo para navegador desktop (Phaser 3.90, WebGL, resolução interna 1280×720, escala FIT, zoom da câmera 1,1).
 
 ## Sequência da partida (8–12 min)

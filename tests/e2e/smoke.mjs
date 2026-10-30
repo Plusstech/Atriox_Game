@@ -340,6 +340,8 @@ async function main() {
     await waitFor(page, () => window.__ATRIOX__.snapshot().gloryGranted !== null, null, 6000, 30);
     check('Bênção da Glória concedida', (await snap(page)).gloryGranted === true);
     check('controle volta após a cena', await waitFor(page, () => !window.__ATRIOX__.arena.player.cinematic, null, 3000));
+    await waitFor(page, () => window.__ATRIOX_GAME__.scene.isActive('VictoryChoiceScene'), null, 15000);
+    await page.keyboard.press('Enter');
     check('resultado após a bênção', await waitFor(page, () => window.__ATRIOX_GAME__.scene.isActive('ResultScene'), null, 10000));
     const save1 = await page.evaluate(() => JSON.parse(localStorage.getItem('atriox-cinder.save.v1')));
     check('bênção persistida no save', save1.unlocks.blessingOfGlory === true && save1.unlocks.caimDefeats === 1, JSON.stringify(save1.unlocks));
@@ -359,6 +361,8 @@ async function main() {
     await page.keyboard.press('Space');
     await waitFor(page, () => window.__ATRIOX__.snapshot().gloryGranted !== null, null, 6000, 30);
     check('bênção não é concedida duas vezes', (await snap(page)).gloryGranted === false);
+    await waitFor(page, () => window.__ATRIOX_GAME__.scene.isActive('VictoryChoiceScene'), null, 15000);
+    await page.keyboard.press('Enter');
     await waitFor(page, () => window.__ATRIOX_GAME__.scene.isActive('ResultScene'), null, 10000);
 
     // reinícios múltiplos

@@ -1,3 +1,4 @@
+import { VictoryChoiceScene } from './game/scenes/VictoryChoiceScene';
 import Phaser from 'phaser';
 import './styles/main.css';
 import { DEV_TOOLS, GAME_H, GAME_W } from './game/config/constants';
@@ -46,9 +47,9 @@ try {
     fps: { target: 60 },
     disableContextMenu: true,
     banner: false,
-    scene: [BootScene, MenuScene, ArenaScene, UIScene, RewardScene, PauseScene, ResultScene, AnimInspectorScene]
+    scene: [BootScene, MenuScene, ArenaScene, UIScene, RewardScene, PauseScene, ResultScene, AnimInspectorScene, VictoryChoiceScene]
   });
-  if (DEV_TOOLS || new URLSearchParams(location.search).has('test')) {
+  if (DEV_TOOLS || (['localhost','127.0.0.1'].includes(location.hostname) && new URLSearchParams(location.search).has('test'))) {
     (window as unknown as { __ATRIOX_GAME__: Phaser.Game }).__ATRIOX_GAME__ = game;
   }
   if (DEV_TOOLS) {

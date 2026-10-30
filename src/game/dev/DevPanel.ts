@@ -33,6 +33,7 @@ export function attachDevPanel(game: Phaser.Game): void {
     <div><b>Partida</b></div>
     <div class="row">
       <button id="dv-kill">matar inimigos</button>
+      <button id="dv-toknar">ir: Toknar</button><button id="dv-build">build completa</button><button id="dv-eternity">Eternidade</button>
       <button id="dv-exec">ir: Carrasco</button>
       <button id="dv-nemeia">ir: Nemeia (Caim)</button>
       <button id="dv-boss50">chefe −50%</button>
@@ -86,6 +87,9 @@ export function attachDevPanel(game: Phaser.Game): void {
     if (a) a.player.godMode = (e.target as HTMLInputElement).checked;
   };
   $('dv-kill').onclick = () => arena()?.devKillAll();
+  $('dv-toknar').onclick = () => arena()?.devGotoRoom('toknar');
+  $('dv-build').onclick = () => { const a=arena(); if(a)for(const g of APOLLON_GIFTS.filter(g=>!g.id.startsWith('universal')))a.applyGift(g.id); };
+  $('dv-eternity').onclick = () => arena()?.startEndless();
   $('dv-exec').onclick = () => arena()?.devGotoRoom('executioner');
   $('dv-nemeia').onclick = () => arena()?.devGotoRoom('nemeia');
   $('dv-pool').onclick = () => arena()?.devSpawnPoolAtPlayer();

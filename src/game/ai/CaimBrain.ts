@@ -1,3 +1,4 @@
+import { FINAL_BOSS } from '../../data/v03';
 /**
  * IA de Caim Morvaigne (lógica pura).
  * Estados: intro → reposition ⇄ windup → cast → recovery; summon; reaction; dead.
@@ -17,7 +18,7 @@ export interface CaimDef {
   cast: Record<CaimAction, number>;
   recovery: Record<CaimAction, number>;
   cooldowns: Record<CaimAction, number>;
-  maxWyverns: [number, number];
+  maxWyverns: [number, number, number];
   phase2At: number;
   reactionMs: number;
   /** dano numa janela curta que provoca reação (interrupção) */
@@ -43,9 +44,10 @@ export class CaimBrain {
   state: CaimState = 'intro';
   action: CaimAction | null = null;
   timer = 0;
-  phase: 1 | 2 = 1;
+  phase: 1 | 2 | 3 = 1;
   private cds: Record<CaimAction, number> = { pool: 1200, eruption: 4000, claw: 0, blink: 2500, summon: 3500 };
   private recentDamage = 0;
+  private reactionImmunity = 0;
   private idle = 0;
 
   constructor(
@@ -77,10 +79,11 @@ export class CaimBrain {
 
   /** Dano recebido. Golpes fortes em sequência causam reação (exceto durante o cast). */
   onDamage(amount: number): boolean {
-    if (this.state === 'dead' || this.state === 'intro') return false;
+    if (this.state === 'dead' || this.state === 'intro' || this.reactionImmunity > 0) return false;
     this.recentDamage += amount;
     if (this.recentDamage >= this.def.staggerDamage && (this.state === 'windup' || this.state === 'reposition' || this.state === 'recovery')) {
       this.recentDamage = 0;
+      this.reactionImmunity = FINAL_BOSS.staggerImmunity;
       this.action = null;
       this.set('reaction');
       return true;
@@ -96,7 +99,7 @@ export class CaimBrain {
     if (ctx.wyverns < this.maxWyverns && c.summon <= 0) return 'summon';
     const opts: [CaimAction, number][] = [];
     if (ctx.canPool && c.pool <= 0) opts.push(['pool', 3]);
-    if (this.phase === 2 && ctx.canPool && c.eruption <= 0) opts.push(['eruption', 2]);
+    if (this.phase >= 2 && ctx.canPool && c.eruption <= 0) opts.push(['eruption', 2]);
     if (ctx.distance > this.def.preferredMax && c.blink <= 0) opts.push(['blink', 1]);
     if (opts.length === 0) return null;
     const total = opts.reduce((s, o) => s + o[1], 0);
@@ -112,11 +115,12 @@ export class CaimBrain {
     const ev: CaimEvent[] = [];
     if (this.state === 'dead' || this.state === 'intro') return ev;
     this.timer += dt;
+    this.reactionImmunity = Math.max(0,this.reactionImmunity-dt);
     this.recentDamage = Math.max(0, this.recentDamage - dt * 0.02);
     for (const k of Object.keys(this.cds) as CaimAction[]) this.cds[k] = Math.max(0, this.cds[k] - dt);
 
-    if (this.phase === 1 && ctx.hpRatio <= this.def.phase2At) {
-      this.phase = 2;
+    if ((this.phase === 1 && ctx.hpRatio <= this.def.phase2At) || (this.phase === 2 && ctx.hpRatio <= 0.35)) {
+      this.phase = this.phase === 1 ? 2 : 3;
       this.cds.summon = 0;
       ev.push({ type: 'phase2' });
     }
@@ -135,20 +139,20 @@ export class CaimBrain {
         break;
       }
       case 'windup':
-        if (this.action && this.timer >= this.def.windup[this.action] * (this.phase === 2 ? 0.85 : 1)) {
+        if (this.action && this.timer >= this.def.windup[this.action] * (this.phase >= 2 ? 0.85 : 1)) {
           this.set('cast');
           ev.push({ type: 'cast', action: this.action });
         }
         break;
       case 'cast':
         if (this.action && this.timer >= this.def.cast[this.action]) {
-          this.cds[this.action] = this.def.cooldowns[this.action] * (this.phase === 2 ? 0.75 : 1);
+          this.cds[this.action] = this.def.cooldowns[this.action] * (this.phase >= 2 ? 0.75 : 1);
           ev.push({ type: 'end', action: this.action });
           this.set('recovery');
         }
         break;
       case 'recovery':
-        if (this.action && this.timer >= this.def.recovery[this.action] * (this.phase === 2 ? 0.8 : 1)) {
+        if (this.action && this.timer >= this.def.recovery[this.action] * (this.phase >= 2 ? 0.8 : 1)) {
           this.action = null;
           this.set('reposition');
         }

@@ -10,6 +10,7 @@ export interface HitInfo {
   /** golpe básico do jogador (dispara bênçãos de "basicHit") */
   basic?: boolean;
   heavy?: boolean;
+  posture?: number;
 }
 
 /** Qualquer coisa que pode receber dano. */

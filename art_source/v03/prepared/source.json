@@ -1,0 +1,12 @@
+{
+  "sha256": "f3ef2cd464bc4eeac1e9a8422322f4e4a1ade6b33a81777918ee15e8583836d0",
+  "model": "u2netp",
+  "method": "foreground alpha segmentation; RGB preserved",
+  "rows": [
+    0,
+    293,
+    533,
+    730,
+    1024
+  ]
+}

@@ -45,6 +45,7 @@ export class ResultScene extends Phaser.Scene {
     const lines = [
       `Tempo:  ${formatTime(r.timeMs)}${r.newBest ? '   ✦ novo recorde' : ''}`,
       `Sala alcançada:  ${r.roomName}`,
+      ...(r.endlessWave?[`Eternidade: onda ${r.endlessWave} · recorde ${rec.eternityBest}`]:[]),
       `Inimigos derrotados:  ${r.kills}`,
       `Bênçãos e dons:  ${r.blessings.length ? r.blessings.join(', ') : '—'}`,
       '',

@@ -14,6 +14,9 @@ export interface Settings {
 }
 
 export interface Records {
+  eternityBest: number;
+  eternityLast: number;
+  eternitySurvived: boolean;
   attempts: number;
   bossVictories: number;
   highestWave: number;
@@ -54,7 +57,7 @@ export function defaultSave(): SaveData {
       damageNumbers: true,
       graphics: 'high'
     },
-    records: { attempts: 0, bossVictories: 0, highestWave: 0, bestTime: null },
+    records: { eternityBest:0,eternityLast:0,eternitySurvived:false, attempts: 0, bossVictories: 0, highestWave: 0, bestTime: null },
     unlocks: { blessingOfGlory: false, caimDefeats: 0 }
   };
 }
@@ -83,6 +86,9 @@ export function sanitize(raw: unknown): SaveData {
       graphics: s.graphics === 'low' ? 'low' : 'high'
     },
     records: {
+      eternityBest: Math.floor(num(rec.eternityBest,0,0)),
+      eternityLast: Math.floor(num(rec.eternityLast,0,0)),
+      eternitySurvived:bool(rec.eternitySurvived,false),
       attempts: Math.floor(num(rec.attempts, 0, 0)),
       bossVictories: Math.floor(num(rec.bossVictories, 0, 0)),
       highestWave: Math.floor(num(rec.highestWave, 0, 0)),
@@ -182,6 +188,10 @@ export class SaveSystem {
     this.data.unlocks.blessingOfGlory = true;
     this.save();
     return fresh;
+  }
+
+  recordEternity(wave:number,survived:boolean):void {
+    const r=this.data.records;r.eternityBest=Math.max(r.eternityBest,survived?wave:Math.max(0,wave-1));r.eternityLast=wave;r.eternitySurvived=survived;this.save();
   }
 
   reset(): void {

@@ -8,3 +8,7 @@ tests/e2e/screenshots/
 .env.local
 __pycache__/
 art_source/v02/_inspect/
+
+art_source/v03/_inspect/
+.venv-art/
+artifacts/

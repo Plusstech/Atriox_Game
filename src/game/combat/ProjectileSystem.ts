@@ -1,3 +1,4 @@
+import { ETERNITY } from '../../data/v03';
 import Phaser from 'phaser';
 import { shapeHitsCircle } from './geometry';
 import type { Hurtbox, Team } from './HitboxSystem';
@@ -100,7 +101,7 @@ export class ProjectileSystem {
   fire(spec: ProjectileSpec): Projectile {
     const p = new Projectile(this.scene, spec);
     p.sync();
-    this.list.push(p);
+    if(this.list.length<ETERNITY.projectileCap)this.list.push(p);else p.destroy();
     return p;
   }
 

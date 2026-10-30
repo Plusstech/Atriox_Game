@@ -18,7 +18,7 @@ export class Effects {
 
   constructor(private readonly scene: Phaser.Scene) {
     const mk = (tex: string, cfg: Phaser.Types.GameObjects.Particles.ParticleEmitterConfig, depth = DEPTH.overlayFx - 10): Emitter => {
-      const e = scene.add.particles(0, 0, tex, { emitting: false, ...cfg });
+      const e = scene.add.particles(0, 0, tex, { emitting: false, maxParticles: 32, ...cfg });
       e.setDepth(depth);
       return e;
     };
@@ -287,6 +287,7 @@ export class Effects {
     this.scene.tweens.add({ targets: base, alpha: 0.75, duration: 150 });
     this.scene.tweens.add({ targets: base, alpha: 0, delay: duration - 400, duration: 400, onComplete: () => base.destroy() });
     const fire = this.scene.add.particles(x, y, 'p_ember', {
+      maxParticles: 20,
       x: { min: -radius * 0.85, max: radius * 0.85 },
       y: { min: -radius * 0.45, max: radius * 0.45 },
       speedY: { min: -120, max: -40 },
