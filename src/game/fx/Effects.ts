@@ -207,16 +207,16 @@ export class Effects {
 
   /** Imagem fantasma (afterimage) de um sprite, para o dash. */
   afterimage(src: Phaser.GameObjects.Sprite, tint = 0xffc860): void {
-    const g = this.scene.add.image(src.x, src.y, src.texture.key);
+    const g = this.scene.add.image(src.x, src.y, src.texture.key, src.frame.name);
     g.setOrigin(src.originX, src.originY);
     g.setScale(src.scaleX, src.scaleY);
     g.setFlipX(src.flipX);
     g.setRotation(src.rotation);
     g.setDepth(src.depth - 1);
     g.setTintFill(tint);
-    g.setAlpha(0.45);
+    g.setAlpha(0.32);
     g.setBlendMode(Phaser.BlendModes.ADD);
-    this.scene.tweens.add({ targets: g, alpha: 0, duration: 260, onComplete: () => g.destroy() });
+    this.scene.tweens.add({ targets: g, alpha: 0, duration: 220, onComplete: () => g.destroy() });
   }
 
   damageNumber(x: number, y: number, amount: number, color = '#f1e3c4', big = false): void {

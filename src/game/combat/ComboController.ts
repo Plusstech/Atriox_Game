@@ -27,7 +27,15 @@ export class ComboController {
   private pendingStart = false;
   private sinceEnd = 0;
 
-  constructor(private readonly steps: ComboStepDef[]) {}
+  /**
+   * @param bufferWindow  um clique durante o golpe só é aceito se faltar no máximo
+   *                      este tempo (ms) para o ponto de encadeamento. Cliques mais cedo
+   *                      são recusados (o Player os mantém por 120 ms e tenta de novo).
+   */
+  constructor(
+    private readonly steps: ComboStepDef[],
+    readonly bufferWindow = 120
+  ) {}
 
   get attacking(): boolean {
     return this.phase !== 'ready';
@@ -42,9 +50,19 @@ export class ComboController {
     return this.index >= 0 ? this.index : this.nextIndex - 1;
   }
 
-  press(): void {
-    if (this.phase === 'ready') this.pendingStart = true;
-    else this.buffered = true;
+  /** Registra um clique. Retorna false se foi cedo demais para entrar no buffer. */
+  press(): boolean {
+    if (this.phase === 'ready') {
+      this.pendingStart = true;
+      return true;
+    }
+    const step = this.steps[this.index];
+    const chainAt = this.index < this.steps.length - 1 ? Math.max(step.chainFrom, step.windup + step.active) : step.windup + step.active + step.recovery;
+    if (this.elapsed >= chainAt - this.bufferWindow) {
+      this.buffered = true;
+      return true;
+    }
+    return false;
   }
 
   canCancel(): boolean {

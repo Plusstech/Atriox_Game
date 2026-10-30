@@ -1,3 +1,5 @@
+import type { CaimDef } from '../game/ai/CaimBrain';
+
 /**
  * O Carrasco da Provação — personagem ORIGINAL criado para este protótipo.
  * Não existe na história canônica de Atriox Cinder.
@@ -116,4 +118,26 @@ export const EXECUTIONER: BossDef = {
       speed: 380
     }
   ]
+};
+
+/**
+ * Caim Morvaigne — Arcano de Drevagna, líder da Liga Sóbele, controla sangue
+ * e Wyverns infectadas (segundo a fonte canônica). Atriox o derrota na história.
+ */
+export const CAIM: CaimDef & { name: string; title: string } = {
+  name: 'Caim Morvaigne',
+  title: 'Arcano de Drevagna',
+  hp: 1250,
+  speed: 205,
+  radius: 22,
+  preferredMin: 210,
+  preferredMax: 350,
+  windup: { pool: 650, eruption: 800, claw: 420, blink: 260, summon: 700 },
+  cast: { pool: 450, eruption: 600, claw: 160, blink: 420, summon: 900 },
+  recovery: { pool: 650, eruption: 750, claw: 700, blink: 250, summon: 700 },
+  cooldowns: { pool: 2600, eruption: 7000, claw: 1400, blink: 3200, summon: 11000 },
+  maxWyverns: [2, 3],
+  phase2At: 0.5,
+  reactionMs: 520,
+  staggerDamage: 60
 };

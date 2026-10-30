@@ -1,15 +1,16 @@
 import Phaser from 'phaser';
 import { COLORS, FONT_TITLE, FONT_UI, GAME_H, GAME_W } from '../config/constants';
-import { getBlessing } from '../../data/blessings';
+import type { RewardOffer } from './ArenaScene';
 import { ornament } from '../ui/widgets';
 import { Sfx } from '../audio/Sfx';
 
 interface RewardData {
-  offer: string[];
+  title?: string;
+  offers: RewardOffer[];
   onChoose: (id: string) => void;
 }
 
-/** Escolha de 1 entre 3 bênçãos (mouse ou teclas 1/2/3). A arena fica pausada. */
+/** Escolha de 1 entre até 3 recompensas (mouse ou teclas 1/2/3). A arena fica pausada. */
 export class RewardScene extends Phaser.Scene {
   private chosen = false;
   private data0!: RewardData;
@@ -23,11 +24,11 @@ export class RewardScene extends Phaser.Scene {
     this.chosen = false;
     const dim = this.add.rectangle(0, 0, GAME_W, GAME_H, 0x050203, 0.78).setOrigin(0).setAlpha(0);
     this.tweens.add({ targets: dim, alpha: 1, duration: 250 });
-    this.add.text(GAME_W / 2, 92, 'ESCOLHA UMA BÊNÇÃO', { fontFamily: FONT_TITLE, fontSize: '36px', color: COLORS.hex.gold, stroke: '#0b0607', strokeThickness: 6 }).setOrigin(0.5);
+    this.add.text(GAME_W / 2, 92, data.title ?? 'ESCOLHA UMA BÊNÇÃO', { fontFamily: FONT_TITLE, fontSize: '36px', color: COLORS.hex.gold, stroke: '#0b0607', strokeThickness: 6 }).setOrigin(0.5);
     this.add.text(GAME_W / 2, 132, 'A brasa da provação responde à sua vontade.', { fontFamily: FONT_UI, fontSize: '16px', fontStyle: 'italic', color: COLORS.hex.dim }).setOrigin(0.5);
     ornament(this, GAME_W / 2, 112, 520);
 
-    const defs = data.offer.map((id) => getBlessing(id)).filter((b) => !!b);
+    const defs = data.offers;
     const cw = 320;
     const ch = 380;
     const gap = 34;
@@ -57,7 +58,8 @@ export class RewardScene extends Phaser.Scene {
         .text(0, -ch / 2 + 226, b.description, { fontFamily: FONT_UI, fontSize: '16px', color: '#cdbb9a', align: 'center', wordWrap: { width: cw - 50 }, lineSpacing: 4 })
         .setOrigin(0.5, 0);
       const key = this.add.text(0, ch / 2 - 30, `[${i + 1}]`, { fontFamily: FONT_UI, fontSize: '15px', color: COLORS.hex.dim }).setOrigin(0.5);
-      const card = this.add.container(x, y + 40, [bg, glyph, name, desc, key]).setAlpha(0);
+      const tag = this.add.text(0, -ch / 2 + 22, b.tag ? b.tag.toUpperCase() : '', { fontFamily: FONT_UI, fontSize: '12px', color: hex }).setOrigin(0.5);
+      const card = this.add.container(x, y + 40, [bg, glyph, name, desc, key, tag]).setAlpha(0);
       card.setSize(cw, ch);
       card.setInteractive({ useHandCursor: true });
       card.on('pointerover', () => {

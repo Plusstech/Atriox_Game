@@ -21,8 +21,16 @@ export const DEPTH = {
   vignette: 300000
 };
 
-/** Escala do sprite do Atriox (as poses extraídas têm ~250 px de altura) */
-export const ATRIOX_SCALE = 0.43;
+/**
+ * Escalas de exibição dos personagens do atlas (altura em pé no atlas: Atriox 228 px,
+ * Caim 238 px). Atriox ≈ 128 px no mundo; com o zoom da câmera ≈ 141 px na tela.
+ */
+export const ATRIOX_SCALE = 0.56;
+export const CAIM_SCALE = 0.56;
+export const WYVERN_SCALE = 0.62;
+
+/** Zoom da câmera: valoriza os personagens sem esconder telegraphs fora da tela */
+export const CAMERA_ZOOM = 1.1;
 
 /**
  * Ferramentas de desenvolvimento (painel, hooks de teste).

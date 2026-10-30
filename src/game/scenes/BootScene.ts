@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import { COLORS, FONT_UI, GAME_H, GAME_W } from '../config/constants';
 import { generateAllTextures, makeAtrioxFallback } from '../fx/TextureFactory';
+import { ATLAS_KEY, type AnimLibrary } from '../animation/SpriteAnimator';
+import { buildAnimations, type AtlasMeta } from '../../data/animations';
 
 export const ATRIOX_POSES = ['idle', 'lunge', 'slash', 'cast', 'dash', 'hurt'] as const;
 
@@ -34,9 +36,14 @@ export class BootScene extends Phaser.Scene {
       label.destroy();
     });
 
+    // concept original (menu, retrato, telas de resultado)
     this.load.setPath('assets/atriox/');
     this.load.json('atriox_poses', 'atriox_poses.json');
     for (const p of ATRIOX_POSES) this.load.image(`atriox_${p}`, `${p}.png`);
+    // atlas de animação (tools/build_atlases.py)
+    this.load.setPath('assets/atlas/');
+    this.load.multiatlas(ATLAS_KEY, 'characters.json', 'assets/atlas/');
+    this.load.json('characters_meta', 'characters.json');
   }
 
   create(): void {
@@ -48,7 +55,14 @@ export class BootScene extends Phaser.Scene {
     if (!this.cache.json.exists('atriox_poses')) {
       this.cache.json.add('atriox_poses', { poses: {} });
     }
+    const meta = (this.cache.json.get('characters_meta')?.meta ?? { atrioxRunOrder: [], caimRunOrder: [], origins: {} }) as AtlasMeta;
+    const lib: AnimLibrary = { anims: buildAnimations(meta), origins: meta.origins ?? {} };
+    if (!this.textures.exists(ATLAS_KEY)) {
+      console.error('[assets] atlas de personagens ausente — o jogo não pode animar os personagens');
+      this.missing.push('assets/atlas/characters.json');
+    }
+    this.registry.set('animLibrary', lib);
     this.registry.set('missingAssets', this.missing);
-    this.scene.start('MenuScene');
+    this.scene.start(new URLSearchParams(location.search).has('inspector') ? 'AnimInspectorScene' : 'MenuScene');
   }
 }

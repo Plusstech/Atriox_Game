@@ -65,7 +65,21 @@ O tema central é **fé × obediência × autonomia**. O protótipo v0.1 não an
 4. **Selûnn Ecléssio** deve ser tratado como ameaça **acima** de Atriox, por exemplo com encontros de sobrevivência e não de vitória, até que a narrativa autorize outro desfecho.
 5. **Leona e a Bruxa do Pântano** não devem virar chefes "derrotados" sem nova decisão narrativa. A fonte registra purificação e misericórdia.
 
-## 5. Conteúdo original do protótipo v0.1 (não canônico)
+## 5. Representação na v0.2
+
+| Elemento | Base na fonte | Adaptação de jogo (proposta) |
+|---|---|---|
+| **Caim Morvaigne** como chefe | Arcano de Drevagna, líder da Liga, comanda Wyverns infectadas; **Atriox o mata** | Arena de Nemeia como palco do confronto (na fonte, Nemeia é onde Atriox enfrenta apóstatas, Wyverns e Selûnn; o local exato da luta com Caim é uma escolha de jogo). |
+| **Sangue que domina** | Drevagna é o Sóbele do Controle Absoluto e amaldiçoa o sangue de Atriox; o sangue de Caim deixa maldição | Mecânica de exposição e stun nas poças. |
+| **Wyverns** | Wyverns infectadas comandadas por Caim | Invocações durante a luta. |
+| **Apollon** | Sóbele da glória, patrono de Atriox; intervém em Nemeia | Os dons são manifestações da luz solar, com intervenção direta limitada. O avatar é uma emanação temporária, não um aliado permanente. |
+| **Final: Apollon abençoa Atriox** | — | **Proposta narrativa** para o fim da v0.2. Na fonte, Atriox depois se sente abandonado por Apollon e, no Bastião, recusa sua ordem. A bênção representa o auge da fé **antes** da ruptura que dará sentido a "Lâmina sem Deus". |
+| Citação "O que fazes em vida ecoa na eternidade." | — | Texto de jogo, não atribuído à fonte. |
+| Bênção da Glória | — | Recompensa original de jogo. |
+
+Na v0.2, Caim aparece com cabelo preto curto, rosto pálido, casaco preto com bordados dourados e magia de sangue, conforme a arte fornecida. A fonte não descreve sua aparência nos trechos lidos.
+
+## 6. Conteúdo original do protótipo (não canônico)
 
 | Elemento | Status |
 |---|---|

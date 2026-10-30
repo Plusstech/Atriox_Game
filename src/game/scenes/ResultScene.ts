@@ -37,21 +37,21 @@ export class ResultScene extends Phaser.Scene {
     }
 
     const title = r.victory ? 'PROVAÇÃO SUPERADA' : 'ATRIOX CAIU';
-    const sub = r.victory ? 'O Carrasco da Provação foi derrotado.' : 'A lâmina volta a se erguer. A provação continua.';
+    const sub = r.victory ? 'Caim Morvaigne caiu na Arena de Nemeia.' : `Atriox caiu em: ${r.roomName}. A lâmina volta a se erguer.`;
     this.add.text(110, 120, title, { fontFamily: FONT_TITLE, fontSize: '50px', color: r.victory ? COLORS.hex.gold : COLORS.hex.red, stroke: '#0b0607', strokeThickness: 6 });
     this.add.text(112, 186, sub, { fontFamily: FONT_UI, fontSize: '19px', fontStyle: 'italic', color: COLORS.hex.ivory });
     ornament(this, 360, 226, 500);
 
     const lines = [
       `Tempo:  ${formatTime(r.timeMs)}${r.newBest ? '   ✦ novo recorde' : ''}`,
-      `Onda alcançada:  ${r.highestWave > 2 ? 'Carrasco da Provação' : r.highestWave || 'Preparação'}`,
+      `Sala alcançada:  ${r.roomName}`,
       `Inimigos derrotados:  ${r.kills}`,
-      `Bênçãos:  ${r.blessings.length ? r.blessings.join(', ') : '—'}`,
+      `Bênçãos e dons:  ${r.blessings.length ? r.blessings.join(', ') : '—'}`,
       '',
-      `Tentativas:  ${rec.attempts}     Vitórias contra o Carrasco:  ${rec.bossVictories}`,
+      `Tentativas:  ${rec.attempts}     Vitórias:  ${rec.bossVictories}`,
       `Melhor tempo:  ${rec.bestTime !== null ? formatTime(rec.bestTime) : '—'}`
     ];
-    if (r.victory) lines.push('', 'Recompensa: Fragmento da Provação (registrado no seu histórico).');
+    if (r.victory) lines.push('', r.gloryGranted === false ? 'Bênção da Glória: já concedida em uma vitória anterior.' : 'Bênção da Glória concedida: o dash purifica o sangue nas próximas partidas.');
     this.add.text(112, 252, lines.join('\n'), { fontFamily: FONT_UI, fontSize: '18px', color: '#d9c8a6', lineSpacing: 8, wordWrap: { width: 640 } });
 
     makeButton(this, 260, GAME_H - 110, 'Nova tentativa  (Enter)', () => this.restart());

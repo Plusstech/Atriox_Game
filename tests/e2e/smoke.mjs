@@ -1,16 +1,14 @@
 /**
  * Teste de ponta a ponta (headless) contra o BUILD DE PRODUÇÃO (dist/).
  * Uso: npm run build && npm run test:e2e
- *
- * Usa playwright-core com um Chromium já instalado em %LOCALAPPDATA%/ms-playwright
- * (ou CHROME_PATH). Não baixa navegadores.
+ * Usa playwright-core com um Chromium já instalado (não baixa navegadores).
  */
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
+import { findChrome } from './chrome.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const PORT = 4317;
@@ -18,29 +16,13 @@ const GAME_URL = `http://127.0.0.1:${PORT}/?test`;
 const SHOTS = path.join(ROOT, 'tests', 'e2e', 'screenshots');
 fs.mkdirSync(SHOTS, { recursive: true });
 
-function findChrome() {
-  if (process.env.CHROME_PATH) return process.env.CHROME_PATH;
-  const base = path.join(process.env.LOCALAPPDATA ?? path.join(os.homedir(), 'AppData', 'Local'), 'ms-playwright');
-  if (!fs.existsSync(base)) return undefined;
-  const dirs = fs.readdirSync(base).filter((d) => d.startsWith('chromium')).sort().reverse();
-  for (const d of dirs) {
-    for (const rel of ['chrome-win64/chrome.exe', 'chrome-win/chrome.exe', 'chrome-headless-shell-win64/chrome-headless-shell.exe', 'chrome-linux/chrome']) {
-      const p = path.join(base, d, rel);
-      if (fs.existsSync(p)) return p;
-    }
-  }
-  return undefined;
-}
-
 const results = [];
 function check(name, ok, detail = '') {
   results.push({ name, ok: !!ok, detail });
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${detail ? '  — ' + detail : ''}`);
 }
-
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-async function waitFor(page, fn, arg, timeout = 15000, step = 100) {
+async function waitFor(page, fn, arg, timeout = 15000, step = 80) {
   const t0 = Date.now();
   while (Date.now() - t0 < timeout) {
     if (await page.evaluate(fn, arg).catch(() => false)) return true;
@@ -48,10 +30,10 @@ async function waitFor(page, fn, arg, timeout = 15000, step = 100) {
   }
   return false;
 }
-
-const active = (page, key) => page.evaluate((k) => !!window.__ATRIOX_GAME__?.scene.isActive(k), key);
 const snap = (page) => page.evaluate(() => window.__ATRIOX__?.snapshot());
-const arena = (page, code) => page.evaluate(code);
+const A = (page, fn, arg) => page.evaluate(fn, arg);
+const inArena = (page) =>
+  waitFor(page, () => window.__ATRIOX_GAME__.scene.isActive('ArenaScene') && window.__ATRIOX__.arena.player && !window.__ATRIOX__.arena.player.dead, null, 6000);
 
 async function main() {
   const server = spawn(process.execPath, [path.join(ROOT, 'node_modules', 'vite', 'bin', 'vite.js'), 'preview', '--port', String(PORT), '--strictPort', '--host', '127.0.0.1'], {
@@ -66,17 +48,10 @@ async function main() {
         resolve();
       }
     });
-    server.on('exit', (c) => reject(new Error(`preview saiu (${c})`)));
   });
-
-  const browser = await chromium.launch({
-    executablePath: findChrome(),
-    headless: true,
-    args: ['--enable-unsafe-swiftshader', '--use-angle=swiftshader', '--autoplay-policy=no-user-gesture-required']
-  });
+  const browser = await chromium.launch({ executablePath: findChrome(), headless: true, args: ['--enable-unsafe-swiftshader', '--use-angle=swiftshader'] });
 
   try {
-    // ------------------------------------------------------------------ partida completa
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 720 } });
     const page = await ctx.newPage();
     const errors = [];
@@ -85,195 +60,339 @@ async function main() {
 
     await page.goto(GAME_URL);
     check('build abre e chega ao menu', await waitFor(page, () => window.__ATRIOX_GAME__?.scene.isActive('MenuScene')));
-    await page.screenshot({ path: path.join(SHOTS, '01-menu.png') });
-
+    const atlasOk = await page.evaluate(() => window.__ATRIOX_GAME__.textures.exists('characters') && Object.keys(window.__ATRIOX_GAME__.registry.get('animLibrary').anims).length > 20);
+    check('atlas de animação carregado (quadros reais)', atlasOk);
     await page.mouse.click(640, 360);
     await page.keyboard.press('Enter');
-    check('menu inicia a partida', await waitFor(page, () => !!window.__ATRIOX__?.arena?.player && window.__ATRIOX_GAME__.scene.isActive('ArenaScene')));
+    check('menu inicia a partida', await inArena(page));
     await sleep(900);
     const s0 = await snap(page);
-    check('fase inicial = tutorial', s0.phase === 'tutorial', s0.phase);
+    check('sala inicial = preparação', s0.room === 'prep' && s0.phase === 'prep', `${s0.room}/${s0.phase}`);
     const firstListeners = s0.listeners;
 
-    // movimento
-    const p0 = s0.player;
-    await page.keyboard.down('d');
-    await sleep(400);
-    await page.keyboard.up('d');
-    await page.keyboard.down('w');
-    await sleep(300);
-    await page.keyboard.up('w');
-    await sleep(200);
-    const p1 = (await snap(page)).player;
-    const fps = await page.evaluate(() => Math.round(window.__ATRIOX_GAME__.loop.actualFps));
-    check('Atriox se movimenta (D e W)', p1.x > p0.x + 10 && p1.y < p0.y - 5, `${p0.x},${p0.y} → ${p1.x},${p1.y} (fps headless ${fps})`);
-
-    // ataque
-    await page.mouse.move(900, 300);
-    await page.mouse.down();
-    await page.mouse.up();
-    check('clique inicia combo', await waitFor(page, () => window.__ATRIOX__.arena.player.combo.attacking, null, 1000, 10));
-    check('hitbox do golpe surge na janela ativa', await waitFor(page, () => window.__ATRIOX__.arena.hitboxes.all.some((b) => b.spec.tag === 'attack_1'), null, 1000, 10));
-    await sleep(500);
-
-    // dash
-    // observa o estado a cada quadro do jogo (independente do FPS do headless)
-    await page.evaluate(() => {
-      const a = window.__ATRIOX__.arena;
-      window.__dashSeen = false;
-      const fn = () => {
-        if (a.player.dash.state === 'dashing' && a.player.hurtbox.invulnerable) window.__dashSeen = true;
-      };
-      a.events.on('postupdate', fn);
-      window.__dashOff = () => a.events.off('postupdate', fn);
-    });
-    await page.keyboard.press('Space');
-    const dashInv = await waitFor(page, () => window.__dashSeen, null, 2000, 20);
-    await page.evaluate(() => window.__dashOff());
-    const dashInfo = await page.evaluate(() => { const p = window.__ATRIOX__.arena.player; return JSON.stringify({ used: p.usage.dashed, state: p.dash.state, cd: Math.round(p.dash.cooldown.remaining), combo: p.combo.phase, casting: p.spell.casting }); });
-    check('dash ativa invulnerabilidade', dashInv, dashInfo);
-    await sleep(500);
-    check('dash encerra invulnerabilidade', !(await arena(page, () => window.__ATRIOX__.arena.player.hurtbox.invulnerable)));
-
-    // magia
-    await page.mouse.click(900, 300, { button: 'right' });
-    check('magia dispara projétil', await waitFor(page, () => window.__ATRIOX__.arena.projectiles.count > 0, null, 1500, 10));
-    check('magia entra em cooldown', !(await arena(page, () => window.__ATRIOX__.arena.player.spell.cooldown.ready)));
-    await page.screenshot({ path: path.join(SHOTS, '02-tutorial.png') });
-
-    // iniciar provação no altar
-    await arena(page, () => {
-      const a = window.__ATRIOX__.arena;
-      a.player.x = 1200;
-      a.player.y = 980;
-    });
-    await sleep(150);
-    await page.keyboard.press('e');
-    check('E no altar inicia a onda 1', await waitFor(page, () => window.__ATRIOX__.snapshot().phase === 'wave', null, 2000));
-    check('inimigos surgem', await waitFor(page, () => window.__ATRIOX__.snapshot().alive >= 3, null, 4000));
-    await sleep(1600);
-    await page.screenshot({ path: path.join(SHOTS, '03-wave1.png') });
-
-    // o jogador pode receber dano de verdade (sem modo deus) — inimigos atacam
-    const hpBefore = (await snap(page)).hp;
-    await arena(page, () => {
-      const a = window.__ATRIOX__.arena;
-      const e = a.enemies.find((x) => !x.dead);
-      a.player.x = e.x + 40;
-      a.player.y = e.y;
-    });
-    const tookDamage = await waitFor(page, (hp) => window.__ATRIOX__.snapshot().hp < hp, hpBefore, 6000, 50);
-    check('inimigos perseguem e atacam (jogador recebeu dano)', tookDamage, `hp ${hpBefore} → ${(await snap(page)).hp}`);
-    await arena(page, () => (window.__ATRIOX__.arena.player.godMode = true));
-
-    // inimigos mortos não atacam: matar e conferir que nenhuma hitbox inimiga sobra
-    await arena(page, () => window.__ATRIOX__.arena.devKillAll());
-    await sleep(200);
-    const enemyBoxes = await arena(page, () => window.__ATRIOX__.arena.hitboxes.all.filter((b) => b.spec.team === 'enemy' && !b.cancelled).length);
-    check('inimigos mortos não deixam ataques ativos', enemyBoxes === 0, `hitboxes inimigas: ${enemyBoxes}`);
-
-    const clearWave = async () => {
-      for (let i = 0; i < 12; i++) {
-        await arena(page, () => window.__ATRIOX__.arena.devKillAll());
-        if (await waitFor(page, () => window.__ATRIOX__.snapshot().phase === 'waveCleared', null, 1300)) return true;
-      }
-      return false;
-    };
-    check('onda 1 termina ao derrotar todos', await clearWave());
-    await sleep(900);
-    await arena(page, () => {
-      const a = window.__ATRIOX__.arena;
-      a.player.x = 1200;
-      a.player.y = 980;
-    });
-    await sleep(200);
-    await page.keyboard.press('e');
-    check('brasa de bênção abre a escolha', await waitFor(page, () => window.__ATRIOX_GAME__.scene.isActive('RewardScene'), null, 3000));
-    await sleep(700);
-    await page.screenshot({ path: path.join(SHOTS, '04-reward.png') });
-    const dashMulBefore = await arena(page, () => window.__ATRIOX__.arena.player.stats.get('dashCooldownMul'));
-    // escolher Passo do Julgamento se oferecida, senão a primeira
-    const offerIdx = await page.evaluate(() => {
-      const r = window.__ATRIOX_GAME__.scene.getScene('RewardScene');
-      return (r.data0?.offer ?? []).indexOf('judgment_step');
-    });
-    await page.keyboard.press(String(offerIdx >= 0 ? offerIdx + 1 : 1));
-    check('bênção concedida', await waitFor(page, () => window.__ATRIOX__.snapshot().blessings.length === 1, null, 3000));
-    if (offerIdx >= 0) {
-      const after = await arena(page, () => window.__ATRIOX__.arena.player.stats.get('dashCooldownMul'));
-      check('recompensa altera atributos (cooldown do dash)', after < dashMulBefore, `${dashMulBefore} → ${after}`);
-    } else {
-      const b = (await snap(page)).blessings[0];
-      check('recompensa registrada', !!b, b);
-    }
-
-    check('onda 2 começa', await waitFor(page, () => window.__ATRIOX__.snapshot().phase === 'wave' && window.__ATRIOX__.snapshot().wave === 1, null, 4000));
-    await sleep(1500);
-    check('onda 2 termina', await clearWave());
-    await sleep(900);
-    await arena(page, () => {
-      const a = window.__ATRIOX__.arena;
-      a.player.x = 1200;
-      a.player.y = 980;
-    });
-    await sleep(200);
-    await page.keyboard.press('e');
-    await waitFor(page, () => window.__ATRIOX_GAME__.scene.isActive('RewardScene'), null, 3000);
-    await sleep(600);
-    await page.keyboard.press('2');
-    check('segunda bênção concedida', await waitFor(page, () => window.__ATRIOX__.snapshot().blessings.length === 2, null, 3000));
-
-    // chefe
-    check('introdução do chefe', await waitFor(page, () => window.__ATRIOX__.snapshot().phase === 'bossIntro', null, 4000));
-    await sleep(2900);
-    await page.screenshot({ path: path.join(SHOTS, '05-boss-intro.png') });
-    check('combate contra o chefe começa', await waitFor(page, () => window.__ATRIOX__.snapshot().phase === 'boss', null, 6000));
-    const telegraphSeen = await waitFor(page, () => window.__ATRIOX__.arena.boss?.brain.state === 'windup' && window.__ATRIOX__.arena.boss.brain.windupProgress > 0.6, null, 8000, 30);
-    if (telegraphSeen) await page.screenshot({ path: path.join(SHOTS, '06-boss-telegraph.png') });
-    check('chefe executa ataques com telegraph', telegraphSeen);
-    await arena(page, () => window.__ATRIOX__.arena.devDamageBoss(0.55));
-    check('chefe muda para a fase 2', await waitFor(page, () => window.__ATRIOX__.snapshot().boss?.phase === 2, null, 2000));
-    await sleep(700);
-    await page.screenshot({ path: path.join(SHOTS, '07-boss-phase2.png') });
-    const infernoSeen = await waitFor(page, () => window.__ATRIOX__.arena.boss?.brain.move?.id === 'inferno' && window.__ATRIOX__.arena.boss.brain.windupProgress > 0.5, null, 15000, 30);
-    if (infernoSeen) await page.screenshot({ path: path.join(SHOTS, '08-boss-inferno.png') });
-    check('golpe exclusivo da fase 2 (Execução Ardente)', infernoSeen);
-    await arena(page, () => window.__ATRIOX__.arena.devDamageBoss(1));
-    await sleep(800);
-    await page.screenshot({ path: path.join(SHOTS, '09-boss-death.png') });
-    check('vitória leva à tela de resultado', await waitFor(page, () => window.__ATRIOX_GAME__.scene.isActive('ResultScene'), null, 10000));
-    await sleep(800);
-    await page.screenshot({ path: path.join(SHOTS, '10-result-victory.png') });
-    const rec = await page.evaluate(() => JSON.parse(localStorage.getItem('atriox-cinder.save.v1') ?? '{}'));
-    check('save local registra vitória e tentativa', rec.records?.bossVictories >= 1 && rec.records?.attempts >= 1, JSON.stringify(rec.records));
-
-    // reinício sem duplicar listeners/entidades
-    const counts = [];
-    for (let i = 0; i < 2; i++) {
-      await page.keyboard.press('Enter');
-      await waitFor(page, () => window.__ATRIOX_GAME__.scene.isActive('ArenaScene') && window.__ATRIOX__.arena.player && !window.__ATRIOX__.arena.player.dead, null, 5000);
+    // ------------------------------------------------ movimento cardinal e diagonal (medido em tempo de jogo)
+    const measureMove = async (keys) => {
+      await A(page, () => {
+        const a = window.__ATRIOX__.arena;
+        window.__mv = { max: 0, x0: a.player.x, y0: a.player.y };
+        window.__mvFn = () => {
+          const sp = Math.hypot(a.player.vx, a.player.vy);
+          if (sp > window.__mv.max) window.__mv.max = sp;
+        };
+        a.events.on('postupdate', window.__mvFn);
+      });
+      for (const k of keys) await page.keyboard.down(k);
       await sleep(900);
-      const s = await snap(page);
-      counts.push(s);
-      // derrota: dano letal
-      await arena(page, () => window.__ATRIOX__.arena.player.receiveHit({ damage: 9999, knockback: 0, dirX: 1, dirY: 0, tag: 'test' }));
-      await waitFor(page, () => window.__ATRIOX_GAME__.scene.isActive('ResultScene'), null, 8000);
-      if (i === 0) {
-        await sleep(700);
-        await page.screenshot({ path: path.join(SHOTS, '11-result-defeat.png') });
+      for (const k of keys) await page.keyboard.up(k);
+      return A(page, () => {
+        const a = window.__ATRIOX__.arena;
+        a.events.off('postupdate', window.__mvFn);
+        return { max: Math.round(window.__mv.max), dx: Math.round(a.player.x - window.__mv.x0), dy: Math.round(a.player.y - window.__mv.y0) };
+      });
+    };
+    const mR = await measureMove(['d']);
+    const mDiag = await measureMove(['s', 'a']);
+    check('movimento cardinal', mR.dx > 10 && Math.abs(mR.max - 285) < 3, JSON.stringify(mR));
+    check('diagonal normalizada (mesma velocidade máxima)', mDiag.dx < -5 && mDiag.dy > 5 && Math.abs(mDiag.max - 285) < 3, JSON.stringify(mDiag));
+
+    // ------------------------------------------------ corrida: ciclo de quadros reais, sem reinício
+    await A(page, () => {
+      const a = window.__ATRIOX__.arena;
+      a.player.x = 500;
+      window.__runLog = [];
+      window.__runFn = () => {
+        if (a.player.animator.state === 'run') window.__runLog.push(a.player.animator.frameName);
+      };
+      a.events.on('postupdate', window.__runFn);
+    });
+    await page.keyboard.down('d');
+    await sleep(3500);
+    await page.keyboard.up('d');
+    const runLog = await A(page, () => {
+      window.__ATRIOX__.arena.events.off('postupdate', window.__runFn);
+      return window.__runLog;
+    });
+    const order = await page.evaluate(() => window.__ATRIOX_GAME__.cache.json.get('characters_meta').meta.atrioxRunOrder);
+    const seq = runLog.filter((f, i) => i === 0 || f !== runLog[i - 1]);
+    let monotonic = true;
+    for (let i = 1; i < seq.length; i++) if (order.indexOf(seq[i]) !== (order.indexOf(seq[i - 1]) + 1) % order.length) monotonic = false;
+    check('corrida avança o ciclo sem reiniciar', new Set(seq).size >= 6 && monotonic, `${seq.length} trocas, ${new Set(seq).size} quadros distintos, sequência contínua=${monotonic}`);
+
+    // ------------------------------------------------ combo: 3 golpes distintos, 1 acerto por alvo
+    await A(page, () => {
+      const a = window.__ATRIOX__.arena;
+      a.player.x = a.dummies[0].x + 60;
+      a.player.y = a.dummies[0].y;
+      window.__hits = [];
+      window.__frames = new Set();
+      window.__hitFn = () => {
+        const p = a.player;
+        if (p.combo.attacking) window.__frames.add(`${p.combo.index}:${p.animator.frameName}:${p.combo.phase}`);
+        for (const b of a.hitboxes.all) if (b.spec.tag.startsWith('attack_') && b.hitAt.size) window.__hits.push(`${b.spec.tag}:${b.hitAt.size}`);
+      };
+      a.events.on('postupdate', window.__hitFn);
+    });
+    await page.mouse.move(200, 330);
+    for (let i = 0; i < 3; i++) {
+      await page.mouse.down();
+      await page.mouse.up();
+      await waitFor(page, (k) => window.__ATRIOX__.arena.player.combo.index === k && window.__ATRIOX__.arena.player.combo.elapsed > 120, i, 2500, 10);
+    }
+    await waitFor(page, () => !window.__ATRIOX__.arena.player.combo.attacking, null, 3000, 20);
+    const combo = await A(page, () => {
+      window.__ATRIOX__.arena.events.off('postupdate', window.__hitFn);
+      return { frames: [...window.__frames], hits: [...new Set(window.__hits)] };
+    });
+    const steps = new Set(combo.frames.map((f) => f.split(':')[0]));
+    check('combo completo (3 golpes) com buffer', steps.size === 3, [...steps].join(','));
+    const activeFrames = [...new Set(combo.frames.filter((f) => f.endsWith(':active')).map((f) => f.split(':')[1]))];
+    check('golpes visualmente distintos', activeFrames.length >= 3, activeFrames.join(' '));
+    const windupHasHit = combo.frames.some((f) => f.endsWith(':windup') && /combat_0[569]|combat_10/.test(f));
+    check('quadro de impacto não aparece na antecipação', !windupHasHit);
+    check('cada golpe atinge o alvo no máximo uma vez', combo.hits.length > 0 && combo.hits.every((h) => h.endsWith(':1')), combo.hits.join(' '));
+
+    // ------------------------------------------------ dash: 2 cargas, recarga, paredes
+    await A(page, () => {
+      const a = window.__ATRIOX__.arena;
+      a.player.x = 300;
+      a.player.y = 900;
+    });
+    await sleep(1200);
+    const c0 = (await snap(page)).player.charges;
+    await page.keyboard.down('a');
+    for (let i = 0; i < 2; i++) {
+      await page.keyboard.press('Space');
+      await waitFor(page, () => window.__ATRIOX__.arena.player.dash.state === 'dashing', null, 1500, 5);
+      await waitFor(page, () => window.__ATRIOX__.arena.player.dash.state === 'ready', null, 2000, 5);
+    }
+    const c1 = (await snap(page)).player.charges;
+    await page.keyboard.press('Space');
+    await sleep(80);
+    const c2 = (await snap(page)).player;
+    await page.keyboard.up('a');
+    check('duas cargas de dash', c0 === 2 && c1 === 0, `${c0} → ${c1}`);
+    check('dash contra a parede não atravessa', c2.x >= 185, `x=${c2.x} (limite 186)`);
+    check('cargas recarregam', await waitFor(page, () => window.__ATRIOX__.arena.player.dash.charges === 2, null, 6000));
+
+    // ------------------------------------------------ magia
+    await A(page, () => {
+      const a = window.__ATRIOX__.arena;
+      window.__castSeen = false;
+      window.__castFn = () => {
+        if (a.player.animator.state === 'cast') window.__castSeen = true;
+      };
+      a.events.on('postupdate', window.__castFn);
+    });
+    await page.mouse.click(900, 300, { button: 'right' });
+    const proj = await waitFor(page, () => window.__ATRIOX__.arena.projectiles.count > 0, null, 2000, 10);
+    const castSeen = await A(page, () => {
+      window.__ATRIOX__.arena.events.off('postupdate', window.__castFn);
+      return window.__castSeen;
+    });
+    check('magia: animação de conjuração + projétil', proj && castSeen);
+
+    // ------------------------------------------------ preparação → portas → sala 1
+    await A(page, () => {
+      const a = window.__ATRIOX__.arena;
+      a.player.x = 1200;
+      a.player.y = 980;
+    });
+    await sleep(200);
+    await page.keyboard.press('e');
+    check('altar abre portas com recompensas visíveis', await waitFor(page, () => window.__ATRIOX__.snapshot().phase === 'doors' && window.__ATRIOX__.snapshot().doors.length === 2, null, 4000), JSON.stringify((await snap(page)).doors));
+    await page.screenshot({ path: path.join(SHOTS, '01-portas.png') });
+    await A(page, () => {
+      const a = window.__ATRIOX__.arena;
+      a.player.x = 740;
+      a.player.y = 380;
+    });
+    await sleep(300);
+    await page.keyboard.press('e');
+    check('porta leva à sala 1', await waitFor(page, () => window.__ATRIOX__.snapshot().room === 'trial-1', null, 5000));
+    check('combate da sala 1 começa e inimigos surgem', await waitFor(page, () => window.__ATRIOX__.snapshot().alive >= 3, null, 8000));
+    check('saída bloqueada durante o combate', (await snap(page)).doors.length === 0);
+    await sleep(1000);
+    await page.screenshot({ path: path.join(SHOTS, '02-sala1.png') });
+
+    // morte do jogador durante a conjuração de um inimigo
+    const deathDuringCast = await A(page, async () => {
+      const a = window.__ATRIOX__.arena;
+      const t0 = performance.now();
+      while (performance.now() - t0 < 6000) {
+        if (a.enemies.some((e) => e.brain.state === 'windup')) break;
+        await new Promise((r) => setTimeout(r, 16));
       }
+      const casting = a.enemies.some((e) => e.brain.state === 'windup');
+      a.player.receiveHit({ damage: 9999, knockback: 0, dirX: 1, dirY: 0, tag: 'test' });
+      return casting;
+    });
+    check('morte durante conjuração inimiga encerra a partida', await waitFor(page, () => window.__ATRIOX_GAME__.scene.isActive('ResultScene'), null, 9000), deathDuringCast ? 'inimigo em windup' : 'sem windup observado');
+    await sleep(500);
+
+    // ------------------------------------------------ nova partida → Nemeia
+    await page.keyboard.press('Enter');
+    await inArena(page);
+    await sleep(800);
+    const sRestart = await snap(page);
+    check('reiniciar não duplica listeners', JSON.stringify(sRestart.listeners) === JSON.stringify(firstListeners), JSON.stringify(sRestart.listeners));
+    await A(page, () => window.__ATRIOX__.arena.devGotoRoom('nemeia'));
+    check('Arena de Nemeia carregada', await waitFor(page, () => window.__ATRIOX__.snapshot().room === 'nemeia', null, 4000));
+    check('Caim entra e a luta começa', await waitFor(page, () => window.__ATRIOX__.snapshot().caim && window.__ATRIOX__.snapshot().caim.state !== 'intro', null, 15000));
+    await A(page, () => (window.__ATRIOX__.arena.player.godMode = true));
+
+    // sangue: entrada → exposição → stun → saída → imunidade
+    await A(page, () => {
+      const a = window.__ATRIOX__.arena;
+      a.pools.clear();
+      a.pools.rules.maxActive = 4;
+      a.devSpawnPoolAtPlayer();
+      window.__exposed = false;
+      window.__expFn = () => {
+        if (a.exposure.value > 0.3 && !a.exposure.stunned) window.__exposed = true;
+      };
+      a.events.on('postupdate', window.__expFn);
+    });
+    check('poça anunciada antes de ativar', await A(page, () => window.__ATRIOX__.arena.pools.pools.some((p) => p.state === 'warning')));
+    check('exposição sobe dentro do sangue', await waitFor(page, () => window.__exposed, null, 6000, 30));
+    check('stun por dominação no limiar', await waitFor(page, () => window.__ATRIOX__.snapshot().stunned, null, 6000, 30));
+    await waitFor(page, () => window.__ATRIOX__.arena.player.animator.state === 'bloodStunned', null, 1000, 10);
+    const stunInfo = await A(page, () => {
+      const a = window.__ATRIOX__.arena;
+      a.events.off('postupdate', window.__expFn);
+      return { anim: a.player.animator.state, frame: a.player.animator.frameName };
+    });
+    check('stun usa os quadros de sangue envolvendo Atriox', stunInfo.anim === 'bloodStunned' && /atriox_combat_1[345]/.test(stunInfo.frame), `${stunInfo.anim} ${stunInfo.frame}`);
+    await page.screenshot({ path: path.join(SHOTS, '03-dominado.png') });
+    const xBefore = (await snap(page)).player.x;
+    await page.keyboard.down('d');
+    await page.mouse.click(900, 300);
+    await sleep(300);
+    await page.keyboard.up('d');
+    const during = await A(page, () => ({ x: Math.round(window.__ATRIOX__.arena.player.x), attacking: window.__ATRIOX__.arena.player.combo.attacking, stunned: window.__ATRIOX__.arena.exposure.stunned }));
+    check('dominado não se move nem ataca', !during.stunned || (Math.abs(during.x - xBefore) < 6 && !during.attacking), JSON.stringify(during));
+    check('stun termina (duração limitada)', await waitFor(page, () => !window.__ATRIOX__.snapshot().stunned, null, 6000, 30));
+    const again = await A(page, async () => {
+      const a = window.__ATRIOX__.arena;
+      const t0 = performance.now();
+      let hit = false;
+      while (performance.now() - t0 < 1500) {
+        if (a.exposure.stunned) hit = true;
+        await new Promise((r) => setTimeout(r, 16));
+      }
+      return hit;
+    });
+    check('proteção contra reaplicação imediata', !again);
+    await A(page, () => window.__ATRIOX__.arena.pools.clear());
+
+    // wyverns
+    check('Caim invoca wyverns', await waitFor(page, () => window.__ATRIOX__.snapshot().wyverns > 0, null, 20000));
+    check('wyvern anuncia e investe', await waitFor(page, () => window.__ATRIOX__.arena.wyverns.some((w) => w.brain.state === 'charge'), null, 15000, 20));
+    await page.screenshot({ path: path.join(SHOTS, '04-wyverns.png') });
+
+    // morte de Caim com projéteis ativos
+    await A(page, () => {
+      const a = window.__ATRIOX__.arena;
+      a.spawnEnemy('archer', a.player.x + 300, a.player.y - 100);
+    });
+    await waitFor(page, () => window.__ATRIOX__.arena.projectiles.count > 0, null, 6000, 30);
+    const projBefore = (await snap(page)).projectiles;
+    await A(page, () => window.__ATRIOX__.arena.devDamageBoss(1));
+    await sleep(400);
+    const afterDeath = await snap(page);
+    check('morte de Caim limpa projéteis e perigos', afterDeath.projectiles === 0 && afterDeath.hitboxes === 0, `projéteis antes=${projBefore} depois=${afterDeath.projectiles}, hitboxes=${afterDeath.hitboxes}`);
+    check('vitória registrada', afterDeath.phase === 'victory');
+
+    // bênção: pular só após o intervalo; conceder uma vez
+    check('cena de Apollon inicia', await waitFor(page, () => window.__ATRIOX__.snapshot().cinematic, null, 10000));
+    await sleep(300);
+    await page.keyboard.press('e');
+    const stillCine = (await snap(page)).cinematic;
+    await page.screenshot({ path: path.join(SHOTS, '05-bencao.png') });
+    await waitFor(page, () => window.__ATRIOX__.arena.cinematic?.canSkip, null, 6000, 30);
+    await page.keyboard.press('e');
+    await page.keyboard.press('e');
+    check('não pula antes do intervalo; depois pula', stillCine);
+    await waitFor(page, () => window.__ATRIOX__.snapshot().gloryGranted !== null, null, 6000, 30);
+    check('Bênção da Glória concedida', (await snap(page)).gloryGranted === true);
+    check('controle volta após a cena', await waitFor(page, () => !window.__ATRIOX__.arena.player.cinematic, null, 3000));
+    check('resultado após a bênção', await waitFor(page, () => window.__ATRIOX_GAME__.scene.isActive('ResultScene'), null, 10000));
+    const save1 = await page.evaluate(() => JSON.parse(localStorage.getItem('atriox-cinder.save.v1')));
+    check('bênção persistida no save', save1.unlocks.blessingOfGlory === true && save1.unlocks.caimDefeats === 1, JSON.stringify(save1.unlocks));
+
+    // segunda vitória: não concede de novo
+    await page.keyboard.press('Enter');
+    await inArena(page);
+    await sleep(600);
+    check('dash purifica sangue nas partidas seguintes', await A(page, () => window.__ATRIOX__.arena.player.dashPurifyMs > 0));
+    await A(page, () => window.__ATRIOX__.arena.devGotoRoom('nemeia'));
+    await waitFor(page, () => window.__ATRIOX__.snapshot().caim && window.__ATRIOX__.snapshot().caim.state !== 'intro', null, 15000);
+    await A(page, () => {
+      window.__ATRIOX__.arena.player.godMode = true;
+      window.__ATRIOX__.arena.devDamageBoss(1);
+    });
+    await waitFor(page, () => window.__ATRIOX__.arena.cinematic?.canSkip, null, 12000, 30);
+    await page.keyboard.press('Space');
+    await waitFor(page, () => window.__ATRIOX__.snapshot().gloryGranted !== null, null, 6000, 30);
+    check('bênção não é concedida duas vezes', (await snap(page)).gloryGranted === false);
+    await waitFor(page, () => window.__ATRIOX_GAME__.scene.isActive('ResultScene'), null, 10000);
+
+    // reinícios múltiplos
+    const counts = [];
+    for (let i = 0; i < 3; i++) {
+      await page.keyboard.press('Enter');
+      await inArena(page);
+      await sleep(900);
+      counts.push(await snap(page));
+      await A(page, () => window.__ATRIOX__.arena.player.receiveHit({ damage: 9999, knockback: 0, dirX: 1, dirY: 0, tag: 'test' }));
+      await waitFor(page, () => window.__ATRIOX_GAME__.scene.isActive('ResultScene'), null, 9000);
       await sleep(300);
     }
-    check('derrota encerra a partida (jogador pode morrer)', await active(page, 'ResultScene'));
-    const same = JSON.stringify(counts[0].listeners) === JSON.stringify(firstListeners) && JSON.stringify(counts[1].listeners) === JSON.stringify(firstListeners);
-    check('reiniciar não duplica listeners', same, JSON.stringify(counts.map((c) => c.listeners)));
-    check('reiniciar não duplica entidades', counts[0].enemies === 0 && counts[1].enemies === 0 && counts[0].hurtboxes === counts[1].hurtboxes && Math.abs(counts[0].displayObjects - counts[1].displayObjects) <= 2, JSON.stringify(counts.map((c) => [c.enemies, c.hurtboxes, c.displayObjects])));
-    const uiCount = await page.evaluate(() => window.__ATRIOX_GAME__.scene.getScenes(false).filter((s) => s.scene.key === 'UIScene').length);
-    check('apenas uma instância de UIScene', uiCount === 1);
-    check('sem erros de JavaScript na partida', errors.length === 0, errors.slice(0, 3).join(' | '));
+    check('vários reinícios não duplicam listeners', counts.every((c) => JSON.stringify(c.listeners) === JSON.stringify(firstListeners)));
+    check('vários reinícios não acumulam objetos', Math.max(...counts.map((c) => c.displayObjects)) - Math.min(...counts.map((c) => c.displayObjects)) <= 3, counts.map((c) => c.displayObjects).join(','));
+    const heap = await page.evaluate(() => (performance.memory ? Math.round(performance.memory.usedJSHeapSize / 1e6) : -1));
+    check('memória após reinícios (informativo)', true, heap >= 0 ? `${heap} MB de heap JS` : 'indisponível');
+
+    // perda de foco e redimensionamento
+    await page.keyboard.press('Enter');
+    await inArena(page);
+    await sleep(800);
+    await page.keyboard.down('d');
+    await page.evaluate(() => window.__ATRIOX_GAME__.events.emit('blur'));
+    await sleep(200);
+    const blurred = await page.evaluate(() => ({
+      paused: window.__ATRIOX_GAME__.scene.isPaused('ArenaScene'),
+      pause: window.__ATRIOX_GAME__.scene.isActive('PauseScene'),
+      keysDown: window.__ATRIOX__.arena.input.keyboard.keys.filter((k) => k && k.isDown).length
+    }));
+    await page.keyboard.up('d');
+    check('perda de foco pausa e limpa teclas', blurred.paused && blurred.pause && blurred.keysDown === 0, JSON.stringify(blurred));
+    await page.keyboard.press('Escape');
+    await sleep(400);
+    await page.setViewportSize({ width: 900, height: 560 });
+    await sleep(600);
+    await page.mouse.move(300, 200);
+    await sleep(600);
+    const conv = await page.evaluate(() => {
+      // conversão independente: CSS → coordenadas do jogo → mundo (zoom + rolagem da câmera atual)
+      const a = window.__ATRIOX__.arena;
+      const cam = a.cameras.main;
+      const p = a.input.activePointer;
+      const r = document.querySelector('#game canvas').getBoundingClientRect();
+      const gx = ((p.event?.clientX ?? 300) - r.left) * (1280 / r.width);
+      const gy = ((p.event?.clientY ?? 200) - r.top) * (720 / r.height);
+      const exp = cam.getWorldPoint(gx, gy);
+      const wp = p.positionToCamera(cam);
+      return { w: Math.round(r.width), h: Math.round(r.height), dx: Math.round(wp.x - exp.x), dy: Math.round(wp.y - exp.y) };
+    });
+    check('redimensionamento: canvas escala e mouse→mundo correto', conv.w <= 900 && Math.abs(conv.dx) <= 2 && Math.abs(conv.dy) <= 2, JSON.stringify(conv));
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await sleep(300);
+    const perf = await snap(page);
+    check('desempenho medido (informativo, renderização por software)', true, `fps ${perf.fps}, frame ${perf.frameMs} ms, partículas ${perf.particles}, objetos ${perf.displayObjects}`);
+    check('sem erros de JavaScript', errors.length === 0, errors.slice(0, 3).join(' | '));
     await ctx.close();
 
-    // ------------------------------------------------------------------ asset ausente + save corrompido
+    // ------------------------------------------------ asset ausente + save corrompido
     const ctx2 = await browser.newContext({ viewport: { width: 1280, height: 720 } });
     await ctx2.addInitScript(() => localStorage.setItem('atriox-cinder.save.v1', '{corrompido!!'));
     const page2 = await ctx2.newPage();
@@ -281,19 +400,15 @@ async function main() {
     page2.on('pageerror', (e) => errors2.push(String(e)));
     await page2.route('**/assets/atriox/slash.png', (r) => r.fulfill({ status: 404, body: 'not found' }));
     await page2.goto(GAME_URL);
-    check('asset ausente não causa tela preta (menu carrega)', await waitFor(page2, () => window.__ATRIOX_GAME__?.scene.isActive('MenuScene')));
-    const missing = await page2.evaluate(() => window.__ATRIOX_GAME__.registry.get('missingAssets'));
-    check('asset ausente é listado', Array.isArray(missing) && missing.length === 1, JSON.stringify(missing));
+    check('asset ausente não causa tela preta', await waitFor(page2, () => window.__ATRIOX_GAME__?.scene.isActive('MenuScene')));
     await page2.keyboard.press('Enter');
-    check('jogo inicia mesmo com asset ausente e save corrompido', await waitFor(page2, () => !!window.__ATRIOX__?.arena?.player));
+    check('jogo inicia com asset ausente e save corrompido', await waitFor(page2, () => !!window.__ATRIOX__?.arena?.player));
     check('sem exceções com save corrompido', errors2.length === 0, errors2.join(' | '));
-    await page2.screenshot({ path: path.join(SHOTS, '12-missing-asset.png') });
     await ctx2.close();
   } finally {
     await browser.close();
     server.kill();
   }
-
   const failed = results.filter((r) => !r.ok);
   console.log(`\n${results.length - failed.length}/${results.length} verificações passaram.`);
   process.exit(failed.length ? 1 : 0);

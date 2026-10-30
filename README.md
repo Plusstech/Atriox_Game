@@ -1,6 +1,6 @@
 # Atriox Cinder: Lâmina sem Deus
 
-Roguelite de ação 2D em fantasia sombria para navegador: Phaser 3, TypeScript e Vite. É um vertical slice v0.1 jogável, com combo de 3 golpes, dash, magia, três arquétipos de inimigo, duas ondas, bênçãos e o miniboss **O Carrasco da Provação**, com duas fases.
+Roguelite de ação 2D em fantasia sombria para navegador: Phaser 3, TypeScript e Vite. **v0.2**: animações por quadros reais (atlas), combo de 3 golpes com buffer, dash de 2 cargas, salas com portas e recompensas, dons de Apollon, **Caim Morvaigne** com sangue que domina e wyverns, e a cena final em que Apollon abençoa Atriox.
 
 O build é estático: roda em qualquer hospedagem, como a Hostinger, sem Node.js no servidor.
 
@@ -21,7 +21,11 @@ npm run dev        # http://localhost:5173  (F2 abre o painel de desenvolvimento
 | `npm test` | Testes unitários (Vitest) da lógica de jogo |
 | `npm run test:e2e` | Partida completa headless contra o `dist/` (requer `npm run build` antes) |
 | `npm run check` | test + build + e2e |
-| `npm run sprites` | Reextrai as poses do concept sheet (Python + Pillow/NumPy/SciPy) |
+| `npm run atlas` | Recorta as folhas de `art_source/v02` e gera o atlas (Python + Pillow/NumPy/SciPy) |
+| `npm run sprites` | Reextrai as poses do concept sheet da v0.1 |
+| `node tests/e2e/probe.mjs` | Capturas visuais dos momentos-chave (após `npm run build`) |
+
+Inspetor de animações: `npm run dev` → menu → **Inspetor de animações** (ou `?inspector` na URL). F2 abre o painel de desenvolvimento e F3 mostra o desempenho.
 
 ## Deploy
 
@@ -35,20 +39,21 @@ src/
   data/                   ataques, habilidades, inimigos, chefe, bênçãos, ondas (100% dados)
   game/
     scenes/               Boot, Menu, Arena, UI (HUD), Reward, Pause, Result
-    entities/             Player, Enemy, Boss, TrainingDummy
+    entities/             Player, Enemy, Boss (Carrasco), Caim, Wyvern, TrainingDummy
     combat/               ComboController, DashController, HitboxSystem, ProjectileSystem,
                           StatusSystem, DamageSystem, geometry
     abilities/            SpellController (lógica), JudgmentFlame (manifestação)
-    animation/            AtrioxAnimator (estados, prioridades, crossfade, procedural)
-    ai/                   EnemyBrain, BossBrain (máquinas de estado puras)
+    animation/            FrameTimeline (lógica pura), SpriteAnimator, AtrioxAnimator (estados)
+    ai/                   EnemyBrain, BossBrain, CaimBrain, WyvernBrain (máquinas de estado puras)
     progression/          PlayerStats, BlessingSystem
-    systems/              WaveDirector, SaveSystem, Movement, Collision, Cooldown, ArenaBuilder
-    fx/                   Effects (partículas e feedback), TextureFactory (arte procedural)
+    systems/              RunDirector (salas/portas), WaveDirector, SaveSystem, Movement, Collision, ArenaBuilder
+    fx/                   Effects, ArenaPainter (piso), BloodRenderer, BlessingCinematic, TextureFactory
     audio/                Sfx (síntese WebAudio)
     ui/ dev/              widgets, DevPanel
-public/assets/atriox/     poses extraídas + atriox_poses.json
-art_source/               concept sheet original
-tools/extract_sprites.py  pipeline de extração
+public/assets/atlas/      atlas WebP dos personagens + characters.json (quadros, trim, pivô, ordem da corrida)
+public/assets/atriox/     poses do concept v0.1 (menu, retrato)
+art_source/v02/           folhas de arte originais da v0.2
+tools/                    sheet_frames.py (recorte), build_atlases.py (atlas), extract_sprites.py (v0.1)
 tests/                    unitários (Vitest) e e2e (playwright-core)
 docs/                     GAME_DESIGN, LORE_CANON, ART_PIPELINE, REFERENCES, DEPLOY_HOSTINGER
 ```

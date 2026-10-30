@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { COLORS, FONT_TITLE, FONT_UI, GAME_H, GAME_W } from '../config/constants';
 import { formatTime, makeButton, makeOptions, ornament } from '../ui/widgets';
+import { DEV_TOOLS } from '../config/constants';
 import { save } from '../services';
 import { Sfx } from '../audio/Sfx';
 
@@ -43,7 +44,7 @@ export class MenuScene extends Phaser.Scene {
     this.add.text(96, 104, 'ATRIOX CINDER', { fontFamily: FONT_TITLE, fontSize: '68px', color: COLORS.hex.gold, stroke: '#0b0607', strokeThickness: 8 });
     this.add.text(100, 184, 'Lâmina sem Deus', { fontFamily: FONT_TITLE, fontSize: '30px', fontStyle: 'italic', color: COLORS.hex.ivory, stroke: '#0b0607', strokeThickness: 5 });
     ornament(this, 330, 236, 470);
-    this.add.text(100, 250, 'Vertical slice v0.1 — Campo de Provação', { fontFamily: FONT_UI, fontSize: '15px', color: COLORS.hex.dim });
+    this.add.text(100, 250, 'v0.2 — Do Campo de Provação à Arena de Nemeia', { fontFamily: FONT_UI, fontSize: '15px', color: COLORS.hex.dim });
 
     this.showMain();
 
@@ -73,6 +74,7 @@ export class MenuScene extends Phaser.Scene {
     this.page.push(makeButton(this, x, 330, 'Iniciar Provação  (Enter)', () => this.start()).container);
     this.page.push(makeButton(this, x, 388, 'Opções', () => this.showOptions()).container);
     this.page.push(makeButton(this, x, 446, 'Controles', () => this.showControls()).container);
+    if (DEV_TOOLS) this.page.push(makeButton(this, x + 330, 446, 'Inspetor de animações', () => this.scene.start('AnimInspectorScene'), { width: 280, size: 16 }).container);
     const r = save.data.records;
     this.page.push(
       this.add.text(
@@ -97,7 +99,10 @@ export class MenuScene extends Phaser.Scene {
       ['Mouse', 'Mirar'],
       ['Clique esquerdo', 'Combo de 3 golpes'],
       ['Clique direito', 'Chama do Julgamento'],
-      ['Espaço / Shift', 'Dash (invulnerável)'],
+      ['Espaço / Shift', 'Dash (2 cargas)'],
+      ['Q', 'Juízo do Segundo Sol (dom)'],
+      ['F', 'Avatar de Apollon (dom)'],
+      ['H', 'Recolher tutorial'],
       ['E', 'Interagir'],
       ['Tab (segurar)', 'Informações e bênçãos'],
       ['Esc', 'Pausar']

@@ -1,6 +1,7 @@
 import type Phaser from 'phaser';
 import { ANIM_STATES, type AnimState } from '../animation/AtrioxAnimator';
 import { BLESSINGS } from '../../data/blessings';
+import { APOLLON_GIFTS } from '../../data/apollon';
 import type { ArenaScene } from '../scenes/ArenaScene';
 
 /**
@@ -32,10 +33,15 @@ export function attachDevPanel(game: Phaser.Game): void {
     <div><b>Partida</b></div>
     <div class="row">
       <button id="dv-kill">matar inimigos</button>
-      <button id="dv-boss">pular para chefe</button>
+      <button id="dv-exec">ir: Carrasco</button>
+      <button id="dv-nemeia">ir: Nemeia (Caim)</button>
       <button id="dv-boss50">chefe −50%</button>
       <button id="dv-heal">curar</button>
+      <button id="dv-pool">poça no jogador</button>
+      <button id="dv-insp">inspetor de animações</button>
     </div>
+    <div><b>Dons de Apollon</b></div>
+    <div class="row" id="dv-gifts"></div>
     <div><b>Bênçãos</b></div>
     <div class="row" id="dv-bless"></div>
     <pre id="dv-info" style="white-space:pre-wrap;margin:6px 0 0;color:#a89878"></pre>
@@ -80,7 +86,20 @@ export function attachDevPanel(game: Phaser.Game): void {
     if (a) a.player.godMode = (e.target as HTMLInputElement).checked;
   };
   $('dv-kill').onclick = () => arena()?.devKillAll();
-  $('dv-boss').onclick = () => arena()?.devSkipToBoss();
+  $('dv-exec').onclick = () => arena()?.devGotoRoom('executioner');
+  $('dv-nemeia').onclick = () => arena()?.devGotoRoom('nemeia');
+  $('dv-pool').onclick = () => arena()?.devSpawnPoolAtPlayer();
+  $('dv-insp').onclick = () => {
+    for (const k of ['ArenaScene', 'UIScene', 'MenuScene']) if (game.scene.isActive(k)) game.scene.stop(k);
+    game.scene.start('AnimInspectorScene');
+  };
+  const gifts = $('dv-gifts');
+  for (const g of APOLLON_GIFTS) {
+    const btn = document.createElement('button');
+    btn.textContent = g.name;
+    btn.onclick = () => arena()?.applyGift(g.id);
+    gifts.appendChild(btn);
+  }
   $('dv-boss50').onclick = () => arena()?.devDamageBoss(0.5);
   $('dv-heal').onclick = () => {
     const a = arena();
@@ -105,6 +124,7 @@ export function attachDevPanel(game: Phaser.Game): void {
       a.player.animator.set(forced);
       a.player.animator.attackPhase = 'active';
       a.player.animator.phaseT = 0.5;
+      a.player.animator.update(0, a.player.x, a.player.y, a.player.y);
     }
     const snap = a.debugSnapshot();
     $('dv-info').textContent = `fps ${Math.round(game.loop.actualFps)}\nanim ${a.player.animator.state}\n${JSON.stringify(snap, null, 1).slice(0, 600)}`;

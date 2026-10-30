@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { FLOOR, GAME_H, GAME_W, WORLD_H, WORLD_W } from '../config/constants';
+import { GAME_H, GAME_W } from '../config/constants';
 
 /**
  * Texturas ORIGINAIS geradas proceduralmente em Canvas 2D.
@@ -568,260 +568,57 @@ function makeEnemyTextures(scene: Phaser.Scene): void {
 // Ambiente
 // =====================================================================================
 function makeEnvironment(scene: Phaser.Scene): void {
-  canvasTex(scene, 'arena_bg', WORLD_W, WORLD_H, (c) => {
-    const rng = mulberry32(1337);
+
+  // porta de saída (arco + folhas de ferro); o ícone da recompensa é desenhado à parte
+  canvasTex(scene, 'door', 170, 230, (c) => {
     c.fillStyle = '#050304';
-    c.fillRect(0, 0, WORLD_W, WORLD_H);
-
-    // ---------- piso de lajes
-    const fx = FLOOR.x - 30;
-    const fy = FLOOR.y - 50;
-    const fw = FLOOR.w + 60;
-    const fh = FLOOR.h + 80;
-    c.fillStyle = '#120d0d';
-    c.fillRect(fx, fy, fw, fh);
-    let y = fy;
-    let row = 0;
-    while (y < fy + fh) {
-      const rh = 38 + rng() * 40;
-      let x = fx - rng() * 80;
-      while (x < fx + fw) {
-        const rw = 60 + rng() * 110;
-        // lajes irregulares: cada uma com altura própria e leve deslocamento vertical
-        const dy = (rng() - 0.5) * 6;
-        const hh = rh - 3 - rng() * 6;
-        const l = 22 + rng() * 15;
-        const warm = rng() * 5;
-        const base = `rgb(${l + warm + 3},${l - 1},${l - 4})`;
-        const top = `rgb(${l + warm + 11},${l + 6},${l + 2})`;
-        c.fillStyle = linear(c, 0, y, 0, y + hh, [[0, top], [1, base]]);
-        c.beginPath();
-        c.roundRect(x + 2 + rng() * 2, y + 2 + dy, rw - 4 - rng() * 3, hh, 3 + rng() * 7);
-        c.fill();
-        c.strokeStyle = 'rgba(255,225,190,0.05)';
-        c.lineWidth = 2;
-        c.beginPath();
-        c.moveTo(x + 6, y + 4 + dy);
-        c.lineTo(x + rw - 8, y + 4 + dy);
-        c.stroke();
-        c.strokeStyle = 'rgba(0,0,0,0.4)';
-        c.beginPath();
-        c.moveTo(x + 6, y + hh + dy);
-        c.lineTo(x + rw - 8, y + hh + dy);
-        c.stroke();
-        brushNoise(c, x + 3, y + 3, rw - 6, hh - 4, rng, 30, 'rgba(255,235,210,0.04)', 'rgba(0,0,0,0.18)');
-        if (rng() < 0.22) {
-          c.strokeStyle = 'rgba(0,0,0,0.55)';
-          c.lineWidth = 1.2;
-          c.beginPath();
-          let px = x + rng() * rw;
-          let py = y + 4;
-          c.moveTo(px, py);
-          for (let i = 0; i < 4; i++) {
-            px += (rng() - 0.5) * 22;
-            py += hh / 4;
-            c.lineTo(px, py);
-          }
-          c.stroke();
-        }
-        x += rw;
-      }
-      y += rh;
-      row++;
-    }
-    // sujeira e desgaste em manchas grandes (quebra a repetição das lajes)
-    for (let i = 0; i < 70; i++) {
-      const dx = fx + rng() * fw;
-      const dy = fy + rng() * fh;
-      const r = 60 + rng() * 180;
-      c.save();
-      c.translate(dx, dy);
-      c.scale(1, 0.55 + rng() * 0.3);
-      c.fillStyle = radial(c, 0, 0, r, [[0, `rgba(${rng() < 0.3 ? '40,30,20' : '0,0,0'},${0.18 + rng() * 0.2})`], [1, 'rgba(0,0,0,0)']]);
-      c.beginPath();
-      c.arc(0, 0, r, 0, Math.PI * 2);
-      c.fill();
-      c.restore();
-    }
-    void row;
-
-    // ---------- decalques: areia, queimaduras, sangue antigo, marcas de lâmina
-    for (let i = 0; i < 26; i++) {
-      const dx = FLOOR.x + rng() * FLOOR.w;
-      const dy = FLOOR.y + rng() * FLOOR.h;
-      const r = 40 + rng() * 120;
-      c.fillStyle = radial(c, dx, dy, r, [[0, 'rgba(120,100,80,0.10)'], [1, 'rgba(120,100,80,0)']]);
-      c.fillRect(dx - r, dy - r, r * 2, r * 2);
-    }
-    for (let i = 0; i < 14; i++) {
-      const dx = FLOOR.x + 80 + rng() * (FLOOR.w - 160);
-      const dy = FLOOR.y + 80 + rng() * (FLOOR.h - 160);
-      const r = 30 + rng() * 60;
-      c.save();
-      c.translate(dx, dy);
-      c.scale(1, 0.6);
-      c.fillStyle = radial(c, 0, 0, r, [[0, 'rgba(8,4,2,0.55)'], [0.6, 'rgba(20,10,6,0.3)'], [1, 'rgba(0,0,0,0)']]);
-      c.beginPath();
-      c.arc(0, 0, r, 0, Math.PI * 2);
-      c.fill();
-      c.restore();
-    }
-    for (let i = 0; i < 12; i++) {
-      const dx = FLOOR.x + 60 + rng() * (FLOOR.w - 120);
-      const dy = FLOOR.y + 60 + rng() * (FLOOR.h - 120);
-      c.fillStyle = 'rgba(70,12,12,0.35)';
-      for (let j = 0; j < 7; j++) {
-        c.beginPath();
-        c.ellipse(dx + (rng() - 0.5) * 40, dy + (rng() - 0.5) * 20, 3 + rng() * 10, 2 + rng() * 6, rng() * 3, 0, Math.PI * 2);
-        c.fill();
-      }
-    }
-    c.strokeStyle = 'rgba(0,0,0,0.45)';
-    for (let i = 0; i < 30; i++) {
-      const dx = FLOOR.x + rng() * FLOOR.w;
-      const dy = FLOOR.y + rng() * FLOOR.h;
-      const a = rng() * Math.PI;
-      const l = 14 + rng() * 30;
-      c.lineWidth = 1 + rng() * 1.5;
-      c.beginPath();
-      c.moveTo(dx, dy);
-      c.lineTo(dx + Math.cos(a) * l, dy + Math.sin(a) * l * 0.6);
-      c.stroke();
-    }
-
-    // ---------- grande círculo da Provação no centro (perspectiva oblíqua: elipse)
-    const ccx = FLOOR.x + FLOOR.w / 2;
-    const ccy = FLOOR.y + FLOOR.h / 2 + 20;
-    c.save();
-    c.translate(ccx, ccy);
-    c.scale(1, 0.62);
-    c.strokeStyle = 'rgba(200,150,70,0.22)';
-    c.lineWidth = 6;
     c.beginPath();
-    c.arc(0, 0, 420, 0, Math.PI * 2);
-    c.stroke();
-    c.lineWidth = 2;
-    c.beginPath();
-    c.arc(0, 0, 395, 0, Math.PI * 2);
-    c.stroke();
-    c.beginPath();
-    c.arc(0, 0, 180, 0, Math.PI * 2);
-    c.stroke();
-    for (let i = 0; i < 48; i++) {
-      c.save();
-      c.rotate((i / 48) * Math.PI * 2);
-      c.fillStyle = 'rgba(200,150,70,0.2)';
-      c.fillRect(-3, -412, 6, i % 4 === 0 ? 18 : 9);
-      c.restore();
-    }
-    c.strokeStyle = 'rgba(200,150,70,0.12)';
-    c.lineWidth = 3;
-    for (let i = 0; i < 8; i++) {
-      const a = (i / 8) * Math.PI * 2;
-      c.beginPath();
-      c.moveTo(Math.cos(a) * 190, Math.sin(a) * 190);
-      c.lineTo(Math.cos(a) * 390, Math.sin(a) * 390);
-      c.stroke();
-    }
-    c.restore();
-
-    // ---------- iluminação geral: centro quente, bordas escuras
-    c.fillStyle = radial(c, ccx, ccy, 1150, [[0, 'rgba(255,160,80,0.06)'], [0.45, 'rgba(0,0,0,0.2)'], [1, 'rgba(0,0,0,0.72)']]);
-    c.fillRect(0, 0, WORLD_W, WORLD_H);
-
-    // ---------- muralha superior
-    const wallTop = 70;
-    const wallBase = FLOOR.y - 40;
-    c.fillStyle = linear(c, 0, wallTop, 0, wallBase, [[0, '#120c0c'], [1, '#2b2220']]);
-    c.fillRect(0, wallTop, WORLD_W, wallBase - wallTop);
-    for (let by = wallTop; by < wallBase; by += 28) {
-      const off = ((by / 28) % 2) * 34;
-      for (let bx = -off; bx < WORLD_W; bx += 68) {
-        const l = 26 + rng() * 14 + ((by - wallTop) / (wallBase - wallTop)) * 16;
-        c.fillStyle = `rgb(${l + 4},${l - 2},${l - 4})`;
-        c.fillRect(bx + 2, by + 2, 64, 24);
-        c.fillStyle = 'rgba(255,220,180,0.05)';
-        c.fillRect(bx + 2, by + 2, 64, 3);
-      }
-    }
-    // arcos escuros
-    const gateX = WORLD_W / 2;
-    for (let ax = 260; ax < WORLD_W - 200; ax += 330) {
-      if (Math.abs(ax - gateX) < 260) continue;
-      c.fillStyle = '#050304';
-      c.beginPath();
-      c.moveTo(ax - 52, wallBase);
-      c.lineTo(ax - 52, wallBase - 120);
-      c.arc(ax, wallBase - 120, 52, Math.PI, 0);
-      c.lineTo(ax + 52, wallBase);
-      c.closePath();
-      c.fill();
-      c.strokeStyle = '#3b302b';
-      c.lineWidth = 8;
-      c.stroke();
-      c.fillStyle = radial(c, ax, wallBase - 10, 70, [[0, 'rgba(255,120,40,0.18)'], [1, 'rgba(255,120,40,0)']]);
-      c.fillRect(ax - 70, wallBase - 80, 140, 80);
-    }
-    // portão principal (moldura)
-    c.fillStyle = '#030202';
-    c.beginPath();
-    c.moveTo(gateX - 112, wallBase + 4);
-    c.lineTo(gateX - 112, wallBase - 150);
-    c.arc(gateX, wallBase - 150, 112, Math.PI, 0);
-    c.lineTo(gateX + 112, wallBase + 4);
+    c.moveTo(14, 230);
+    c.lineTo(14, 85);
+    c.arc(85, 85, 71, Math.PI, 0);
+    c.lineTo(156, 230);
     c.closePath();
     c.fill();
     c.strokeStyle = '#4a3a30';
-    c.lineWidth = 14;
+    c.lineWidth = 12;
     c.stroke();
-    c.strokeStyle = '#7a5a2a';
-    c.lineWidth = 3;
+    c.strokeStyle = '#8a6a3a';
+    c.lineWidth = 2;
     c.stroke();
-    // ameias
-    c.fillStyle = '#1a1312';
-    c.fillRect(0, wallTop - 14, WORLD_W, 18);
-    for (let mx = 0; mx < WORLD_W; mx += 70) {
-      c.fillStyle = '#211918';
-      c.fillRect(mx + 6, wallTop - 46, 40, 34);
-      c.fillStyle = 'rgba(255,220,180,0.05)';
-      c.fillRect(mx + 6, wallTop - 46, 40, 4);
-    }
-    // sombra da muralha no piso
-    c.fillStyle = linear(c, 0, wallBase, 0, wallBase + 120, [[0, 'rgba(0,0,0,0.75)'], [1, 'rgba(0,0,0,0)']]);
-    c.fillRect(0, wallBase, WORLD_W, 120);
-    // rodapé
-    c.fillStyle = '#3a2f2b';
-    c.fillRect(0, wallBase - 8, WORLD_W, 12);
-
-    // ---------- muros laterais
-    for (const side of [0, 1]) {
-      const x0 = side === 0 ? 0 : FLOOR.x + FLOOR.w + 10;
-      const w = side === 0 ? FLOOR.x - 10 : WORLD_W - x0;
-      c.fillStyle = linear(c, x0, 0, x0 + w, 0, side === 0 ? [[0, '#030202'], [1, '#231b19']] : [[0, '#231b19'], [1, '#030202']]);
-      c.fillRect(x0, wallBase - 20, w, WORLD_H);
-      for (let by = wallBase; by < WORLD_H; by += 34) {
-        c.fillStyle = 'rgba(0,0,0,0.35)';
-        c.fillRect(x0, by, w, 3);
+    for (const [x0, x1] of [[22, 84], [86, 148]]) {
+      const g = c.createLinearGradient(x0, 0, x1, 0);
+      g.addColorStop(0, '#24201e');
+      g.addColorStop(0.5, '#3e3632');
+      g.addColorStop(1, '#1c1816');
+      c.fillStyle = g;
+      c.fillRect(x0, 92, x1 - x0, 138);
+      c.strokeStyle = '#0c0909';
+      c.lineWidth = 2;
+      c.strokeRect(x0, 92, x1 - x0, 138);
+      for (let yy = 112; yy < 226; yy += 30) {
+        c.fillStyle = '#5a4a3a';
+        c.fillRect(x0 + 4, yy, x1 - x0 - 8, 4);
       }
-      const ex = side === 0 ? FLOOR.x - 14 : FLOOR.x + FLOOR.w + 8;
-      c.fillStyle = '#3a302c';
-      c.fillRect(ex, wallBase - 10, 8, WORLD_H);
-    }
-
-    // ---------- borda inferior: parapeito e abismo
-    const by0 = FLOOR.y + FLOOR.h + 20;
-    c.fillStyle = linear(c, 0, by0, 0, WORLD_H, [[0, '#1d1615'], [0.25, '#0a0606'], [1, '#020101']]);
-    c.fillRect(0, by0, WORLD_W, WORLD_H - by0);
-    c.fillStyle = '#4a3c36';
-    c.fillRect(FLOOR.x - 14, by0 - 6, FLOOR.w + 28, 12);
-    for (let px = FLOOR.x; px < FLOOR.x + FLOOR.w; px += 90) {
-      c.fillStyle = '#2f2522';
-      c.fillRect(px, by0 + 6, 70, 30);
-      c.fillStyle = 'rgba(255,220,180,0.06)';
-      c.fillRect(px, by0 + 6, 70, 4);
     }
   });
-
+  // feixe vertical de luz (Juízo do Segundo Sol / pilar)
+  canvasTex(scene, 'beam', 96, 512, (c) => {
+    const g = c.createLinearGradient(0, 0, 96, 0);
+    g.addColorStop(0, 'rgba(255,220,140,0)');
+    g.addColorStop(0.3, 'rgba(255,230,160,0.55)');
+    g.addColorStop(0.5, 'rgba(255,255,240,1)');
+    g.addColorStop(0.7, 'rgba(255,230,160,0.55)');
+    g.addColorStop(1, 'rgba(255,220,140,0)');
+    c.fillStyle = g;
+    c.fillRect(0, 0, 96, 512);
+    const v = c.createLinearGradient(0, 0, 0, 512);
+    v.addColorStop(0, 'rgba(0,0,0,1)');
+    v.addColorStop(0.25, 'rgba(0,0,0,0)');
+    c.globalCompositeOperation = 'destination-out';
+    c.fillStyle = v;
+    c.fillRect(0, 0, 96, 512);
+    c.globalCompositeOperation = 'source-over';
+  });
   canvasTex(scene, 'pillar', 110, 270, (c) => drawPillar(c, false));
   canvasTex(scene, 'pillar_broken', 110, 270, (c) => drawPillar(c, true));
 

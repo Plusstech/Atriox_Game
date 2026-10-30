@@ -6,6 +6,7 @@ DirectoryIndex index.html
   AddType application/javascript .js .mjs
   AddType application/json .json
   AddType image/png .png
+  AddType image/webp .webp
 </IfModule>
 
 # Arquivos com hash (bundle/) podem ficar em cache por 1 ano; index.html nunca.
@@ -13,7 +14,7 @@ DirectoryIndex index.html
   <FilesMatch "\.(js|css)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
-  <FilesMatch "\.(png|json)$">
+  <FilesMatch "\.(png|webp|json)$">
     Header set Cache-Control "public, max-age=86400"
   </FilesMatch>
   <FilesMatch "index\.html$">

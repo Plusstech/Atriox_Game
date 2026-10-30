@@ -21,10 +21,17 @@ export interface Records {
   bestTime: number | null;
 }
 
+export interface Unlocks {
+  /** Bênção da Glória (recompensa final, concedida uma única vez) */
+  blessingOfGlory: boolean;
+  caimDefeats: number;
+}
+
 export interface SaveData {
   version: 1;
   settings: Settings;
   records: Records;
+  unlocks: Unlocks;
 }
 
 export interface StorageLike {
@@ -47,7 +54,8 @@ export function defaultSave(): SaveData {
       damageNumbers: true,
       graphics: 'high'
     },
-    records: { attempts: 0, bossVictories: 0, highestWave: 0, bestTime: null }
+    records: { attempts: 0, bossVictories: 0, highestWave: 0, bestTime: null },
+    unlocks: { blessingOfGlory: false, caimDefeats: 0 }
   };
 }
 
@@ -59,9 +67,10 @@ const bool = (v: unknown, d: boolean): boolean => (typeof v === 'boolean' ? v : 
 export function sanitize(raw: unknown): SaveData {
   const d = defaultSave();
   if (!raw || typeof raw !== 'object') return d;
-  const r = raw as { settings?: Record<string, unknown>; records?: Record<string, unknown> };
+  const r = raw as { settings?: Record<string, unknown>; records?: Record<string, unknown>; unlocks?: Record<string, unknown> };
   const s = r.settings ?? {};
   const rec = r.records ?? {};
+  const un = r.unlocks ?? {};
   return {
     version: 1,
     settings: {
@@ -78,6 +87,10 @@ export function sanitize(raw: unknown): SaveData {
       bossVictories: Math.floor(num(rec.bossVictories, 0, 0)),
       highestWave: Math.floor(num(rec.highestWave, 0, 0)),
       bestTime: rec.bestTime === null || rec.bestTime === undefined ? null : num(rec.bestTime, 0, 0) || null
+    },
+    unlocks: {
+      blessingOfGlory: bool(un.blessingOfGlory, false),
+      caimDefeats: Math.floor(num(un.caimDefeats, 0, 0))
     }
   };
 }
@@ -160,6 +173,15 @@ export class SaveSystem {
     }
     this.save();
     return { newBest };
+  }
+
+  /** Concede a Bênção da Glória. Retorna false se já estava concedida (nunca duplica). */
+  grantBlessingOfGlory(): boolean {
+    this.data.unlocks.caimDefeats++;
+    const fresh = !this.data.unlocks.blessingOfGlory;
+    this.data.unlocks.blessingOfGlory = true;
+    this.save();
+    return fresh;
   }
 
   reset(): void {

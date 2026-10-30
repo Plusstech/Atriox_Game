@@ -66,8 +66,8 @@ describe('3. Combo', () => {
   it('clique em buffer encadeia o segundo golpe na janela', () => {
     const c = new ComboController(ATRIOX_COMBO);
     c.press();
-    run(c, 50);
-    c.press(); // buffer durante o windup/ativo
+    run(c, 100);
+    expect(c.press()).toBe(true); // dentro da janela de 120 ms antes do encadeamento (190 ms)
     const ev = run(c, 400);
     const starts = ev.filter((e) => e.type === 'stepStart') as { index: number }[];
     expect(starts.map((s) => s.index)).toEqual([1]);
@@ -92,16 +92,28 @@ describe('3. Combo', () => {
     expect(c.index).toBe(0);
   });
 
-  it('três cliques completam o combo e o finalizador reinicia no golpe 1', () => {
+  it('três cliques completam o combo; clique cedo demais no finalizador é recusado', () => {
     const c = new ComboController(ATRIOX_COMBO);
     const starts: number[] = [];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 3; i++) {
       c.press();
       for (const e of run(c, 230)) if (e.type === 'stepStart') starts.push(e.index);
     }
-    for (const e of run(c, 1200)) if (e.type === 'stepStart') starts.push(e.index);
-    expect(starts.slice(0, 3)).toEqual([0, 1, 2]);
+    expect(starts).toEqual([0, 1, 2]);
+    expect(c.press()).toBe(false);
+    run(c, 1200);
+    expect(c.attacking).toBe(false);
+    c.press();
+    for (const e of run(c, 32)) if (e.type === 'stepStart') starts.push(e.index);
     expect(starts[3]).toBe(0);
+  });
+
+  it('buffer de 120 ms: clique muito cedo não encadeia', () => {
+    const c = new ComboController(ATRIOX_COMBO);
+    c.press();
+    run(c, 32);
+    expect(c.press()).toBe(false);
+    expect(c.buffered).toBe(false);
   });
 
   it('não pode cancelar durante a janela ativa', () => {
@@ -180,17 +192,22 @@ describe('6-7. Dash e cooldowns', () => {
     expect(d.invulnerable).toBe(true);
     for (let t = 0; t < ATRIOX_DASH.iframes + 20; t += 10) d.update(10);
     expect(d.invulnerable).toBe(false);
+    expect(ATRIOX_DASH.iframes).toBeLessThanOrEqual(ATRIOX_DASH.duration);
   });
 
-  it('respeita cooldown e multiplicador', () => {
+  it('duas cargas, recarga sequencial e multiplicador', () => {
     const d = new DashController(ATRIOX_DASH);
-    d.tryDash(1, 0);
+    expect(d.tryDash(1, 0)).toBe(true);
     d.update(ATRIOX_DASH.duration + ATRIOX_DASH.recovery + 1);
+    expect(d.charges).toBe(1);
+    expect(d.tryDash(1, 0)).toBe(true);
+    d.update(ATRIOX_DASH.duration + ATRIOX_DASH.recovery + 1);
+    expect(d.charges).toBe(0);
     expect(d.tryDash(1, 0)).toBe(false);
-    d.update(ATRIOX_DASH.cooldown);
+    d.update(ATRIOX_DASH.rechargeMs);
+    expect(d.charges).toBeGreaterThanOrEqual(1);
     expect(d.tryDash(1, 0, 0.5)).toBe(true);
-    d.update(ATRIOX_DASH.cooldown * 0.5 + 1);
-    expect(d.cooldown.ready).toBe(true);
+    expect(d.rechargeTime).toBeCloseTo(ATRIOX_DASH.rechargeMs * 0.5);
   });
 
   it('dash sem direção mantém a última direção', () => {

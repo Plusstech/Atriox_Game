@@ -8,19 +8,26 @@ export interface DashDef {
   duration: number;
   /** distância total percorrida (px) */
   distance: number;
-  /** invulnerabilidade a partir do início (ms) */
+  /** invulnerabilidade a partir do início (ms) — sempre ≤ duração */
   iframes: number;
-  cooldown: number;
+  /** número de cargas */
+  charges: number;
+  /** tempo para recarregar UMA carga (ms) */
+  rechargeMs: number;
+  /** intervalo mínimo entre dois dashes (ms) */
+  minGap: number;
   /** pequena recuperação após o dash (ms) */
   recovery: number;
 }
 
 export const ATRIOX_DASH: DashDef = {
-  duration: 165,
-  distance: 190,
-  iframes: 230,
-  cooldown: 620,
-  recovery: 70
+  duration: 170,
+  distance: 200,
+  iframes: 150,
+  charges: 2,
+  rechargeMs: 950,
+  minGap: 110,
+  recovery: 60
 };
 
 export interface SpellDef {

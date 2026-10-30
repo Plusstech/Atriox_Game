@@ -42,6 +42,12 @@ Envie **o conteúdo** da pasta `dist/`, não a pasta em si, para `public_html` p
 - Para forçar um caminho absoluto: `VITE_BASE=/jogos/atriox/ npm run build`.
 - Não há rotas no cliente, portanto não é preciso regra de reescrita para SPA.
 
+## Diretório publicado e maiúsculas/minúsculas
+
+- O conteúdo do branch `deploy` é exatamente o de `dist/`: `index.html`, `.htaccess`, `bundle/` e `assets/` (`assets/atlas/characters-0.webp`, `characters-1.webp`, `characters.json`, `assets/atriox/*.png`).
+- A Hostinger usa sistema de arquivos **sensível a maiúsculas/minúsculas**. Todos os caminhos do jogo estão em minúsculas e são referenciados exatamente assim.
+- O `.htaccess` define o MIME do `.webp` e o cache (bundle com hash: 1 ano; `index.html`: sem cache).
+
 ## Checagem pós-deploy
 
 1. Abra o site: o menu "ATRIOX CINDER" deve aparecer.
