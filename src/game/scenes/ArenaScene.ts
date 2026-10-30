@@ -132,6 +132,7 @@ export class ArenaScene extends Phaser.Scene {
   runTime = 0;
   kills = 0;
   private interactables: Interactable[] = [];
+  private lastHintAt = -Infinity;
   private doors: Door[] = [];
   private promptText!: Phaser.GameObjects.Text;
   private nearInteractable: Interactable | null = null;
@@ -168,6 +169,7 @@ export class ArenaScene extends Phaser.Scene {
     this.runTime = 0;
     this.kills = 0;
     this.interactables = [];
+    this.lastHintAt = -Infinity;
     this.doors = [];
     this.nearInteractable = null;
     this.ending = false;
@@ -310,10 +312,22 @@ export class ArenaScene extends Phaser.Scene {
 
   private queueSun(): void {
     this.queued.sun = true;
+    if (!this.player.gifts.has('second_sun')) this.hint('Q bloqueado: ganhe o dom Juízo do Segundo Sol numa porta ☀ (Dom de Apollon).');
   }
 
   private queueAvatar(): void {
     this.queued.avatar = true;
+    if (!this.player.gifts.has('avatar')) this.hint('F bloqueado: ganhe o dom Avatar de Apollon numa porta ☀ (Dom de Apollon).');
+    else if (this.player.glory < AVATAR.gloryMax) this.hint(`Glória em ${Math.floor((this.player.glory / AVATAR.gloryMax) * 100)}%: acerte inimigos para encher a barra.`);
+  }
+
+  /** Aviso curto quando uma tecla não tem efeito (no máximo 1 a cada 1,2 s). */
+  private hint(msg: string): void {
+    if (this.cinematic || this.ending || this.player.dead) return;
+    const now = this.time.now;
+    if (now - this.lastHintAt < 1200) return;
+    this.lastHintAt = now;
+    this.ui()?.toast(msg);
   }
 
   /** Perda de foco: limpa teclas pressionadas e pausa. */
@@ -349,6 +363,12 @@ export class ArenaScene extends Phaser.Scene {
       this.nearInteractable = null;
       Sfx.uiConfirm();
       it.action();
+    } else if (!this.nearInteractable && !this.transitioning) {
+      const target = this.interactables[0];
+      if (!target) this.hint('E: nada para interagir agora. Termine o combate da sala.');
+      else if (target.id === 'altar') this.hint('E: aproxime-se do altar no centro para iniciar a Provação.');
+      else if (target.id.startsWith('door')) this.hint('E: aproxime-se de uma porta para escolher a próxima sala.');
+      else this.hint('E: aproxime-se da recompensa para recolhê-la.');
     }
   }
 

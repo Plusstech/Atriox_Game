@@ -100,10 +100,10 @@ export class MenuScene extends Phaser.Scene {
       ['Clique esquerdo', 'Combo de 3 golpes'],
       ['Clique direito', 'Chama do Julgamento'],
       ['Espaço / Shift', 'Dash (2 cargas)'],
-      ['Q', 'Juízo do Segundo Sol (dom)'],
-      ['F', 'Avatar de Apollon (dom)'],
+      ['Q', 'Juízo do Segundo Sol (dom de porta ☀)'],
+      ['F', 'Avatar de Apollon (dom de porta ☀)'],
       ['H', 'Recolher tutorial'],
-      ['E', 'Interagir'],
+      ['E', 'Interagir (altar, portas, recompensa)'],
       ['Tab (segurar)', 'Informações e bênçãos'],
       ['Esc', 'Pausar']
     ];
