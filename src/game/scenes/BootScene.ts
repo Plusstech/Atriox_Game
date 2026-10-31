@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { COLORS, FONT_UI, GAME_H, GAME_W } from '../config/constants';
+import { COLORS, DEV_TOOLS, FONT_UI, GAME_H, GAME_W } from '../config/constants';
 import { generateAllTextures, makeAtrioxFallback } from '../fx/TextureFactory';
 import { ATLAS_KEY, type AnimLibrary } from '../animation/SpriteAnimator';
 import { buildAnimations, type AtlasMeta } from '../../data/animations';
@@ -80,6 +80,11 @@ export class BootScene extends Phaser.Scene {
     // derrota para Sêlun ainda sem escolha concluída (página recarregada): reabre a MESMA escolha
     if (save.data.selun.pending && !new URLSearchParams(location.search).has('inspector')) {
       this.scene.start('SelunAftermathScene', { resume: true });
+      return;
+    }
+    // desenvolvimento: ?selun pula o menu e abre o encontro com o Sêlun
+    if (DEV_TOOLS && new URLSearchParams(location.search).has('selun')) {
+      this.scene.start('ArenaScene');
       return;
     }
     this.scene.start(new URLSearchParams(location.search).has('inspector') ? 'AnimInspectorScene' : 'MenuScene');

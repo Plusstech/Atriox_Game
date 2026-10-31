@@ -168,6 +168,9 @@ type Queued = {
   avatar: boolean;
   captive: boolean;
 };
+/** fração da vida máxima recuperada a cada chefe vencido */
+const BOSS_VICTORY_HEAL = 0.25;
+
 const NO_INPUT = (): Queued => ({
   attack: false,
   cast: false,
@@ -464,6 +467,8 @@ export class ArenaScene extends Phaser.Scene {
     this.handleRun(this.run.begin());
     // refúgio → Provação da Eternidade a partir do nível 1
     if (data?.eternity && save.data.selun.eternityUnlocked) this.time.delayedCall(60, () => this.startEternityFromRefuge());
+    // desenvolvimento: ?selun abre direto o encontro com o Sêlun
+    else if (DEV_TOOLS && new URLSearchParams(location.search).has('selun')) this.time.delayedCall(60, () => this.devStartSelun());
     Sfx.startMusic();
     Sfx.setIntensity(0.1);
 
@@ -2278,6 +2283,7 @@ export class ArenaScene extends Phaser.Scene {
         this.toknarReinforcements(this.toknar?.brain.phase ?? 2);
       },
       onDeath: () => {
+        this.bossVictoryHeal();
         this.hitboxes.clear();
         this.projectiles.clear();
         this.pools.clear();
@@ -2398,9 +2404,21 @@ export class ArenaScene extends Phaser.Scene {
     });
   }
 
+  /** Cada chefe vencido devolve 25% da vida máxima (Sêlun nunca é vencido). */
+  private bossVictoryHeal(): void {
+    const p = this.player;
+    if (p.dead) return;
+    const n = p.heal(Math.round(p.health.max * BOSS_VICTORY_HEAL));
+    if (n > 0) {
+      this.effects.floatingText(p.x, p.chestY - 50, `+${n} vida`, '#9fe08a', 20);
+      Sfx.heal();
+    }
+  }
+
   private onExecutionerDeath(): void {
     const b = this.boss;
     if (!b) return;
+    this.bossVictoryHeal();
     this.slowMotion(0.3, 1200);
     this.effects.flash(300, 255, 230, 180);
     this.effects.shake(700, 0.012);
@@ -2486,6 +2504,7 @@ export class ArenaScene extends Phaser.Scene {
   private onCaimDeath(): void {
     const c = this.caim;
     if (!c) return;
+    this.bossVictoryHeal();
     this.slowMotion(0.25, 1500);
     this.effects.flash(300, 200, 30, 30);
     this.effects.shake(800, 0.012);
