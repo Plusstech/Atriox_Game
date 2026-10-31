@@ -250,7 +250,9 @@ export class Enemy implements Combatant {
         range: 900,
         radius: d.hitRadius,
         team: 'enemy',
-        texture: 'arrow',
+        // flecha ilustrada (complementos v0.5) quando carregada; senão a procedural
+        texture: this.scene.textures.exists('arrow_art') ? 'arrow_art' : 'arrow',
+        scale: this.scene.textures.exists('arrow_art') ? 0.8 : undefined,
         height: 48,
         trail: { texture: 'p_ember', tint: 0xff6040, frequency: 30, scale: 0.8, lifespan: 220 },
         onHit: (t) => {
@@ -301,7 +303,11 @@ export class Enemy implements Combatant {
           tag: `${d.kind}_slam`
         })
       );
-      this.ctx.effects.shockRing(cx, cy, d.hitRadius, 0xff7a40, 360);
+      if (this.anim) {
+        // impacto desenhado (guardiao_impacto), separado do corpo
+        const names = Array.from({ length: 6 }, (_, i) => `fxg_impact_0${i}`);
+        this.ctx.effects.atlasFx(cx, cy - 30, names, { frameMs: 70, scale: 0.9, depth: cy + 4 });
+      } else this.ctx.effects.shockRing(cx, cy, d.hitRadius, 0xff7a40, 360);
       this.ctx.effects.dustPuff(cx, cy, 10);
       this.ctx.effects.shake(140, 0.005);
       Sfx.slam();

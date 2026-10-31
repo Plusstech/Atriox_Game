@@ -66,6 +66,20 @@ SHEETS = {
                        names=seq('fxt_slash_h', 5) + [None] + seq('fxt_slash_d', 5) + [None] + seq('fxt_fissure', 6)),
     'carrasco_vfx': dict(char='fx_carrasco', cols=[6, 6, 6], fx=True, scale=0.62,
                          names=seq('fxc_slash_h', 6) + seq('fxc_slash_d', 6) + seq('fxc_impact', 6)),
+    # ---- complementos (pacote Atriox_Hades_Sprites_e_Guia): inimigos da Provação, boneco, Apollon, ambientação
+    'complementos/recruta_combate_v2': dict(char='recruit', cols=[6, 6, 6], measure='silhouette', target=200, refs=[10, 11],
+                                            names=seq('recruit_run', 4) + seq('recruit_atk', 8) + seq('recruit_fall', 6)),
+    'complementos/atirador_combate_v2': dict(char='archer', cols=[6, 6, 6], measure='silhouette', target=205, refs=[6, 7],
+                                             names=seq('archer_run', 4) + seq('archer_shot', 6) + seq('archer_fall', 8)),
+    'complementos/guardiao_combate': dict(char='guardian', cols=[7, 7], measure='silhouette', target=235, refs=[9],
+                                          names=seq('guardian_run', 4) + seq('guardian_slam', 6) + seq('guardian_fall', 4)),
+    'complementos/boneco_treino_quebra_v2': dict(char='dummy', cols=[3, 3], measure='silhouette', target=150, refs=[0],
+                                                 names=seq('dummy', 6)),
+    'complementos/guardiao_impacto': dict(char='fx_guardian', cols=[3, 3], fx=True, scale=0.5, names=seq('fxg_impact', 6)),
+    'complementos/apollon_avatar_isolado': dict(char='fx_apollon', cols=[4, 4], fx=True, scale=0.62, names=seq('apollon_avatar', 8)),
+    'complementos/apollon_feixe_solar': dict(char='fx_beam', cols=[3, 3], fx=True, scale=0.8, names=seq('apollon_beam', 6)),
+    'complementos/plateia_orcs_animada': dict(char='fx_crowd', cols=[4, 4, 4], fx=True, scale=0.42, names=seq('crowd_orc', 12)),
+    'complementos/wyvern_idle_separado': dict(char='fx_perch', cols=[3, 3], fx=True, scale=0.5, names=seq('wyvern_perch', 6)),
 }
 
 # Frames that already live in the atlas, per character (canvas growth must shift them too).
@@ -246,6 +260,7 @@ def build():
     boards(entries, canvas)
     export_portraits()
     export_arenas()
+    export_arrow()
     print(f'v0.5: {len(entries)} frames on {len(pages)} page(s)')
 
 
@@ -270,7 +285,7 @@ def boards(entries, canvas):
             d.text((x + 3, y + 2), name, fill='white')
             gx, gy = x + PX * k, y + 16 + PY * k
             d.line((gx - 6, gy, gx + 6, gy), fill='#60ff90'); d.line((gx, gy - 6, gx, gy + 6), fill='#60ff90')
-        board.save(INSPECT / f'atlas_{char}.png')
+        board.save(INSPECT / f'atlas_{char}.png')  # um quadro por personagem
 
 
 def export_portraits():
@@ -287,6 +302,16 @@ def save_portrait(a, name, height=440):
     im = Image.fromarray(trim(a)[0], 'RGBA')
     im = im.resize((round(im.width * height / im.height), height), Image.Resampling.LANCZOS)
     im.save(PORTRAITS / f'{name}.webp', 'WEBP', quality=88, alpha_quality=100, method=6)
+
+
+def export_arrow():
+    """Flecha do Atirador: imagem única (o jogo controla o movimento)."""
+    fx = ROOT / 'public/assets/fx'
+    fx.mkdir(parents=True, exist_ok=True)
+    a = clean(np.array(Image.open(SRC / 'complementos/atirador_flecha.png').convert('RGBA')))
+    im = Image.fromarray(trim(a)[0])
+    im = im.resize((96, max(1, round(im.height * 96 / im.width))), Image.Resampling.LANCZOS)
+    im.save(fx / 'arrow.webp', 'WEBP', quality=90, alpha_quality=100, method=6)
 
 
 def export_arenas():

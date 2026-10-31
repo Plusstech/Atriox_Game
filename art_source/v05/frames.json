@@ -1906,5 +1906,1169 @@
    1774,
    887
   ]
+ },
+ "recruit_run_00": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   19,
+   70,
+   241,
+   341
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   93.0,
+   201.0
+  ]
+ },
+ "recruit_run_01": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   267,
+   74,
+   483,
+   352
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   84.0,
+   210.0
+  ]
+ },
+ "recruit_run_02": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   515,
+   73,
+   731,
+   345
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   86.0,
+   203.0
+  ]
+ },
+ "recruit_run_03": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   760,
+   73,
+   983,
+   346
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   90.0,
+   204.0
+  ]
+ },
+ "recruit_atk_00": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   1021,
+   21,
+   1251,
+   349
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   89.0,
+   248.0
+  ]
+ },
+ "recruit_atk_01": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   1290,
+   22,
+   1515,
+   355
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   87.0,
+   251.0
+  ]
+ },
+ "recruit_atk_02": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   19,
+   401,
+   359,
+   677
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   86.0,
+   207.0
+  ]
+ },
+ "recruit_atk_03": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   294,
+   409,
+   607,
+   676
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   93.0,
+   200.0
+  ]
+ },
+ "recruit_atk_04": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   560,
+   402,
+   856,
+   679
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   89.0,
+   208.0
+  ]
+ },
+ "recruit_atk_05": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   791,
+   421,
+   1078,
+   682
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   91.0,
+   196.0
+  ]
+ },
+ "recruit_atk_06": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   1067,
+   420,
+   1332,
+   685
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   83.0,
+   199.0
+  ]
+ },
+ "recruit_atk_07": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   1312,
+   409,
+   1526,
+   688
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   69.0,
+   211.0
+  ]
+ },
+ "recruit_fall_00": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   33,
+   703,
+   262,
+   977
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   79.0,
+   206.0
+  ]
+ },
+ "recruit_fall_01": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   274,
+   743,
+   457,
+   997
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   72.0,
+   182.0
+  ]
+ },
+ "recruit_fall_02": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   477,
+   800,
+   783,
+   996
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   87.0,
+   146.0
+  ]
+ },
+ "recruit_fall_03": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   709,
+   849,
+   1104,
+   993
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   118.0,
+   106.0
+  ]
+ },
+ "recruit_fall_04": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   1013,
+   881,
+   1230,
+   985
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   85.0,
+   74.0
+  ]
+ },
+ "recruit_fall_05": {
+  "sheet": "complementos/recruta_combate_v2",
+  "sourceBounds": [
+   1220,
+   895,
+   1532,
+   988
+  ],
+  "scale": 0.76923,
+  "pivot": [
+   122.0,
+   69.0
+  ]
+ },
+ "archer_run_00": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   44,
+   19,
+   255,
+   291
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   65.0,
+   200.0
+  ]
+ },
+ "archer_run_01": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   321,
+   19,
+   563,
+   291
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   75.0,
+   200.0
+  ]
+ },
+ "archer_run_02": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   647,
+   19,
+   863,
+   292
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   58.0,
+   201.0
+  ]
+ },
+ "archer_run_03": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   931,
+   18,
+   1152,
+   293
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   69.0,
+   202.0
+  ]
+ },
+ "archer_shot_00": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   1224,
+   0,
+   1451,
+   292
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   67.0,
+   215.0
+  ]
+ },
+ "archer_shot_01": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   1538,
+   3,
+   1755,
+   291
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   55.0,
+   213.0
+  ]
+ },
+ "archer_shot_02": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   28,
+   294,
+   279,
+   590
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   67.0,
+   219.0
+  ]
+ },
+ "archer_shot_03": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   328,
+   294,
+   579,
+   590
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   68.0,
+   219.0
+  ]
+ },
+ "archer_shot_04": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   613,
+   295,
+   862,
+   591
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   78.0,
+   218.3
+  ]
+ },
+ "archer_shot_05": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   906,
+   296,
+   1157,
+   591
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   82.0,
+   218.0
+  ]
+ },
+ "archer_fall_00": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   1221,
+   335,
+   1446,
+   590
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   71.0,
+   188.0
+  ]
+ },
+ "archer_fall_01": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   1534,
+   356,
+   1752,
+   589
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   82.0,
+   172.0
+  ]
+ },
+ "archer_fall_02": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   39,
+   617,
+   244,
+   866
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   80.0,
+   183.0
+  ]
+ },
+ "archer_fall_03": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   337,
+   655,
+   554,
+   861
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   75.0,
+   149.0
+  ]
+ },
+ "archer_fall_04": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   614,
+   715,
+   878,
+   860
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   94.0,
+   104.0
+  ]
+ },
+ "archer_fall_05": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   897,
+   755,
+   1175,
+   860
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   105.0,
+   75.0
+  ]
+ },
+ "archer_fall_06": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   1190,
+   746,
+   1477,
+   851
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   105.0,
+   76.0
+  ]
+ },
+ "archer_fall_07": {
+  "sheet": "complementos/atirador_combate_v2",
+  "sourceBounds": [
+   1485,
+   748,
+   1770,
+   852
+  ],
+  "scale": 0.74997,
+  "pivot": [
+   102.0,
+   75.0
+  ]
+ },
+ "guardian_run_00": {
+  "sheet": "complementos/guardiao_combate",
+  "sourceBounds": [
+   17,
+   123,
+   278,
+   402
+  ],
+  "scale": 0.81034,
+  "pivot": [
+   116.0,
+   222.0
+  ]
+ },
+ "guardian_run_01": {
+  "sheet": "complementos/guardiao_combate",
+  "sourceBounds": [
+   286,
+   124,
+   557,
+   395
+  ],
+  "scale": 0.81034,
+  "pivot": [
+   128.0,
+   214.0
+  ]
+ },
+ "guardian_run_02": {
+  "sheet": "complementos/guardiao_combate",
+  "sourceBounds": [
+   564,
+   118,
+   832,
+   400
+  ],
+  "scale": 0.81034,
+  "pivot": [
+   129.0,
+   224.0
+  ]
+ },
+ "guardian_run_03": {
+  "sheet": "complementos/guardiao_combate",
+  "sourceBounds": [
+   838,
+   123,
+   1098,
+   405
+  ],
+  "scale": 0.81034,
+  "pivot": [
+   120.0,
+   222.0
+  ]
+ },
+ "guardian_slam_00": {
+  "sheet": "complementos/guardiao_combate",
+  "sourceBounds": [
+   1110,
+   140,
+   1412,
+   420
+  ],
+  "scale": 0.81034,
+  "pivot": [
+   103.0,
+   218.0
+  ]
+ },
+ "guardian_slam_01": {
+  "sheet": "complementos/guardiao_combate",
+  "sourceBounds": [
+   1418,
+   9,
+   1660,
+   408
+  ],
+  "scale": 0.81034,
+  "pivot": [
+   105.0,
+   318.0
+  ]
+ },
+ "guardian_slam_02": {
+  "sheet": "complementos/guardiao_combate",
+  "sourceBounds": [
+   1682,
+   65,
+   1940,
+   408
+  ],
+  "scale": 0.81034,
+  "pivot": [
+   104.0,
+   273.0
+  ]
+ },
+ "guardian_slam_03": {
+  "sheet": "complementos/guardiao_combate",
+  "sourceBounds": [
+   9,
+   481,
+   280,
+   782
+  ],
+  "scale": 0.81034,
+  "pivot": [
+   115.0,
+   233.0
+  ]
+ },
+ "guardian_slam_04": {
+  "sheet": "complementos/guardiao_combate",
+  "sourceBounds": [
+   297,
+   519,
+   635,
+   752
+  ],
+  "scale": 0.81034,
+  "pivot": [
+   95.0,
+   181.0
+  ]
+ },
+ "guardian_slam_05": {
+  "sheet": "complementos/guardiao_combate",
+  "sourceBounds": [
+   633,
+   444,
+   881,
+   751
+  ],
+  "scale": 0.81034,
+  "pivot": [
+   75.0,
+   243.0
+  ]
+ },
+ "guardian_fall_00": {
+  "sheet": "complementos/guardiao_combate",
+  "sourceBounds": [
+   888,
+   498,
+   1118,
+   754
+  ],
+  "scale": 0.81034,
+  "pivot": [
+   78.0,
+   201.0
+  ]
+ },
+ "guardian_fall_01": {
+  "sheet": "complementos/guardiao_combate",
+  "sourceBounds": [
+   1129,
+   558,
+   1340,
+   752
+  ],
+  "scale": 0.81034,
+  "pivot": [
+   96.0,
+   152.0
+  ]
+ },
+ "guardian_fall_02": {
+  "sheet": "complementos/guardiao_combate",
+  "sourceBounds": [
+   1321,
+   597,
+   1603,
+   800
+  ],
+  "scale": 0.81034,
+  "pivot": [
+   147.0,
+   156.0
+  ]
+ },
+ "guardian_fall_03": {
+  "sheet": "complementos/guardiao_combate",
+  "sourceBounds": [
+   1557,
+   639,
+   1948,
+   800
+  ],
+  "scale": 0.81034,
+  "pivot": [
+   176.0,
+   122.0
+  ]
+ },
+ "dummy_00": {
+  "sheet": "complementos/boneco_treino_quebra_v2",
+  "sourceBounds": [
+   72,
+   10,
+   444,
+   505
+  ],
+  "scale": 0.31579,
+  "pivot": [
+   61.0,
+   152.8
+  ]
+ },
+ "dummy_01": {
+  "sheet": "complementos/boneco_treino_quebra_v2",
+  "sourceBounds": [
+   609,
+   17,
+   1026,
+   505
+  ],
+  "scale": 0.31579,
+  "pivot": [
+   60.0,
+   150.0
+  ]
+ },
+ "dummy_02": {
+  "sheet": "complementos/boneco_treino_quebra_v2",
+  "sourceBounds": [
+   1066,
+   14,
+   1450,
+   505
+  ],
+  "scale": 0.31579,
+  "pivot": [
+   62.5,
+   151.0
+  ]
+ },
+ "dummy_03": {
+  "sheet": "complementos/boneco_treino_quebra_v2",
+  "sourceBounds": [
+   77,
+   504,
+   500,
+   994
+  ],
+  "scale": 0.31579,
+  "pivot": [
+   70.0,
+   151.0
+  ]
+ },
+ "dummy_04": {
+  "sheet": "complementos/boneco_treino_quebra_v2",
+  "sourceBounds": [
+   541,
+   501,
+   1051,
+   994
+  ],
+  "scale": 0.31579,
+  "pivot": [
+   84.0,
+   152.0
+  ]
+ },
+ "dummy_05": {
+  "sheet": "complementos/boneco_treino_quebra_v2",
+  "sourceBounds": [
+   1058,
+   522,
+   1534,
+   1007
+  ],
+  "scale": 0.31579,
+  "pivot": [
+   74.0,
+   148.0
+  ]
+ },
+ "fxg_impact_00": {
+  "sheet": "complementos/guardiao_impacto",
+  "scale": 0.5,
+  "cell": [
+   0,
+   0,
+   484,
+   474
+  ]
+ },
+ "fxg_impact_01": {
+  "sheet": "complementos/guardiao_impacto",
+  "scale": 0.5,
+  "cell": [
+   484,
+   0,
+   970,
+   474
+  ]
+ },
+ "fxg_impact_02": {
+  "sheet": "complementos/guardiao_impacto",
+  "scale": 0.5,
+  "cell": [
+   970,
+   0,
+   1536,
+   474
+  ]
+ },
+ "fxg_impact_03": {
+  "sheet": "complementos/guardiao_impacto",
+  "scale": 0.5,
+  "cell": [
+   0,
+   474,
+   542,
+   1024
+  ]
+ },
+ "fxg_impact_04": {
+  "sheet": "complementos/guardiao_impacto",
+  "scale": 0.5,
+  "cell": [
+   542,
+   474,
+   1054,
+   1024
+  ]
+ },
+ "fxg_impact_05": {
+  "sheet": "complementos/guardiao_impacto",
+  "scale": 0.5,
+  "cell": [
+   1054,
+   474,
+   1536,
+   1024
+  ]
+ },
+ "apollon_avatar_00": {
+  "sheet": "complementos/apollon_avatar_isolado",
+  "scale": 0.62,
+  "cell": [
+   0,
+   0,
+   420,
+   442
+  ]
+ },
+ "apollon_avatar_01": {
+  "sheet": "complementos/apollon_avatar_isolado",
+  "scale": 0.62,
+  "cell": [
+   420,
+   0,
+   869,
+   442
+  ]
+ },
+ "apollon_avatar_02": {
+  "sheet": "complementos/apollon_avatar_isolado",
+  "scale": 0.62,
+  "cell": [
+   869,
+   0,
+   1321,
+   442
+  ]
+ },
+ "apollon_avatar_03": {
+  "sheet": "complementos/apollon_avatar_isolado",
+  "scale": 0.62,
+  "cell": [
+   1321,
+   0,
+   1774,
+   442
+  ]
+ },
+ "apollon_avatar_04": {
+  "sheet": "complementos/apollon_avatar_isolado",
+  "scale": 0.62,
+  "cell": [
+   0,
+   442,
+   438,
+   887
+  ]
+ },
+ "apollon_avatar_05": {
+  "sheet": "complementos/apollon_avatar_isolado",
+  "scale": 0.62,
+  "cell": [
+   438,
+   442,
+   883,
+   887
+  ]
+ },
+ "apollon_avatar_06": {
+  "sheet": "complementos/apollon_avatar_isolado",
+  "scale": 0.62,
+  "cell": [
+   883,
+   442,
+   1335,
+   887
+  ]
+ },
+ "apollon_avatar_07": {
+  "sheet": "complementos/apollon_avatar_isolado",
+  "scale": 0.62,
+  "cell": [
+   1335,
+   442,
+   1774,
+   887
+  ]
+ },
+ "apollon_beam_00": {
+  "sheet": "complementos/apollon_feixe_solar",
+  "scale": 0.8,
+  "cell": [
+   0,
+   0,
+   511,
+   511
+  ]
+ },
+ "apollon_beam_01": {
+  "sheet": "complementos/apollon_feixe_solar",
+  "scale": 0.8,
+  "cell": [
+   511,
+   0,
+   1011,
+   511
+  ]
+ },
+ "apollon_beam_02": {
+  "sheet": "complementos/apollon_feixe_solar",
+  "scale": 0.8,
+  "cell": [
+   1011,
+   0,
+   1536,
+   511
+  ]
+ },
+ "apollon_beam_03": {
+  "sheet": "complementos/apollon_feixe_solar",
+  "scale": 0.8,
+  "cell": [
+   0,
+   511,
+   559,
+   1024
+  ]
+ },
+ "apollon_beam_04": {
+  "sheet": "complementos/apollon_feixe_solar",
+  "scale": 0.8,
+  "cell": [
+   559,
+   511,
+   1033,
+   1024
+  ]
+ },
+ "apollon_beam_05": {
+  "sheet": "complementos/apollon_feixe_solar",
+  "scale": 0.8,
+  "cell": [
+   1033,
+   511,
+   1536,
+   1024
+  ]
+ },
+ "crowd_orc_00": {
+  "sheet": "complementos/plateia_orcs_animada",
+  "scale": 0.42,
+  "cell": [
+   0,
+   0,
+   377,
+   357
+  ]
+ },
+ "crowd_orc_01": {
+  "sheet": "complementos/plateia_orcs_animada",
+  "scale": 0.42,
+  "cell": [
+   377,
+   0,
+   709,
+   357
+  ]
+ },
+ "crowd_orc_02": {
+  "sheet": "complementos/plateia_orcs_animada",
+  "scale": 0.42,
+  "cell": [
+   709,
+   0,
+   1101,
+   357
+  ]
+ },
+ "crowd_orc_03": {
+  "sheet": "complementos/plateia_orcs_animada",
+  "scale": 0.42,
+  "cell": [
+   1101,
+   0,
+   1448,
+   357
+  ]
+ },
+ "crowd_orc_04": {
+  "sheet": "complementos/plateia_orcs_animada",
+  "scale": 0.42,
+  "cell": [
+   0,
+   357,
+   392,
+   726
+  ]
+ },
+ "crowd_orc_05": {
+  "sheet": "complementos/plateia_orcs_animada",
+  "scale": 0.42,
+  "cell": [
+   392,
+   357,
+   737,
+   726
+  ]
+ },
+ "crowd_orc_06": {
+  "sheet": "complementos/plateia_orcs_animada",
+  "scale": 0.42,
+  "cell": [
+   737,
+   357,
+   1124,
+   726
+  ]
+ },
+ "crowd_orc_07": {
+  "sheet": "complementos/plateia_orcs_animada",
+  "scale": 0.42,
+  "cell": [
+   1124,
+   357,
+   1448,
+   726
+  ]
+ },
+ "crowd_orc_08": {
+  "sheet": "complementos/plateia_orcs_animada",
+  "scale": 0.42,
+  "cell": [
+   0,
+   726,
+   374,
+   1086
+  ]
+ },
+ "crowd_orc_09": {
+  "sheet": "complementos/plateia_orcs_animada",
+  "scale": 0.42,
+  "cell": [
+   374,
+   726,
+   720,
+   1086
+  ]
+ },
+ "crowd_orc_10": {
+  "sheet": "complementos/plateia_orcs_animada",
+  "scale": 0.42,
+  "cell": [
+   720,
+   726,
+   1106,
+   1086
+  ]
+ },
+ "crowd_orc_11": {
+  "sheet": "complementos/plateia_orcs_animada",
+  "scale": 0.42,
+  "cell": [
+   1106,
+   726,
+   1448,
+   1086
+  ]
+ },
+ "wyvern_perch_00": {
+  "sheet": "complementos/wyvern_idle_separado",
+  "scale": 0.5,
+  "cell": [
+   0,
+   0,
+   521,
+   532
+  ]
+ },
+ "wyvern_perch_01": {
+  "sheet": "complementos/wyvern_idle_separado",
+  "scale": 0.5,
+  "cell": [
+   521,
+   0,
+   1020,
+   532
+  ]
+ },
+ "wyvern_perch_02": {
+  "sheet": "complementos/wyvern_idle_separado",
+  "scale": 0.5,
+  "cell": [
+   1020,
+   0,
+   1536,
+   532
+  ]
+ },
+ "wyvern_perch_03": {
+  "sheet": "complementos/wyvern_idle_separado",
+  "scale": 0.5,
+  "cell": [
+   0,
+   532,
+   521,
+   1024
+  ]
+ },
+ "wyvern_perch_04": {
+  "sheet": "complementos/wyvern_idle_separado",
+  "scale": 0.5,
+  "cell": [
+   521,
+   532,
+   1011,
+   1024
+  ]
+ },
+ "wyvern_perch_05": {
+  "sheet": "complementos/wyvern_idle_separado",
+  "scale": 0.5,
+  "cell": [
+   1011,
+   532,
+   1536,
+   1024
+  ]
  }
 }

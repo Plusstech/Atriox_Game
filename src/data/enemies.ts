@@ -69,7 +69,8 @@ export const ENEMIES: Record<EnemyKind, EnemyDef> = {
     poise: 1,
     hurtDuration: 260,
     knockbackResist: 0,
-    scale: 0.74,
+    scale: 0.62,
+    sprite: { char: 'recruit', anim: 'recruit', height: 124 },
     texture: 'enemy_recruit',
     weaponTexture: 'weapon_sword'
   },
@@ -94,7 +95,8 @@ export const ENEMIES: Record<EnemyKind, EnemyDef> = {
     poise: 1,
     hurtDuration: 260,
     knockbackResist: 0,
-    scale: 0.72,
+    scale: 0.6,
+    sprite: { char: 'archer', anim: 'archer', height: 123 },
     texture: 'enemy_archer',
     weaponTexture: 'weapon_bow'
   },
@@ -117,7 +119,8 @@ export const ENEMIES: Record<EnemyKind, EnemyDef> = {
     poise: 28,
     hurtDuration: 320,
     knockbackResist: 0.75,
-    scale: 0.84,
+    scale: 0.66,
+    sprite: { char: 'guardian', anim: 'guardian', height: 155 },
     texture: 'enemy_guardian',
     weaponTexture: 'weapon_mace'
   },

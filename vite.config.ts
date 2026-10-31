@@ -10,7 +10,7 @@ const manifest = JSON.parse(manifestBytes.toString('utf8')) as { textures: { ima
 const atlasHash = createHash('sha256').update(manifestBytes);
 for (const texture of manifest.textures) atlasHash.update(readFileSync(new URL(texture.image, atlasDirectory)));
 // arenas ilustradas e retratos dos diálogos usam a mesma revisão nas URLs
-for (const dir of ['arenas/', 'portraits/']) {
+for (const dir of ['arenas/', 'portraits/', 'fx/']) {
   const url = new URL(`./public/assets/${dir}`, import.meta.url);
   if (!existsSync(url)) continue;
   for (const name of readdirSync(url).sort()) atlasHash.update(readFileSync(new URL(name, url)));

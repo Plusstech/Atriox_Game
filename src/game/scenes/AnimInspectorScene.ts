@@ -15,6 +15,9 @@ const CHARS: { id: string; label: string; scale: number; collider: number; flyin
   { id: 'wyvern', label: 'Wyvern', scale: WYVERN_SCALE, collider: 30, flying: true },
   { id: 'carrasco', label: 'Carrasco (v0.5)', scale: 0.8, collider: 40 },
   { id: 'goblin', label: 'Goblin', scale: 0.62, collider: 15 },
+  { id: 'recruit', label: 'Recruta da Provação', scale: 0.62, collider: 18 },
+  { id: 'archer', label: 'Atirador da Provação', scale: 0.6, collider: 16 },
+  { id: 'guardian', label: 'Guardião da Provação', scale: 0.66, collider: 26 },
   { id: 'orc', label: 'Orc saqueador', scale: 0.66, collider: 24 },
   { id: 'wyvern_wild', label: 'Wyvern selvagem', scale: WYVERN_SCALE, collider: 30, flying: true },
   { id: 'apollon', label: 'Bênção (composto)', scale: ATRIOX_SCALE, collider: 16 }
@@ -174,7 +177,7 @@ export class AnimInspectorScene extends Phaser.Scene {
       const m = EXECUTIONER.moves.find((x) => x.id === move);
       if (m) return { windup: m.windup, active: m.active, recovery: m.recovery };
     }
-    if ((who === 'goblin' || who === 'orc') && move === 'attack') {
+    if ((who === 'goblin' || who === 'orc' || who === 'recruit' || who === 'archer' || who === 'guardian') && move === 'attack') {
       const e = ENEMIES[who];
       return { windup: e.windup, active: e.active, recovery: e.recovery };
     }

@@ -1103,20 +1103,29 @@ export class ArenaScene extends Phaser.Scene {
         tag: 'second_sun',
         meta: { hitstop: 60, heavy: true },
       });
-      const beam = this.add
-        .image(x, y + 10, 'beam')
-        .setOrigin(0.5, 1)
-        .setBlendMode(Phaser.BlendModes.ADD)
-        .setDepth(y + 2);
-      beam.setDisplaySize(SECOND_SUN.radius * 1.3, 520);
-      this.tweens.add({
-        targets: beam,
-        alpha: { from: 1, to: 0 },
-        scaleX: beam.scaleX * 0.4,
-        duration: 520,
-        ease: 'Cubic.easeIn',
-        onComplete: () => beam.destroy(),
+      // pilar desenhado (apollon_feixe_solar); sem o atlas, o feixe procedural antigo
+      const drawn = this.effects.atlasFx(x, y + 10 - 260, Array.from({ length: 6 }, (_, i) => `apollon_beam_0${i}`), {
+        frameMs: 85,
+        scale: 1.3,
+        blend: true,
+        depth: y + 2,
       });
+      if (!drawn) {
+        const beam = this.add
+          .image(x, y + 10, 'beam')
+          .setOrigin(0.5, 1)
+          .setBlendMode(Phaser.BlendModes.ADD)
+          .setDepth(y + 2);
+        beam.setDisplaySize(SECOND_SUN.radius * 1.3, 520);
+        this.tweens.add({
+          targets: beam,
+          alpha: { from: 1, to: 0 },
+          scaleX: beam.scaleX * 0.4,
+          duration: 520,
+          ease: 'Cubic.easeIn',
+          onComplete: () => beam.destroy(),
+        });
+      }
       this.effects.explosion(x, y, SECOND_SUN.radius);
       this.effects.shake(200, 0.008);
       Sfx.explosion();
@@ -1153,6 +1162,34 @@ export class ArenaScene extends Phaser.Scene {
       duration: 350,
       onComplete: () => veil.destroy(),
     });
+    this.summonApollon();
+  }
+
+  /**
+   * Emanação de Apollon atrás de Atriox (apollon_avatar_isolado, 8 quadros):
+   * surge da luz, ergue a mão no feixe e se dissipa no fim do especial.
+   * Separada do sprite do Atriox; some sozinha se a sala mudar.
+   */
+  private summonApollon(): void {
+    const p = this.player;
+    const tex = this.textures.get('characters');
+    if (!tex || !tex.has('apollon_avatar_00')) return;
+    const f = p.facing >= 0 ? 1 : -1;
+    const s = this.add
+      .sprite(p.x - f * 70, p.y - 150, 'characters', 'apollon_avatar_00')
+      .setFlipX(f < 0)
+      .setDepth(p.y - 2)
+      .setAlpha(0.95);
+    const A = AVATAR;
+    const plan: [number, number][] = [
+      [0, 0], [1, 200], [2, 420], [3, A.beamFrom - 250], [4, A.beamFrom], [5, A.beamFrom + 450], [6, A.castMs - 480], [7, A.castMs - 240],
+    ];
+    const epoch = this.roomEpoch;
+    for (const [i, at] of plan)
+      this.time.delayedCall(at, () => {
+        if (s.active && epoch === this.roomEpoch) s.setFrame(`apollon_avatar_0${i}`);
+      });
+    this.time.delayedCall(A.castMs, () => s.destroy());
   }
 
   private onAvatarNova(): void {
@@ -1202,6 +1239,17 @@ export class ArenaScene extends Phaser.Scene {
       tag: 'avatar_beam',
       knockbackDir: { x: facing, y: 0 },
       meta: { hitstop: 0 },
+    });
+    // feixe desenhado (apollon_feixe_solar) girado para a horizontal
+    const frames = Array.from({ length: 6 }, (_, i) => `apollon_beam_0${i}`);
+    const len = A.beamLength;
+    this.effects.atlasFx(p.x + facing * (len / 2 + 30), p.y - 60, frames, {
+      frameMs: (A.beamTo - A.beamFrom) / frames.length,
+      rotation: facing >= 0 ? Math.PI / 2 : -Math.PI / 2,
+      scaleX: 0.95,
+      scaleY: len / 390,
+      blend: true,
+      depth: p.y + 6,
     });
     this.effects.shake(A.beamTo - A.beamFrom, 0.004);
     Sfx.explosion();
@@ -1630,11 +1678,9 @@ export class ArenaScene extends Phaser.Scene {
     });
   }
 
-  private beginTrial(): void {
-    for (const d of this.dummies) {
-      this.effects.deathBurst(d.x, d.y, 0xd0b080);
-      d.destroy();
-    }
+  beginTrial(): void {
+    // bonecos se quebram (quadros desenhados) quando a Provação começa
+    for (const d of this.dummies) d.shatter();
     this.dummies = [];
     this.handleRun(this.run.startCombat());
   }

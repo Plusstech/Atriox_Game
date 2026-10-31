@@ -55,6 +55,72 @@ async function fresh(room) {
 }
 
 try {
+  if (on('boneco')) {
+    await page.goto(`http://127.0.0.1:${PORT}/?test`);
+    await waitFor(page, () => window.__ATRIOX_GAME__?.scene.isActive('MenuScene'));
+    await page.keyboard.press('Enter');
+    await waitFor(page, () => !!window.__ATRIOX__?.arena?.player);
+    await sleep(1200);
+    await A(() => window.__ATRIOX__.arena.dummies[0].receiveHit({ damage: 1, knockback: 200, dirX: 1, dirY: 0, tag: 't' }));
+    await sleep(80);
+    await shot('boneco-golpe');
+    await A(() => window.__ATRIOX__.arena.beginTrial());
+    await sleep(260);
+    await shot('boneco-quebra');
+  }
+  if (on('provacao')) {
+    await fresh('build-1');
+    await A(() => {
+      const a = window.__ATRIOX__.arena;
+      for (const [k, dx] of [['recruit', -220], ['archer', 220], ['guardian', 0]]) a.spawnEnemy(k, a.player.x + dx, a.player.y - 230);
+    });
+    await sleep(1500);
+    await shot('provacao');
+    await waitFor(page, () => window.__ATRIOX__.arena.enemies.some((e) => e.def.kind === 'guardian' && e.brain.state === 'attack'), null, 10000, 20);
+    await shot('guardiao-impacto');
+  }
+  if (on('avatar')) {
+    await fresh('trial-1');
+    await A(() => {
+      const a = window.__ATRIOX__.arena;
+      a.applyGift('avatar');
+      a.applyGift('second_sun');
+      a.player.glory = 100;
+      a.player.avatarCooldown = 0;
+    });
+    await waitFor(page, () => {
+      const a = window.__ATRIOX__.arena;
+      if (a.player.avatarT < 0) a.queued.avatar = true;
+      return a.player.avatarT >= 450;
+    }, null, 6000, 20);
+    await shot('apollon-manifesta');
+    await waitFor(page, () => window.__ATRIOX__.arena.player.avatarT >= 1150, null, 6000, 20);
+    await shot('apollon-feixe');
+    await waitFor(page, () => window.__ATRIOX__.arena.player.avatarT < 0, null, 6000, 20);
+    await sleep(900);
+    await page.mouse.move(820, 300);
+    await page.keyboard.press('q');
+    await sleep(1250);
+    await shot('juizo-pilar');
+  }
+  if (on('plateia')) {
+    await fresh('toknar');
+    await A(() => {
+      const a = window.__ATRIOX__.arena;
+      a.player.x = 1200;
+      a.player.y = 560;
+      a.camTarget = { x: 1200, y: 380 };
+    });
+    await sleep(1500);
+    await shot('plateia');
+    await fresh('nemeia');
+    await A(() => {
+      const a = window.__ATRIOX__.arena;
+      a.camTarget = { x: 760, y: 420 };
+    });
+    await sleep(1500);
+    await shot('wyverns-pousadas');
+  }
   if (on('goblin')) {
     await fresh('trial-1');
     await waitFor(page, () => window.__ATRIOX__.snapshot().alive >= 2, null, 8000);

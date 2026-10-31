@@ -161,18 +161,18 @@ export class Effects {
     x: number,
     y: number,
     names: string[],
-    opts: { frameMs?: number; flipX?: boolean; rotation?: number; scale?: number; depth?: number; blend?: boolean; alpha?: number } = {}
-  ): void {
-    if (!names.length || !this.scene.textures.exists('characters')) return;
+    opts: { frameMs?: number; flipX?: boolean; rotation?: number; scale?: number; scaleX?: number; scaleY?: number; depth?: number; blend?: boolean; alpha?: number } = {}
+  ): Phaser.GameObjects.Sprite | null {
+    if (!names.length || !this.scene.textures.exists('characters')) return null;
     const tex = this.scene.textures.get('characters');
     const frames = names.filter((n) => tex.has(n));
-    if (!frames.length) return;
+    if (!frames.length) return null;
     const s = this.scene.add
       .sprite(x, y, 'characters', frames[0])
       .setOrigin(0.5)
       .setFlipX(!!opts.flipX)
       .setRotation(opts.rotation ?? 0)
-      .setScale(opts.scale ?? 1)
+      .setScale(opts.scaleX ?? opts.scale ?? 1, opts.scaleY ?? opts.scale ?? 1)
       .setAlpha(opts.alpha ?? 1)
       .setDepth(opts.depth ?? DEPTH.overlayFx - 40);
     if (opts.blend) s.setBlendMode(Phaser.BlendModes.ADD);
@@ -188,6 +188,7 @@ export class Effects {
         else s.setFrame(frames[i]);
       }
     });
+    return s;
   }
 
   dustPuff(x: number, y: number, n = 3): void {

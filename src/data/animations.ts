@@ -512,6 +512,66 @@ export function buildAnimations(meta: AtlasMeta): Record<string, AnimDef> {
     { key: 'wyvern_wild.recovery', loop: true, frames: [f(ww('fall', 0), 260), f(ww('fly', 2), 260), f(ww('fly', 3), 260)] },
     { key: 'wyvern_wild.dissolve', loop: false, frames: [0, 1, 2, 3].map((i) => f(ww('fall', i), i === 3 ? 99999 : 170)) },
   );
+  // ------------------------------------------------------------------ PROVAÇÃO (complementos v0.5)
+  // No modo sincronizado o `ms` é o peso do quadro na fase (ver FrameTimeline).
+  const n2 = (c: string, k: string, i: number) => `${c}_${k}_${String(i).padStart(2, '0')}`;
+  defs.push(
+    { key: 'recruit.run', loop: true, frames: [0, 1, 2, 3].map((i) => f(n2('recruit', 'run', i), 90)) },
+    {
+      key: 'recruit.attack',
+      loop: false,
+      frames: [
+        f(n2('recruit', 'run', 3), 0.4, 'windup'),
+        f(n2('recruit', 'atk', 0), 1, 'windup'),
+        f(n2('recruit', 'atk', 1), 1.1, 'windup'),
+        f(n2('recruit', 'atk', 2), 1, 'active', 'hit'),
+        f(n2('recruit', 'atk', 3), 1, 'active'),
+        f(n2('recruit', 'atk', 4), 0.6, 'recovery'),
+        f(n2('recruit', 'atk', 5), 1, 'recovery'),
+        f(n2('recruit', 'atk', 6), 1, 'recovery'),
+        f(n2('recruit', 'atk', 7), 1, 'recovery'),
+      ],
+    },
+    { key: 'recruit.hurt', loop: true, frames: [f(n2('recruit', 'fall', 0), 9999)] },
+    { key: 'recruit.dead', loop: false, frames: [1, 2, 3, 5].map((i, k) => f(n2('recruit', 'fall', i), k === 3 ? 99999 : 150)) },
+
+    { key: 'archer.run', loop: true, frames: [0, 1, 2, 3].map((i) => f(n2('archer', 'run', i), 95)) },
+    {
+      key: 'archer.attack',
+      loop: false,
+      frames: [
+        f(n2('archer', 'shot', 0), 0.8, 'windup'),
+        f(n2('archer', 'shot', 1), 1, 'windup'),
+        f(n2('archer', 'shot', 2), 1, 'windup'),
+        f(n2('archer', 'shot', 3), 1.2, 'windup'),
+        f(n2('archer', 'shot', 4), 1, 'active', 'hit'),
+        f(n2('archer', 'shot', 5), 1.2, 'recovery'),
+        f(n2('archer', 'shot', 0), 0.8, 'recovery'),
+      ],
+    },
+    { key: 'archer.hurt', loop: true, frames: [f(n2('archer', 'fall', 0), 9999)] },
+    { key: 'archer.dead', loop: false, frames: [1, 3, 4, 7].map((i, k) => f(n2('archer', 'fall', i), k === 3 ? 99999 : 150)) },
+
+    { key: 'guardian.run', loop: true, frames: [0, 1, 2, 3].map((i) => f(n2('guardian', 'run', i), 130)) },
+    {
+      key: 'guardian.attack',
+      loop: false,
+      frames: [
+        f(n2('guardian', 'slam', 0), 0.8, 'windup'),
+        f(n2('guardian', 'slam', 1), 1, 'windup'),
+        f(n2('guardian', 'slam', 2), 1.2, 'windup'),
+        f(n2('guardian', 'slam', 3), 1, 'active', 'hit'),
+        f(n2('guardian', 'slam', 4), 1, 'recovery'),
+        f(n2('guardian', 'slam', 5), 1, 'recovery'),
+      ],
+    },
+    { key: 'guardian.hurt', loop: true, frames: [f(n2('guardian', 'fall', 0), 9999)] },
+    { key: 'guardian.dead', loop: false, frames: [1, 2, 3].map((i, k) => f(n2('guardian', 'fall', i), k === 2 ? 99999 : 180)) },
+
+    // Avatar: Atriox invoca sozinho; a emanação de Apollon é um sprite separado (apollon_avatar_*)
+    { key: 'atriox.avatar', loop: false, frames: [f(S(5), 380), f(S(6), 520), f(S(8), 1600)] },
+  );
+
   const out: Record<string, AnimDef> = {};
   for (const d of defs) out[d.key] = d;
   return out;

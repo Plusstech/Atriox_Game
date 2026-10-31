@@ -53,6 +53,8 @@ export class BootScene extends Phaser.Scene {
     const v = `?v=${encodeURIComponent(__ATLAS_REVISION__)}`;
     this.load.setPath('assets/arenas/');
     for (const a of ARENA_IMAGES) this.load.image(a, `${a}.webp${v}`);
+    this.load.setPath('assets/fx/');
+    this.load.image('arrow_art', `arrow.webp${v}`);
     this.load.setPath('assets/portraits/');
     for (const p of PORTRAITS) this.load.image(`portrait_${p}`, `${p}.webp${v}`);
   }

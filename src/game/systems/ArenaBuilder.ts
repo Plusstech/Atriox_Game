@@ -156,6 +156,53 @@ export const PAINTED_BOUNDS: CircleObstacle[] = [
   { x: FLOOR.x + FLOOR.w - 390, y: FLOOR.y + FLOOR.h + 60, r: 200 }
 ];
 
+/**
+ * Camadas animadas sobre a arena pintada (complementos v0.5): plateia de orcs
+ * (Toknar) e wyverns pousadas (Caim). Só cenário: sem colisão, abaixo do combate,
+ * em pontos onde a ilustração não tem figuras (nada duplicado ou "sumindo").
+ */
+const AMBIENT: Record<'toknar' | 'caim', { prefix: string; rows: number[][]; spots: [number, number, number, boolean][]; ms: number }> = {
+  toknar: {
+    prefix: 'crowd_orc',
+    rows: [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11]],
+    // x, y, escala, espelhar (voltado para o centro)
+    spots: [[930, 268, 0.78, false], [1470, 268, 0.78, true], [104, 770, 0.8, false], [2296, 790, 0.8, true]],
+    ms: 260
+  },
+  caim: {
+    prefix: 'wyvern_perch',
+    rows: [[0, 1, 2, 3, 4, 5]],
+    spots: [[520, 250, 0.85, false], [2080, 270, 0.85, true]],
+    ms: 300
+  }
+};
+
+function addAmbientLayers(
+  scene: Phaser.Scene,
+  theme: 'toknar' | 'caim',
+  add: <T extends Phaser.GameObjects.GameObject>(o: T) => T
+): void {
+  const cfg = AMBIENT[theme];
+  const tex = scene.textures.get('characters');
+  if (!tex || !tex.has(`${cfg.prefix}_00`)) return;
+  cfg.rows.forEach((row, r) => {
+    const key = `ambient_${cfg.prefix}_${r}`;
+    if (!scene.anims.exists(key))
+      scene.anims.create({
+        key,
+        frames: row.map((i) => ({ key: 'characters', frame: `${cfg.prefix}_${String(i).padStart(2, '0')}` })),
+        frameRate: 1000 / cfg.ms,
+        repeat: -1,
+        yoyo: theme === 'caim'
+      });
+  });
+  cfg.spots.forEach(([x, y, sc, flip], i) => {
+    const r = i % cfg.rows.length;
+    const sp = add(scene.add.sprite(x, y, 'characters', `${cfg.prefix}_00`).setScale(sc).setFlipX(flip).setDepth(DEPTH.decal + 10));
+    sp.play({ key: `ambient_${cfg.prefix}_${r}`, startFrame: i % cfg.rows[r].length, timeScale: 0.8 + ((i * 37) % 40) / 100 });
+  });
+}
+
 function buildPainted(
   scene: Phaser.Scene,
   theme: 'toknar' | 'caim',
@@ -180,6 +227,7 @@ function buildPainted(
     light.setDisplaySize(420, 300).setAlpha(0.35);
     scene.tweens.add({ targets: light, alpha: { from: 0.28, to: 0.45 }, duration: 130 + Math.random() * 140, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
   }
+  addAmbientLayers(scene, theme, add);
   // brasas/cinzas discretas (limitadas)
   add(
     scene.add

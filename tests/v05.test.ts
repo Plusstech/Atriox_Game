@@ -127,6 +127,34 @@ describe('v0.5 — animações sem pose congelada', () => {
   });
 });
 
+describe('v0.5 — complementos: inimigos da Provação, boneco e Apollon', () => {
+  it('recruta, atirador e guardião usam quadros do atlas com impacto único no golpe', () => {
+    for (const c of ['recruit', 'archer', 'guardian'] as const) {
+      expect(ENEMIES[c].sprite?.char, c).toBe(c);
+      for (const k of ['run', 'attack', 'hurt', 'dead']) expect(defs[`${c}.${k}`], `${c}.${k}`).toBeTruthy();
+      const atk = defs[`${c}.attack`];
+      expect(atk.frames.filter((f) => f.event === 'hit'), c).toHaveLength(1);
+      expect(atk.frames.every((f) => f.name.startsWith(`${c}_`)), c).toBe(true);
+      expect(longestHold(atk, 'windup', ENEMIES[c].windup), c).toBeLessThanOrEqual(420);
+    }
+  });
+
+  it('Avatar: Atriox invoca sozinho (Apollon é um sprite separado com 8 quadros)', () => {
+    const names = new Set((atlas as { textures: { frames: { filename: string }[] }[] }).textures.flatMap((t) => t.frames.map((f) => f.filename)));
+    for (let i = 0; i < 8; i++) expect(names.has(`apollon_avatar_0${i}`)).toBe(true);
+    for (let i = 0; i < 6; i++) {
+      expect(names.has(`apollon_beam_0${i}`)).toBe(true);
+      expect(names.has(`dummy_0${i}`)).toBe(true);
+      expect(names.has(`fxg_impact_0${i}`)).toBe(true);
+      expect(names.has(`wyvern_perch_0${i}`)).toBe(true);
+    }
+    for (let i = 0; i < 12; i++) expect(names.has(`crowd_orc_${String(i).padStart(2, '0')}`)).toBe(true);
+    // as poses do avatar do Atriox não incluem a folha solar com Apollon pintado junto (13–16)
+    expect(defs['atriox.avatar'].frames.some((f) => /atriox_solar_1[3-6]/.test(f.name))).toBe(false);
+    expect(existsSync(new URL('../public/assets/fx/arrow.webp', import.meta.url))).toBe(true);
+  });
+});
+
 describe('v0.5 — Carrasco: postura quebrável sem stagger infinito', () => {
   it('quebra uma vez, volta a perseguir e fica imune por um tempo', () => {
     const b = new BossBrain(EXECUTIONER, () => 0.5);

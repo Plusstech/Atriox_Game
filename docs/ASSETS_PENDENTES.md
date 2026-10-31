@@ -18,6 +18,10 @@ O que o jogo usa hoje e o que ainda falta para as animações ficarem completas.
 | `goblin`, `orc_saqueador`, `wyvern_selvagem` | inimigos das primeiras fases |
 | `atriox_combo_3` | finalizador diagonal (quadro 05 descartado: a lâmina da pose vizinha atravessa a perna) |
 | `arena_toknar`, `arena_caim` | arenas ilustradas |
+| `recruta_combate_v2`, `atirador_combate_v2`, `guardiao_combate`, `guardiao_impacto`, `atirador_flecha` | inimigos da Provação com quadros, impacto e flecha desenhados (v1 do atirador tem fundo opaco: não usado) |
+| `boneco_treino_quebra_v2` | boneco: parado, duas reações, quebra ao iniciar a Provação |
+| `apollon_avatar_isolado`, `apollon_feixe_solar` | Manifestação de Apollon separada do Atriox; o feixe também é o pilar do Juízo do Segundo Sol |
+| `plateia_orcs_animada`, `wyvern_idle_separado` | camadas animadas discretas nas arenas de Toknar e Caim |
 
 ## Atriox
 
@@ -36,9 +40,9 @@ O que o jogo usa hoje e o que ainda falta para as animações ficarem completas.
 
 | Animação | Quadros | Observação |
 |---|---|---|
-| Atriox invocando | 6 | **somente Atriox** |
-| Apollon manifestando | 8 | **somente Apollon** (avatar de combate) |
-| Feixe | 6 | sem corpo |
+| Atriox invocando | 6 | **somente Atriox** (hoje: 3 poses de conjuração da folha solar) |
+| ~~Apollon manifestando~~ | 8 | **integrado** (`apollon_avatar_isolado`) |
+| ~~Feixe~~ | 6 | **integrado** (`apollon_feixe_solar`) |
 | Lâmina orbital | 6 | sem corpo |
 | Sol Cativo | loop 6 + explosão 8 | sem corpo |
 | Marca do Carrasco | 6 | isolada |
@@ -56,7 +60,7 @@ A folha `apollon_bencao_atriox` (6 composições) fica **só na cena narrativa**
 | Postura quebrada | 4 | 2 poses da Fome |
 | Dano | 2 | não há (flash branco) |
 | Morte | 6–8 | 2 poses + desvanecer |
-| Público animado | camadas separadas | **não produzido**: a plateia é pintada no cenário |
+| Público animado | camadas separadas | **parcial**: 4 orcs animados (`plateia_orcs_animada`) sobre a plateia pintada, que continua estática |
 
 ## Caim
 
@@ -69,7 +73,7 @@ A folha `apollon_bencao_atriox` (6 composições) fica **só na cena narrativa**
 | Idle | 6 | 2 poses |
 | Dano | 2 | 1 pose |
 | Morte | 8 | 2 poses + dissolução |
-| Wyverns dos rochedos levantando voo | camada separada | não produzido (as pintadas ficam paradas) |
+| Wyverns dos rochedos levantando voo | camada separada | **parcial**: 2 wyverns pousadas respirando (`wyvern_idle_separado`); levantar voo da rocha ainda não existe |
 
 ## Sangue (VFX sem corpo)
 
