@@ -11,6 +11,8 @@ export interface HitInfo {
   basic?: boolean;
   heavy?: boolean;
   posture?: number;
+  /** multiplicador de dano de postura de quem ataca (Vontade Inquebrável, Brasa de Apollon) */
+  postureMul?: number;
 }
 
 /** Qualquer coisa que pode receber dano. */

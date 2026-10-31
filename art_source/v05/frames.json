@@ -3070,5 +3070,1441 @@
    1536,
    1024
   ]
+ },
+ "selun_idle_00": {
+  "sheet": "selun/selun_idle",
+  "sourceBounds": [
+   123,
+   15,
+   414,
+   737
+  ],
+  "scale": 0.35477,
+  "pivot": [
+   50.0,
+   248.0
+  ]
+ },
+ "selun_idle_01": {
+  "sheet": "selun/selun_idle",
+  "sourceBounds": [
+   645,
+   11,
+   934,
+   737
+  ],
+  "scale": 0.35477,
+  "pivot": [
+   50.0,
+   249.0
+  ]
+ },
+ "selun_idle_02": {
+  "sheet": "selun/selun_idle",
+  "sourceBounds": [
+   1162,
+   18,
+   1453,
+   737
+  ],
+  "scale": 0.35477,
+  "pivot": [
+   50.0,
+   247.0
+  ]
+ },
+ "selun_idle_03": {
+  "sheet": "selun/selun_idle",
+  "sourceBounds": [
+   1683,
+   15,
+   1974,
+   737
+  ],
+  "scale": 0.35477,
+  "pivot": [
+   50.0,
+   248.0
+  ]
+ },
+ "selun_run_00": {
+  "sheet": "selun/selun_run",
+  "sourceBounds": [
+   9,
+   53,
+   352,
+   494
+  ],
+  "scale": 0.58089,
+  "pivot": [
+   121.0,
+   254.0
+  ]
+ },
+ "selun_run_01": {
+  "sheet": "selun/selun_run",
+  "sourceBounds": [
+   388,
+   55,
+   751,
+   480
+  ],
+  "scale": 0.58089,
+  "pivot": [
+   127.0,
+   245.0
+  ]
+ },
+ "selun_run_02": {
+  "sheet": "selun/selun_run",
+  "sourceBounds": [
+   773,
+   57,
+   1132,
+   467
+  ],
+  "scale": 0.58089,
+  "pivot": [
+   128.0,
+   223.0
+  ]
+ },
+ "selun_run_03": {
+  "sheet": "selun/selun_run",
+  "sourceBounds": [
+   1161,
+   57,
+   1518,
+   485
+  ],
+  "scale": 0.58089,
+  "pivot": [
+   121.0,
+   245.0
+  ]
+ },
+ "selun_run_04": {
+  "sheet": "selun/selun_run",
+  "sourceBounds": [
+   9,
+   545,
+   364,
+   984
+  ],
+  "scale": 0.58089,
+  "pivot": [
+   119.0,
+   253.0
+  ]
+ },
+ "selun_run_05": {
+  "sheet": "selun/selun_run",
+  "sourceBounds": [
+   388,
+   548,
+   737,
+   963
+  ],
+  "scale": 0.58089,
+  "pivot": [
+   129.0,
+   235.0
+  ]
+ },
+ "selun_run_06": {
+  "sheet": "selun/selun_run",
+  "sourceBounds": [
+   773,
+   552,
+   1134,
+   943
+  ],
+  "scale": 0.58089,
+  "pivot": [
+   127.0,
+   222.0
+  ]
+ },
+ "selun_run_07": {
+  "sheet": "selun/selun_run",
+  "sourceBounds": [
+   1159,
+   552,
+   1513,
+   981
+  ],
+  "scale": 0.58089,
+  "pivot": [
+   121.0,
+   247.0
+  ]
+ },
+ "selun_horizon_00": {
+  "sheet": "selun/selun_attack_01_horizon",
+  "sourceBounds": [
+   50,
+   31,
+   321,
+   505
+  ],
+  "scale": 0.56471,
+  "pivot": [
+   70.0,
+   260.0
+  ]
+ },
+ "selun_horizon_01": {
+  "sheet": "selun/selun_attack_01_horizon",
+  "sourceBounds": [
+   397,
+   72,
+   706,
+   503
+  ],
+  "scale": 0.56471,
+  "pivot": [
+   98.0,
+   235.0
+  ]
+ },
+ "selun_horizon_02": {
+  "sheet": "selun/selun_attack_01_horizon",
+  "sourceBounds": [
+   747,
+   15,
+   1043,
+   504
+  ],
+  "scale": 0.56471,
+  "pivot": [
+   86.0,
+   269.0
+  ]
+ },
+ "selun_horizon_03": {
+  "sheet": "selun/selun_attack_01_horizon",
+  "sourceBounds": [
+   1091,
+   95,
+   1535,
+   503
+  ],
+  "scale": 0.56471,
+  "pivot": [
+   81.0,
+   222.0
+  ]
+ },
+ "selun_horizon_04": {
+  "sheet": "selun/selun_attack_01_horizon",
+  "sourceBounds": [
+   44,
+   518,
+   352,
+   984
+  ],
+  "scale": 0.56471,
+  "pivot": [
+   75.0,
+   255.0
+  ]
+ },
+ "selun_horizon_05": {
+  "sheet": "selun/selun_attack_01_horizon",
+  "sourceBounds": [
+   324,
+   531,
+   762,
+   984
+  ],
+  "scale": 0.56471,
+  "pivot": [
+   142.0,
+   248.0
+  ]
+ },
+ "selun_horizon_06": {
+  "sheet": "selun/selun_attack_01_horizon",
+  "sourceBounds": [
+   823,
+   530,
+   1131,
+   985
+  ],
+  "scale": 0.56471,
+  "pivot": [
+   66.0,
+   250.0
+  ]
+ },
+ "selun_horizon_07": {
+  "sheet": "selun/selun_attack_01_horizon",
+  "sourceBounds": [
+   1195,
+   523,
+   1494,
+   985
+  ],
+  "scale": 0.56471,
+  "pivot": [
+   65.0,
+   253.0
+  ]
+ },
+ "selun_sentence_00": {
+  "sheet": "selun/selun_attack_02_sentence",
+  "sourceBounds": [
+   91,
+   41,
+   288,
+   529
+  ],
+  "scale": 0.64865,
+  "pivot": [
+   65.0,
+   309.0
+  ]
+ },
+ "selun_sentence_01": {
+  "sheet": "selun/selun_attack_02_sentence",
+  "sourceBounds": [
+   456,
+   26,
+   668,
+   531
+  ],
+  "scale": 0.64865,
+  "pivot": [
+   74.0,
+   321.0
+  ]
+ },
+ "selun_sentence_02": {
+  "sheet": "selun/selun_attack_02_sentence",
+  "sourceBounds": [
+   761,
+   112,
+   1035,
+   531
+  ],
+  "scale": 0.64865,
+  "pivot": [
+   110.0,
+   264.0
+  ]
+ },
+ "selun_sentence_03": {
+  "sheet": "selun/selun_attack_02_sentence",
+  "sourceBounds": [
+   1161,
+   217,
+   1498,
+   531
+  ],
+  "scale": 0.64865,
+  "pivot": [
+   93.0,
+   198.0
+  ]
+ },
+ "selun_sentence_04": {
+  "sheet": "selun/selun_attack_02_sentence",
+  "sourceBounds": [
+   67,
+   640,
+   439,
+   978
+  ],
+  "scale": 0.64865,
+  "pivot": [
+   79.0,
+   211.0
+  ]
+ },
+ "selun_sentence_05": {
+  "sheet": "selun/selun_attack_02_sentence",
+  "sourceBounds": [
+   462,
+   650,
+   806,
+   981
+  ],
+  "scale": 0.64865,
+  "pivot": [
+   70.0,
+   207.0
+  ]
+ },
+ "selun_sentence_06": {
+  "sheet": "selun/selun_attack_02_sentence",
+  "sourceBounds": [
+   822,
+   625,
+   1130,
+   978
+  ],
+  "scale": 0.64865,
+  "pivot": [
+   73.0,
+   222.0
+  ]
+ },
+ "selun_sentence_07": {
+  "sheet": "selun/selun_attack_02_sentence",
+  "sourceBounds": [
+   1175,
+   611,
+   1505,
+   980
+  ],
+  "scale": 0.64865,
+  "pivot": [
+   68.0,
+   232.0
+  ]
+ },
+ "selun_decree_00": {
+  "sheet": "selun/selun_attack_03_end",
+  "sourceBounds": [
+   83,
+   37,
+   304,
+   518
+  ],
+  "scale": 0.54795,
+  "pivot": [
+   58.0,
+   255.0
+  ]
+ },
+ "selun_decree_01": {
+  "sheet": "selun/selun_attack_03_end",
+  "sourceBounds": [
+   486,
+   4,
+   683,
+   512
+  ],
+  "scale": 0.54795,
+  "pivot": [
+   54.0,
+   270.0
+  ]
+ },
+ "selun_decree_02": {
+  "sheet": "selun/selun_attack_03_end",
+  "sourceBounds": [
+   852,
+   22,
+   1072,
+   512
+  ],
+  "scale": 0.54795,
+  "pivot": [
+   57.0,
+   261.0
+  ]
+ },
+ "selun_decree_03": {
+  "sheet": "selun/selun_attack_03_end",
+  "sourceBounds": [
+   1229,
+   137,
+   1460,
+   517
+  ],
+  "scale": 0.54795,
+  "pivot": [
+   71.0,
+   199.0
+  ]
+ },
+ "selun_decree_04": {
+  "sheet": "selun/selun_attack_03_end",
+  "sourceBounds": [
+   50,
+   634,
+   362,
+   977
+  ],
+  "scale": 0.54795,
+  "pivot": [
+   91.0,
+   175.0
+  ]
+ },
+ "selun_decree_05": {
+  "sheet": "selun/selun_attack_03_end",
+  "sourceBounds": [
+   435,
+   594,
+   753,
+   975
+  ],
+  "scale": 0.54795,
+  "pivot": [
+   74.0,
+   196.0
+  ]
+ },
+ "selun_decree_06": {
+  "sheet": "selun/selun_attack_03_end",
+  "sourceBounds": [
+   840,
+   555,
+   1069,
+   978
+  ],
+  "scale": 0.54795,
+  "pivot": [
+   68.0,
+   226.0
+  ]
+ },
+ "selun_decree_07": {
+  "sheet": "selun/selun_attack_03_end",
+  "sourceBounds": [
+   1225,
+   527,
+   1444,
+   982
+  ],
+  "scale": 0.54795,
+  "pivot": [
+   56.0,
+   243.0
+  ]
+ },
+ "selun_dash_00": {
+  "sheet": "selun/selun_dash",
+  "sourceBounds": [
+   28,
+   121,
+   334,
+   397
+  ],
+  "scale": 0.72204,
+  "pivot": [
+   143.0,
+   197.0
+  ]
+ },
+ "selun_dash_01": {
+  "sheet": "selun/selun_dash",
+  "sourceBounds": [
+   371,
+   116,
+   676,
+   399
+  ],
+  "scale": 0.72204,
+  "pivot": [
+   143.0,
+   201.0
+  ]
+ },
+ "selun_dash_02": {
+  "sheet": "selun/selun_dash",
+  "sourceBounds": [
+   725,
+   107,
+   1028,
+   388
+  ],
+  "scale": 0.72204,
+  "pivot": [
+   139.0,
+   196.0
+  ]
+ },
+ "selun_dash_03": {
+  "sheet": "selun/selun_dash",
+  "sourceBounds": [
+   1067,
+   62,
+   1375,
+   382
+  ],
+  "scale": 0.72204,
+  "pivot": [
+   147.0,
+   208.0
+  ]
+ },
+ "selun_dash_04": {
+  "sheet": "selun/selun_dash",
+  "sourceBounds": [
+   1426,
+   65,
+   1733,
+   401
+  ],
+  "scale": 0.72204,
+  "pivot": [
+   136.0,
+   240.0
+  ]
+ },
+ "selun_dash_05": {
+  "sheet": "selun/selun_dash",
+  "sourceBounds": [
+   27,
+   483,
+   346,
+   817
+  ],
+  "scale": 0.72204,
+  "pivot": [
+   137.0,
+   239.0
+  ]
+ },
+ "selun_dash_06": {
+  "sheet": "selun/selun_dash",
+  "sourceBounds": [
+   378,
+   483,
+   711,
+   823
+  ],
+  "scale": 0.72204,
+  "pivot": [
+   145.0,
+   243.0
+  ]
+ },
+ "selun_dash_07": {
+  "sheet": "selun/selun_dash",
+  "sourceBounds": [
+   780,
+   480,
+   1175,
+   818
+  ],
+  "scale": 0.72204,
+  "pivot": [
+   102.0,
+   242.0
+  ]
+ },
+ "selun_dash_08": {
+  "sheet": "selun/selun_dash",
+  "sourceBounds": [
+   1169,
+   483,
+   1449,
+   814
+  ],
+  "scale": 0.72204,
+  "pivot": [
+   78.0,
+   235.0
+  ]
+ },
+ "selun_dash_09": {
+  "sheet": "selun/selun_dash",
+  "sourceBounds": [
+   1463,
+   479,
+   1761,
+   835
+  ],
+  "scale": 0.72204,
+  "pivot": [
+   87.0,
+   248.0
+  ]
+ },
+ "selun_channel_00": {
+  "sheet": "selun/selun_channel",
+  "sourceBounds": [
+   85,
+   17,
+   272,
+   432
+  ],
+  "scale": 0.61381,
+  "pivot": [
+   55.0,
+   248.0
+  ]
+ },
+ "selun_channel_01": {
+  "sheet": "selun/selun_channel",
+  "sourceBounds": [
+   428,
+   17,
+   685,
+   433
+  ],
+  "scale": 0.61381,
+  "pivot": [
+   52.5,
+   247.0
+  ]
+ },
+ "selun_channel_02": {
+  "sheet": "selun/selun_channel",
+  "sourceBounds": [
+   782,
+   16,
+   1047,
+   433
+  ],
+  "scale": 0.61381,
+  "pivot": [
+   50.0,
+   248.0
+  ]
+ },
+ "selun_channel_03": {
+  "sheet": "selun/selun_channel",
+  "sourceBounds": [
+   1134,
+   18,
+   1403,
+   433
+  ],
+  "scale": 0.61381,
+  "pivot": [
+   50.0,
+   247.0
+  ]
+ },
+ "selun_channel_04": {
+  "sheet": "selun/selun_channel",
+  "sourceBounds": [
+   1490,
+   16,
+   1756,
+   433
+  ],
+  "scale": 0.61381,
+  "pivot": [
+   50.0,
+   248.0
+  ]
+ },
+ "selun_channel_05": {
+  "sheet": "selun/selun_channel",
+  "sourceBounds": [
+   68,
+   463,
+   339,
+   874
+  ],
+  "scale": 0.61381,
+  "pivot": [
+   51.0,
+   244.0
+  ]
+ },
+ "selun_channel_06": {
+  "sheet": "selun/selun_channel",
+  "sourceBounds": [
+   427,
+   463,
+   694,
+   874
+  ],
+  "scale": 0.61381,
+  "pivot": [
+   51.0,
+   246.0
+  ]
+ },
+ "selun_channel_07": {
+  "sheet": "selun/selun_channel",
+  "sourceBounds": [
+   787,
+   465,
+   1002,
+   874
+  ],
+  "scale": 0.61381,
+  "pivot": [
+   53.0,
+   243.0
+  ]
+ },
+ "selun_channel_08": {
+  "sheet": "selun/selun_channel",
+  "sourceBounds": [
+   1159,
+   466,
+   1354,
+   873
+  ],
+  "scale": 0.61381,
+  "pivot": [
+   48.0,
+   242.0
+  ]
+ },
+ "selun_channel_09": {
+  "sheet": "selun/selun_channel",
+  "sourceBounds": [
+   1504,
+   463,
+   1695,
+   874
+  ],
+  "scale": 0.61381,
+  "pivot": [
+   55.0,
+   245.0
+  ]
+ },
+ "selun_fall_00": {
+  "sheet": "selun/selun_apparent_death",
+  "sourceBounds": [
+   74,
+   39,
+   339,
+   548
+  ],
+  "scale": 0.50847,
+  "pivot": [
+   70.0,
+   252.0
+  ]
+ },
+ "selun_fall_01": {
+  "sheet": "selun/selun_apparent_death",
+  "sourceBounds": [
+   477,
+   91,
+   736,
+   549
+  ],
+  "scale": 0.50847,
+  "pivot": [
+   68.0,
+   224.0
+  ]
+ },
+ "selun_fall_02": {
+  "sheet": "selun/selun_apparent_death",
+  "sourceBounds": [
+   817,
+   186,
+   1113,
+   592
+  ],
+  "scale": 0.50847,
+  "pivot": [
+   90.0,
+   172.0
+  ]
+ },
+ "selun_fall_03": {
+  "sheet": "selun/selun_apparent_death",
+  "sourceBounds": [
+   1156,
+   261,
+   1506,
+   573
+  ],
+  "scale": 0.50847,
+  "pivot": [
+   99.0,
+   154.0
+  ]
+ },
+ "selun_fall_04": {
+  "sheet": "selun/selun_apparent_death",
+  "sourceBounds": [
+   57,
+   651,
+   382,
+   960
+  ],
+  "scale": 0.50847,
+  "pivot": [
+   70.0,
+   152.0
+  ]
+ },
+ "selun_fall_05": {
+  "sheet": "selun/selun_apparent_death",
+  "sourceBounds": [
+   408,
+   702,
+   772,
+   961
+  ],
+  "scale": 0.50847,
+  "pivot": [
+   87.0,
+   127.0
+  ]
+ },
+ "selun_fall_06": {
+  "sheet": "selun/selun_apparent_death",
+  "sourceBounds": [
+   775,
+   762,
+   1146,
+   955
+  ],
+  "scale": 0.50847,
+  "pivot": [
+   90.0,
+   94.0
+  ]
+ },
+ "selun_fall_07": {
+  "sheet": "selun/selun_apparent_death",
+  "sourceBounds": [
+   1142,
+   801,
+   1518,
+   949
+  ],
+  "scale": 0.50847,
+  "pivot": [
+   76.0,
+   72.0
+  ]
+ },
+ "selun_recompose_00": {
+  "sheet": "selun/selun_recompose",
+  "sourceBounds": [
+   7,
+   242,
+   464,
+   448
+  ],
+  "scale": 0.51724,
+  "pivot": [
+   119.0,
+   101.0
+  ]
+ },
+ "selun_recompose_01": {
+  "sheet": "selun/selun_recompose",
+  "sourceBounds": [
+   404,
+   176,
+   806,
+   467
+  ],
+  "scale": 0.51724,
+  "pivot": [
+   101.0,
+   141.0
+  ]
+ },
+ "selun_recompose_02": {
+  "sheet": "selun/selun_recompose",
+  "sourceBounds": [
+   784,
+   100,
+   1170,
+   473
+  ],
+  "scale": 0.51724,
+  "pivot": [
+   103.0,
+   165.0
+  ]
+ },
+ "selun_recompose_03": {
+  "sheet": "selun/selun_recompose",
+  "sourceBounds": [
+   1195,
+   35,
+   1487,
+   494
+  ],
+  "scale": 0.51724,
+  "pivot": [
+   90.0,
+   212.0
+  ]
+ },
+ "selun_recompose_04": {
+  "sheet": "selun/selun_recompose",
+  "sourceBounds": [
+   86,
+   545,
+   345,
+   967
+  ],
+  "scale": 0.51724,
+  "pivot": [
+   65.0,
+   213.0
+  ]
+ },
+ "selun_recompose_05": {
+  "sheet": "selun/selun_recompose",
+  "sourceBounds": [
+   483,
+   534,
+   763,
+   970
+  ],
+  "scale": 0.51724,
+  "pivot": [
+   62.0,
+   220.0
+  ]
+ },
+ "selun_recompose_06": {
+  "sheet": "selun/selun_recompose",
+  "sourceBounds": [
+   843,
+   501,
+   1089,
+   987
+  ],
+  "scale": 0.51724,
+  "pivot": [
+   63.0,
+   244.0
+  ]
+ },
+ "selun_recompose_07": {
+  "sheet": "selun/selun_recompose",
+  "sourceBounds": [
+   1242,
+   503,
+   1466,
+   999
+  ],
+  "scale": 0.51724,
+  "pivot": [
+   56.0,
+   249.0
+  ]
+ },
+ "selun_stagger_00": {
+  "sheet": "selun/selun_stagger",
+  "sourceBounds": [
+   88,
+   120,
+   420,
+   695
+  ],
+  "scale": 0.40419,
+  "pivot": [
+   67.0,
+   220.0
+  ]
+ },
+ "selun_stagger_01": {
+  "sheet": "selun/selun_stagger",
+  "sourceBounds": [
+   610,
+   129,
+   949,
+   705
+  ],
+  "scale": 0.40419,
+  "pivot": [
+   69.0,
+   219.0
+  ]
+ },
+ "selun_stagger_02": {
+  "sheet": "selun/selun_stagger",
+  "sourceBounds": [
+   1139,
+   124,
+   1480,
+   710
+  ],
+  "scale": 0.40419,
+  "pivot": [
+   67.0,
+   220.0
+  ]
+ },
+ "selun_stagger_03": {
+  "sheet": "selun/selun_stagger",
+  "sourceBounds": [
+   1648,
+   82,
+   1989,
+   703
+  ],
+  "scale": 0.40419,
+  "pivot": [
+   69.0,
+   236.0
+  ]
+ },
+ "selun_hurt_00": {
+  "sheet": "selun/selun_hurt",
+  "sourceBounds": [
+   149,
+   9,
+   482,
+   684
+  ],
+  "scale": 0.38993,
+  "pivot": [
+   57.0,
+   254.0
+  ]
+ },
+ "selun_hurt_01": {
+  "sheet": "selun/selun_hurt",
+  "sourceBounds": [
+   672,
+   15,
+   1033,
+   679
+  ],
+  "scale": 0.38993,
+  "pivot": [
+   59.0,
+   250.0
+  ]
+ },
+ "selun_hurt_02": {
+  "sheet": "selun/selun_hurt",
+  "sourceBounds": [
+   1178,
+   31,
+   1535,
+   676
+  ],
+  "scale": 0.38993,
+  "pivot": [
+   59.0,
+   244.0
+  ]
+ },
+ "selun_hurt_03": {
+  "sheet": "selun/selun_hurt",
+  "sourceBounds": [
+   1728,
+   29,
+   2074,
+   681
+  ],
+  "scale": 0.38993,
+  "pivot": [
+   54.0,
+   246.0
+  ]
+ },
+ "selun_fury_00": {
+  "sheet": "selun/selun_phase_change",
+  "sourceBounds": [
+   138,
+   115,
+   419,
+   688
+  ],
+  "scale": 0.43439,
+  "pivot": [
+   57.0,
+   242.0
+  ]
+ },
+ "selun_fury_01": {
+  "sheet": "selun/selun_phase_change",
+  "sourceBounds": [
+   678,
+   72,
+   985,
+   687
+  ],
+  "scale": 0.43439,
+  "pivot": [
+   67.0,
+   260.0
+  ]
+ },
+ "selun_fury_02": {
+  "sheet": "selun/selun_phase_change",
+  "sourceBounds": [
+   1116,
+   4,
+   1616,
+   689
+  ],
+  "scale": 0.43439,
+  "pivot": [
+   128.0,
+   290.0
+  ]
+ },
+ "selun_fury_03": {
+  "sheet": "selun/selun_phase_change",
+  "sourceBounds": [
+   1758,
+   78,
+   2059,
+   687
+  ],
+  "scale": 0.43439,
+  "pivot": [
+   62.0,
+   257.0
+  ]
+ },
+ "fxs_slash_h_00": {
+  "sheet": "selun/fx_selun_horizontal",
+  "scale": 0.62,
+  "cell": [
+   0,
+   0,
+   456,
+   523
+  ]
+ },
+ "fxs_slash_h_01": {
+  "sheet": "selun/fx_selun_horizontal",
+  "scale": 0.62,
+  "cell": [
+   456,
+   0,
+   934,
+   523
+  ]
+ },
+ "fxs_slash_h_02": {
+  "sheet": "selun/fx_selun_horizontal",
+  "scale": 0.62,
+  "cell": [
+   934,
+   0,
+   1536,
+   523
+  ]
+ },
+ "fxs_slash_h_03": {
+  "sheet": "selun/fx_selun_horizontal",
+  "scale": 0.62,
+  "cell": [
+   0,
+   523,
+   554,
+   1024
+  ]
+ },
+ "fxs_slash_h_04": {
+  "sheet": "selun/fx_selun_horizontal",
+  "scale": 0.62,
+  "cell": [
+   554,
+   523,
+   1044,
+   1024
+  ]
+ },
+ "fxs_slash_h_05": {
+  "sheet": "selun/fx_selun_horizontal",
+  "scale": 0.62,
+  "cell": [
+   1044,
+   523,
+   1536,
+   1024
+  ]
+ },
+ "fxs_slash_d_00": {
+  "sheet": "selun/fx_selun_diagonal",
+  "scale": 0.62,
+  "cell": [
+   0,
+   0,
+   518,
+   499
+  ]
+ },
+ "fxs_slash_d_01": {
+  "sheet": "selun/fx_selun_diagonal",
+  "scale": 0.62,
+  "cell": [
+   518,
+   0,
+   1023,
+   499
+  ]
+ },
+ "fxs_slash_d_02": {
+  "sheet": "selun/fx_selun_diagonal",
+  "scale": 0.62,
+  "cell": [
+   1023,
+   0,
+   1536,
+   499
+  ]
+ },
+ "fxs_slash_d_03": {
+  "sheet": "selun/fx_selun_diagonal",
+  "scale": 0.62,
+  "cell": [
+   0,
+   499,
+   558,
+   1024
+  ]
+ },
+ "fxs_slash_d_04": {
+  "sheet": "selun/fx_selun_diagonal",
+  "scale": 0.62,
+  "cell": [
+   558,
+   499,
+   1045,
+   1024
+  ]
+ },
+ "fxs_slash_d_05": {
+  "sheet": "selun/fx_selun_diagonal",
+  "scale": 0.62,
+  "cell": [
+   1045,
+   499,
+   1536,
+   1024
+  ]
+ },
+ "fxs_ground_00": {
+  "sheet": "selun/fx_selun_ground_impact",
+  "scale": 0.62,
+  "cell": [
+   0,
+   0,
+   492,
+   480
+  ]
+ },
+ "fxs_ground_01": {
+  "sheet": "selun/fx_selun_ground_impact",
+  "scale": 0.62,
+  "cell": [
+   492,
+   0,
+   966,
+   480
+  ]
+ },
+ "fxs_ground_02": {
+  "sheet": "selun/fx_selun_ground_impact",
+  "scale": 0.62,
+  "cell": [
+   966,
+   0,
+   1536,
+   480
+  ]
+ },
+ "fxs_ground_03": {
+  "sheet": "selun/fx_selun_ground_impact",
+  "scale": 0.62,
+  "cell": [
+   0,
+   480,
+   554,
+   1024
+  ]
+ },
+ "fxs_ground_04": {
+  "sheet": "selun/fx_selun_ground_impact",
+  "scale": 0.62,
+  "cell": [
+   554,
+   480,
+   1036,
+   1024
+  ]
+ },
+ "fxs_ground_05": {
+  "sheet": "selun/fx_selun_ground_impact",
+  "scale": 0.62,
+  "cell": [
+   1036,
+   480,
+   1536,
+   1024
+  ]
+ },
+ "fxs_rift_00": {
+  "sheet": "selun/fx_selun_end",
+  "scale": 0.55,
+  "cell": [
+   0,
+   0,
+   442,
+   451
+  ]
+ },
+ "fxs_rift_01": {
+  "sheet": "selun/fx_selun_end",
+  "scale": 0.55,
+  "cell": [
+   442,
+   0,
+   861,
+   451
+  ]
+ },
+ "fxs_rift_02": {
+  "sheet": "selun/fx_selun_end",
+  "scale": 0.55,
+  "cell": [
+   861,
+   0,
+   1322,
+   451
+  ]
+ },
+ "fxs_rift_03": {
+  "sheet": "selun/fx_selun_end",
+  "scale": 0.55,
+  "cell": [
+   1322,
+   0,
+   1774,
+   451
+  ]
+ },
+ "fxs_rift_04": {
+  "sheet": "selun/fx_selun_end",
+  "scale": 0.55,
+  "cell": [
+   0,
+   451,
+   455,
+   887
+  ]
+ },
+ "fxs_rift_05": {
+  "sheet": "selun/fx_selun_end",
+  "scale": 0.55,
+  "cell": [
+   455,
+   451,
+   896,
+   887
+  ]
+ },
+ "fxs_rift_06": {
+  "sheet": "selun/fx_selun_end",
+  "scale": 0.55,
+  "cell": [
+   896,
+   451,
+   1333,
+   887
+  ]
+ },
+ "fxs_rift_07": {
+  "sheet": "selun/fx_selun_end",
+  "scale": 0.55,
+  "cell": [
+   1333,
+   451,
+   1774,
+   887
+  ]
  }
 }

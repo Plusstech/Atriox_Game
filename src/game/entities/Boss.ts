@@ -482,7 +482,7 @@ export class Boss implements Combatant {
       if (hit.heavy || hit.damage >= 20) this.hurtFlash = 260;
     }
     // postura: golpes básicos desgastam pouco, pesados e carregados muito
-    if (hit.tag !== 'burn' && this.brain.hitPosture(hit.posture ?? (hit.tag === 'charged' ? 85 : hit.heavy ? 40 : hit.basic ? 12 : 6))) {
+    if (hit.tag !== 'burn' && this.brain.hitPosture((hit.posture ?? (hit.tag === 'charged' ? 85 : hit.heavy ? 40 : hit.basic ? 12 : 6)) * (hit.postureMul ?? 1))) {
       this.cancelOwned();
       this.charge.active = false;
       this.vx = this.vy = 0;

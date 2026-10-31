@@ -58,7 +58,8 @@ export class DialogueScene extends Phaser.Scene {
       const img = this.add.image(side === 'left' ? 30 : GAME_W - 30, GAME_H - 28, key).setOrigin(side === 'left' ? 0 : 1, 1);
       img.setScale(Math.min(1, 330 / img.height));
       // retratos voltados para o centro
-      if (side === 'right' && who !== 'carrasco') img.setFlipX(true);
+      // (Carrasco e Sêlun já foram desenhados olhando para a esquerda)
+      if (side === 'right' && who !== 'carrasco' && who !== 'selun') img.setFlipX(true);
       this.portraits[side] = img;
     }
 

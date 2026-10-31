@@ -9,6 +9,7 @@ import { UIScene } from './game/scenes/UIScene';
 import { RewardScene } from './game/scenes/RewardScene';
 import { PauseScene } from './game/scenes/PauseScene';
 import { DialogueScene } from './game/scenes/DialogueScene';
+import { SelunAftermathScene } from './game/scenes/SelunAftermathScene';
 import { ResultScene } from './game/scenes/ResultScene';
 import { AnimInspectorScene } from './game/scenes/AnimInspectorScene';
 import { save } from './game/services';
@@ -48,7 +49,7 @@ try {
     fps: { target: 60 },
     disableContextMenu: true,
     banner: false,
-    scene: [BootScene, MenuScene, ArenaScene, UIScene, RewardScene, PauseScene, ResultScene, AnimInspectorScene, VictoryChoiceScene, DialogueScene]
+    scene: [BootScene, MenuScene, ArenaScene, UIScene, RewardScene, PauseScene, ResultScene, AnimInspectorScene, VictoryChoiceScene, DialogueScene, SelunAftermathScene]
   });
   if (DEV_TOOLS || (['localhost','127.0.0.1'].includes(location.hostname) && new URLSearchParams(location.search).has('test'))) {
     (window as unknown as { __ATRIOX_GAME__: Phaser.Game }).__ATRIOX_GAME__ = game;

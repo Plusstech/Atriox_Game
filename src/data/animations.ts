@@ -572,6 +572,83 @@ export function buildAnimations(meta: AtlasMeta): Record<string, AnimDef> {
     { key: 'atriox.avatar', loop: false, frames: [f(S(5), 380), f(S(6), 520), f(S(8), 1600)] },
   );
 
+  // ------------------------------------------------------------------ SÊLUN (PROMPT_SELUN_GAME_OVER)
+  // Golpes de 8 poses: 0–2 preparação, 3 impacto, 4–5 continuação, 6–7 recuperação.
+  const sl = (k: string, i: number) => `selun_${k}_${String(i).padStart(2, '0')}`;
+  const strike8 = (key: string, k: string): AnimDef => ({
+    key,
+    loop: false,
+    frames: [
+      f(sl(k, 0), 0.8, 'windup'),
+      f(sl(k, 1), 1, 'windup'),
+      f(sl(k, 2), 1.2, 'windup'),
+      f(sl(k, 3), 1, 'active', 'hit'),
+      f(sl(k, 4), 1, 'active'),
+      f(sl(k, 5), 1, 'active'),
+      f(sl(k, 6), 1, 'recovery'),
+      f(sl(k, 7), 1.2, 'recovery'),
+    ],
+  });
+  const loopOf = (key: string, k: string, ids: number[], ms: number): AnimDef => ({ key, loop: true, frames: ids.map((i) => f(sl(k, i), ms)) });
+  defs.push(
+    loopOf('selun.idle', 'idle', [0, 1, 2, 3], 240),
+    loopOf('selun.run', 'run', [0, 1, 2, 3, 4, 5, 6, 7], 100),
+    strike8('selun.horizon', 'horizon'),
+    strike8('selun.sentence', 'sentence'),
+    {
+      // Decreto do Fim: ergue a espada, finca e aponta; as fendas saem durante a fase ativa
+      key: 'selun.decree',
+      loop: false,
+      frames: [
+        f(sl('decree', 0), 0.7, 'windup'),
+        f(sl('decree', 1), 1, 'windup'),
+        f(sl('decree', 2), 1, 'windup'),
+        f(sl('decree', 3), 1, 'windup'),
+        f(sl('decree', 4), 1, 'active', 'hit'),
+        f(sl('decree', 5), 2, 'active'),
+        f(sl('decree', 6), 1, 'recovery'),
+        f(sl('decree', 7), 1, 'recovery'),
+      ],
+    },
+    {
+      // Investida: 3 entrada, 4 loop (selun.dash_loop), 3 freio
+      key: 'selun.dash',
+      loop: false,
+      frames: [
+        f(sl('dash', 0), 1, 'windup'),
+        f(sl('dash', 1), 1, 'windup'),
+        f(sl('dash', 2), 1.2, 'windup'),
+        f(sl('dash', 3), 1, 'active', 'hit'),
+        f(sl('dash', 7), 1, 'recovery'),
+        f(sl('dash', 8), 1, 'recovery'),
+        f(sl('dash', 9), 1.2, 'recovery'),
+      ],
+    },
+    loopOf('selun.dash_loop', 'dash', [3, 4, 5, 6], 70),
+    {
+      // Canalização: 3 entrada, 4 loop (selun.channel_loop), 3 saída/interrupção
+      key: 'selun.channel',
+      loop: false,
+      frames: [
+        f(sl('channel', 0), 1, 'windup'),
+        f(sl('channel', 1), 1, 'windup'),
+        f(sl('channel', 2), 1, 'windup'),
+        f(sl('channel', 3), 1, 'active', 'hit'),
+        f(sl('channel', 7), 1, 'recovery'),
+        f(sl('channel', 8), 1, 'recovery'),
+        f(sl('channel', 9), 1, 'recovery'),
+      ],
+    },
+    loopOf('selun.channel_loop', 'channel', [3, 4, 5, 6], 220),
+    loopOf('selun.stagger', 'stagger', [0, 1, 2, 3], 260),
+    { key: 'selun.hurt', loop: false, frames: [0, 1, 2, 3].map((i) => f(sl('hurt', i), 70)) },
+    { key: 'selun.fury', loop: false, frames: [0, 1, 2, 3].map((i) => f(sl('fury', i), i === 3 ? 400 : 300)) },
+    { key: 'selun.fall', loop: false, frames: [0, 1, 2, 3, 4, 5, 6, 7].map((i) => f(sl('fall', i), i === 7 ? 99999 : 200)) },
+    { key: 'selun.recompose', loop: false, frames: [0, 1, 2, 3, 4, 5, 6, 7].map((i) => f(sl('recompose', i), 205)) },
+    // Última Palavra: espada fincada (pose do Decreto) durante a contagem
+    { key: 'selun.plant', loop: true, frames: [f(sl('decree', 4), 600), f(sl('decree', 3), 600)] },
+  );
+
   const out: Record<string, AnimDef> = {};
   for (const d of defs) out[d.key] = d;
   return out;

@@ -37,6 +37,7 @@ export function attachDevPanel(game: Phaser.Game): void {
       <button id="dv-exec">ir: Carrasco</button>
       <button id="dv-nemeia">ir: Caim</button>
       <button id="dv-wyv">ir: Ninho das Wyverns</button>
+      <button id="dv-selun">ir: Sêlun</button>
       <button id="dv-goblin">+ goblin</button><button id="dv-orc">+ orc</button><button id="dv-wild">+ wyvern selvagem</button>
       <button id="dv-boss50">chefe −50%</button>
       <button id="dv-heal">curar</button>
@@ -96,6 +97,7 @@ export function attachDevPanel(game: Phaser.Game): void {
   $('dv-nemeia').onclick = () => arena()?.devGotoRoom('nemeia');
   $('dv-pool').onclick = () => arena()?.devSpawnPoolAtPlayer();
   $('dv-wyv').onclick = () => arena()?.devGotoRoom('build-2');
+  $('dv-selun').onclick = () => arena()?.devStartSelun();
   const near = (): { x: number; y: number } | null => {
     const a = arena();
     return a ? { x: a.player.x + 260, y: a.player.y - 60 } : null;

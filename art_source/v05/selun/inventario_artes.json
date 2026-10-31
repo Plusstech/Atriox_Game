@@ -1,0 +1,466 @@
+[
+  {
+    "arquivo": "artes/selun_idle.png",
+    "descricao": "Parado respirando; meta 4 quadros.",
+    "dimensoes": [
+      2079,
+      756
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      255
+    ],
+    "percentual_pixels_nao_opacos": 99.924,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/selun_attack_01_horizon.png",
+    "descricao": "Horizonte Partido: preparação e corte horizontal; meta 8 quadros.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      254
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/selun_run.png",
+    "descricao": "Corrida/perseguição; meta 8 quadros.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      254
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/selun_attack_02_sentence.png",
+    "descricao": "Sentença do Abismo: golpe diagonal descendente; meta 8 quadros.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      254
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/selun_attack_03_end.png",
+    "descricao": "Decreto do Fim: gesto do especial; meta 8 quadros.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      254
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/selun_stagger.png",
+    "descricao": "Postura quebrada; meta 4 quadros em loop.",
+    "dimensoes": [
+      2086,
+      754
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      255
+    ],
+    "percentual_pixels_nao_opacos": 99.928,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/selun_hurt.png",
+    "descricao": "Reação curta ao dano; meta 4 quadros.",
+    "dimensoes": [
+      2172,
+      724
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      255
+    ],
+    "percentual_pixels_nao_opacos": 99.969,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/selun_apparent_death.png",
+    "descricao": "Queda aparente; meta 8 quadros. Não é morte definitiva.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      254
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/selun_phase_change.png",
+    "descricao": "Fúria/transição de fase; meta 4 quadros.",
+    "dimensoes": [
+      2172,
+      724
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      255
+    ],
+    "percentual_pixels_nao_opacos": 99.957,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/selun_dash.png",
+    "descricao": "Investida; meta 10 quadros: 3 entrada, 4 loop, 3 freio.",
+    "dimensoes": [
+      1774,
+      887
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      255
+    ],
+    "percentual_pixels_nao_opacos": 99.941,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/selun_recompose.png",
+    "descricao": "Recomposição após queda aparente; meta 8 quadros.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      254
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/selun_channel.png",
+    "descricao": "Canalização; meta 10 quadros: 3 entrada, 4 loop, 3 saída.",
+    "dimensoes": [
+      1774,
+      887
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      255
+    ],
+    "percentual_pixels_nao_opacos": 99.95,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/selun_portrait_calm.png",
+    "descricao": "Busto calmo olhando à esquerda para diálogo.",
+    "dimensoes": [
+      1230,
+      1278
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      255
+    ],
+    "percentual_pixels_nao_opacos": 99.941,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/selun_portrait_angry.png",
+    "descricao": "Busto irritado olhando à esquerda para diálogo.",
+    "dimensoes": [
+      1206,
+      1304
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      255
+    ],
+    "percentual_pixels_nao_opacos": 99.942,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/fx_selun_horizontal.png",
+    "descricao": "Rastro horizontal separado; meta 6 quadros.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      253
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/fx_selun_diagonal.png",
+    "descricao": "Rastro diagonal separado; meta 6 quadros.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      253
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/fx_selun_ground_impact.png",
+    "descricao": "Impacto no chão separado; meta 6 quadros.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      253
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/arena_selun.png",
+    "descricao": "Arena própria; imagem única 1536×1024, fundo opaco intencional.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGB",
+    "alfa_min_max": [
+      255,
+      255
+    ],
+    "percentual_pixels_nao_opacos": 0.0,
+    "status": "Fundo opaco intencional",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "artes/fx_selun_end.png",
+    "descricao": "Fenda dimensional âmbar do especial; meta 8 quadros.",
+    "dimensoes": [
+      1774,
+      887
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      255
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "original"
+  },
+  {
+    "arquivo": "revisoes/selun_run_alpha_revision.png",
+    "descricao": "Corrida/perseguição; meta 8 quadros.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      254
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "revisão; não implica correção concluída"
+  },
+  {
+    "arquivo": "revisoes/fx_selun_ground_impact_alpha_revision.png",
+    "descricao": "Impacto no chão separado; meta 6 quadros.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      254
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "revisão; não implica correção concluída"
+  },
+  {
+    "arquivo": "revisoes/selun_attack_01_horizon_alpha_revision.png",
+    "descricao": "Horizonte Partido: preparação e corte horizontal; meta 8 quadros.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      254
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "revisão; não implica correção concluída"
+  },
+  {
+    "arquivo": "revisoes/selun_attack_02_sentence_alpha_revision.png",
+    "descricao": "Sentença do Abismo: golpe diagonal descendente; meta 8 quadros.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      254
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "revisão; não implica correção concluída"
+  },
+  {
+    "arquivo": "revisoes/selun_attack_03_end_alpha_revision.png",
+    "descricao": "Decreto do Fim: gesto do especial; meta 8 quadros.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      254
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "revisão; não implica correção concluída"
+  },
+  {
+    "arquivo": "revisoes/selun_apparent_death_alpha_revision.png",
+    "descricao": "Queda aparente; meta 8 quadros. Não é morte definitiva.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      254
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "revisão; não implica correção concluída"
+  },
+  {
+    "arquivo": "revisoes/selun_recompose_alpha_revision.png",
+    "descricao": "Recomposição após queda aparente; meta 8 quadros.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      254
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "revisão; não implica correção concluída"
+  },
+  {
+    "arquivo": "revisoes/selun_channel_alpha_revision.png",
+    "descricao": "Canalização; meta 10 quadros: 3 entrada, 4 loop, 3 saída.",
+    "dimensoes": [
+      1774,
+      887
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      255
+    ],
+    "percentual_pixels_nao_opacos": 99.911,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "revisão; não implica correção concluída"
+  },
+  {
+    "arquivo": "revisoes/fx_selun_horizontal_alpha_revision.png",
+    "descricao": "Rastro horizontal separado; meta 6 quadros.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      254
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "revisão; não implica correção concluída"
+  },
+  {
+    "arquivo": "revisoes/fx_selun_diagonal_alpha_revision.png",
+    "descricao": "Rastro diagonal separado; meta 6 quadros.",
+    "dimensoes": [
+      1536,
+      1024
+    ],
+    "modo": "RGBA",
+    "alfa_min_max": [
+      0,
+      253
+    ],
+    "percentual_pixels_nao_opacos": 100.0,
+    "status": "Contém alfa; revisar visualmente, grade, escala e pivôs",
+    "tipo": "revisão; não implica correção concluída"
+  }
+]

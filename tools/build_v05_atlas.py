@@ -80,6 +80,25 @@ SHEETS = {
     'complementos/apollon_feixe_solar': dict(char='fx_beam', cols=[3, 3], fx=True, scale=0.8, names=seq('apollon_beam', 6)),
     'complementos/plateia_orcs_animada': dict(char='fx_crowd', cols=[4, 4, 4], fx=True, scale=0.42, names=seq('crowd_orc', 12)),
     'complementos/wyvern_idle_separado': dict(char='fx_perch', cols=[3, 3], fx=True, scale=0.5, names=seq('wyvern_perch', 6)),
+    # ---- Sêlun (pacote Selun_Artes_e_Prompt_Game_Over). Fontes: revisões *_alpha_revision quando existem
+    # (as originais de recomposição, canalização e Decreto têm linhas de grade semitransparentes).
+    # Medida 'thick': a espada passa abaixo dos pés em várias poses; altura e pivô ignoram partes finas.
+    'selun/selun_idle': dict(char='selun', cols=[4], measure='thick', target=240, refs=[0, 1, 2, 3], names=seq('selun_idle', 4)),
+    'selun/selun_run': dict(char='selun', cols=[4, 4], measure='thick', target=228, refs=list(range(8)), names=seq('selun_run', 8)),
+    'selun/selun_attack_01_horizon': dict(char='selun', cols=[4, 4], measure='thick', target=240, refs=[7], names=seq('selun_horizon', 8)),
+    'selun/selun_attack_02_sentence': dict(char='selun', cols=[4, 4], measure='thick', target=240, refs=[0], names=seq('selun_sentence', 8)),
+    'selun/selun_attack_03_end': dict(char='selun', cols=[4, 4], measure='thick', target=240, refs=[0, 7], names=seq('selun_decree', 8)),
+    'selun/selun_dash': dict(char='selun', cols=[5, 5], measure='thick', target=226, refs=[7, 8, 9], names=seq('selun_dash', 10)),
+    'selun/selun_channel': dict(char='selun', cols=[5, 5], measure='thick', target=240, refs=[0, 9], names=seq('selun_channel', 10)),
+    'selun/selun_apparent_death': dict(char='selun', cols=[4, 4], measure='thick', target=240, refs=[0], names=seq('selun_fall', 8)),
+    'selun/selun_recompose': dict(char='selun', cols=[4, 4], measure='thick', target=240, refs=[7], names=seq('selun_recompose', 8)),
+    'selun/selun_stagger': dict(char='selun', cols=[4], measure='thick', target=212, refs=[0, 1, 2, 3], names=seq('selun_stagger', 4)),
+    'selun/selun_hurt': dict(char='selun', cols=[4], measure='thick', target=240, refs=[0, 3], names=seq('selun_hurt', 4)),
+    'selun/selun_phase_change': dict(char='selun', cols=[4], measure='thick', target=240, refs=[0, 3], names=seq('selun_fury', 4)),
+    'selun/fx_selun_horizontal': dict(char='fx_selun', cols=[3, 3], fx=True, scale=0.62, names=seq('fxs_slash_h', 6)),
+    'selun/fx_selun_diagonal': dict(char='fx_selun', cols=[3, 3], fx=True, scale=0.62, names=seq('fxs_slash_d', 6)),
+    'selun/fx_selun_ground_impact': dict(char='fx_selun', cols=[3, 3], fx=True, scale=0.62, names=seq('fxs_ground', 6)),
+    'selun/fx_selun_end': dict(char='fx_selun_rift', cols=[4, 4], fx=True, scale=0.55, names=seq('fxs_rift', 8)),
 }
 
 # Frames that already live in the atlas, per character (canvas growth must shift them too).
@@ -112,6 +131,31 @@ def silhouette_feet(a):
     top, bot = np.percentile(ys, 0.4), np.percentile(ys, 99.6)
     band = (ys > top + (bot - top) * 0.25) & (ys < top + (bot - top) * 0.65)
     return float(np.median(xs[band] if band.any() else xs)), float(bot)
+
+
+def thick_rows(a):
+    """Linhas da silhueta largas o bastante para serem corpo (lâmina e pontas finas ficam de fora)."""
+    m = silhouette(a)
+    w = m.sum(1)
+    body = w[w > 0]
+    thr = max(18, 0.2 * float(np.median(body))) if len(body) else 18
+    rows = np.nonzero(w >= thr)[0]
+    return m, rows
+
+
+def thick_height(a):
+    _, rows = thick_rows(a)
+    return float(rows.max() - rows.min()) if len(rows) else float(a.shape[0])
+
+
+def thick_feet(a):
+    m, rows = thick_rows(a)
+    if not len(rows):
+        return silhouette_feet(a)
+    top, bot = float(rows.min()), float(rows.max())
+    band = m[int(top + (bot - top) * 0.25):int(top + (bot - top) * 0.65)]
+    ys, xs = np.nonzero(band)
+    return (float(np.median(xs)) if len(xs) else a.shape[1] / 2), bot
 
 
 def resize(a, s):
@@ -171,6 +215,8 @@ def build():
             continue
         if cfg['measure'] == 'body':
             ref = float(np.median([body_height(frames[i][0]) for i in cfg['refs']]))
+        elif cfg['measure'] == 'thick':
+            ref = float(np.median([thick_height(frames[i][0]) for i in cfg['refs']]))
         else:
             ref = float(np.median([silhouette_height(frames[i][0]) for i in cfg['refs']]))
         s = cfg['target'] / ref
@@ -185,6 +231,8 @@ def build():
                 px, py = float(np.median(xs)), float(np.median(ys))
             elif cfg['measure'] == 'body':
                 px, py = pivot_feet(a)
+            elif cfg['measure'] == 'thick':
+                px, py = thick_feet(a)
             else:
                 px, py = silhouette_feet(a)
             t, ox, oy = trim(a)
@@ -296,6 +344,9 @@ def export_portraits():
     for (a, _), name in zip(sf.extract('retratos', sheet), names):
         save_portrait(a, name)
     save_portrait(clean(np.array(Image.open(SRC / 'carrasco_retrato.png').convert('RGBA'))), 'carrasco')
+    # Sêlun: bustos já olham para a esquerda (ficam à direita da caixa de diálogo)
+    for mood in ('calm', 'angry'):
+        save_portrait(clean(np.array(Image.open(SRC / f'selun/selun_portrait_{mood}.png').convert('RGBA'))), f'selun_{mood}')
 
 
 def save_portrait(a, name, height=440):

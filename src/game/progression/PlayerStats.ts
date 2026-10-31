@@ -51,7 +51,8 @@ export class PlayerStats {
   get(stat: StatKey): number {
     let v = this.base[stat] * (this.mul[stat] ?? 1) + (this.add[stat] ?? 0);
     for (const t of this.timed) if (t.stat === stat) v += t.add;
-    if (stat === 'resist') v = Math.min(0.8, Math.max(0, v));
+    // teto global de redução de dano: 60% (Pele de Luz e bênçãos respeitam)
+    if (stat === 'resist') v = Math.min(0.6, Math.max(0, v));
     return v;
   }
 

@@ -270,6 +270,7 @@ export class AdvancedCombat {
           this.echoMs = SKILLS.echoMs;
         }
         this.glory('precise_dash', 12);
+        this.a.onPreciseDodge();
         this.a.ui()?.toast('Esquiva precisa!');
       }
     }

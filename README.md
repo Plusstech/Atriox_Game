@@ -67,6 +67,7 @@ docs/                     GAME_DESIGN, LORE_CANON, ART_PIPELINE, REFERENCES, DEP
 
 ## Documentação
 
+- [Sêlun — O Fim do Infinito (GAME OVER + Apollon)](docs/SELUN.md)
 - [v0.5: campanha, chefes, inimigos, conversas, testes](docs/V05.md)
 - [Assets pendentes](docs/ASSETS_PENDENTES.md)
 - [Game design e números](docs/GAME_DESIGN.md)

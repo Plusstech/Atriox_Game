@@ -95,3 +95,8 @@ A folha `apollon_bencao_atriox` (6 composições) fica **só na cena narrativa**
 ## Goblin, orc e wyvern selvagem
 
 4 poses por ação. Ajudariam: ataque com 6 poses (2 de antecipação), reação de bloqueio do orc (2) e 8 quadros de voo para a wyvern.
+
+## Sêlun
+
+Pacote completo integrado (ver [SELUN.md](SELUN.md)). Faltam apenas: retrato de busto do Apollon para a ressurreição (hoje: avatar isolado), áudio próprio e, se desejado, um clone corporal para os Ecos (hoje: VFX fantasma).
+

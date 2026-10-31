@@ -5,7 +5,7 @@ import { FLOOR, WORLD_H, WORLD_W } from '../config/constants';
  * 'trial' e 'nemeia' são pintados proceduralmente; 'toknar' e 'caim' usam as arenas
  * ilustradas (public/assets/arenas) com a paleta de 'nemeia' como base do chão.
  */
-export type ArenaTheme = 'trial' | 'nemeia' | 'toknar' | 'caim';
+export type ArenaTheme = 'trial' | 'nemeia' | 'toknar' | 'caim' | 'selun';
 
 interface Palette {
   stoneL: [number, number];
@@ -48,6 +48,9 @@ const PALETTES: Record<ArenaTheme, Palette> = {
   },
   get caim(): Palette {
     return PALETTES.nemeia;
+  },
+  get selun(): Palette {
+    return PALETTES.trial;
   }
 };
 

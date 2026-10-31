@@ -4,8 +4,8 @@
  * não fatos canônicos: não criam parentescos, pactos ou eventos da história.
  * Editáveis aqui sem tocar no código da cena.
  */
-export type Speaker = 'atriox' | 'carrasco' | 'toknar' | 'caim';
-export type BossDialogueId = 'executioner' | 'toknar' | 'caim';
+export type Speaker = 'atriox' | 'carrasco' | 'toknar' | 'caim' | 'selun';
+export type BossDialogueId = 'executioner' | 'toknar' | 'caim' | 'selun' | 'selun_return';
 
 export interface DialogueLine {
   speaker: Speaker;
@@ -27,6 +27,7 @@ export const SPEAKERS: Record<Speaker, SpeakerInfo> = {
   carrasco: { name: 'O Carrasco da Provação', portraits: ['carrasco'], side: 'right', color: '#ff9070' },
   toknar: { name: 'Toknar', portraits: ['toknar_calm', 'toknar_roar'], side: 'right', color: '#a8e070' },
   caim: { name: 'Caim Morvaigne', portraits: ['caim_calm', 'caim_sly'], side: 'right', color: '#e05060' },
+  selun: { name: 'Sêlun', portraits: ['selun_calm', 'selun_angry'], side: 'right', color: '#ffb35a' },
 };
 
 export const BOSS_DIALOGUES: Record<BossDialogueId, DialogueLine[]> = {
@@ -45,11 +46,28 @@ export const BOSS_DIALOGUES: Record<BossDialogueId, DialogueLine[]> = {
     { speaker: 'atriox', text: 'E ainda posso escolher quem derrubar.', portrait: 'atriox_angry' },
     { speaker: 'caim', text: 'Um passo no meu sangue... e até essa vontade será minha.', portrait: 'caim_sly' },
   ],
+  // Sêlun — O Fim do Infinito (PROMPT_SELUN_GAME_OVER): falas originais para esta implementação
+  selun: [
+    { speaker: 'selun', text: 'O infinito termina onde eu estou.' },
+    { speaker: 'atriox', text: 'Então eu atravesso você.', portrait: 'atriox_angry' },
+    { speaker: 'selun', text: 'Você confunde retorno com vitória.', portrait: 'selun_angry' },
+  ],
+  selun_return: [
+    { speaker: 'selun', text: 'O sol voltou a remendar você.' },
+    { speaker: 'atriox', text: 'Então eu atravesso você.', portrait: 'atriox_angry' },
+  ],
 };
 
 /** Imagens carregadas no Boot (public/assets/portraits, public/assets/arenas). */
-export const PORTRAITS = ['atriox_calm', 'atriox_angry', 'carrasco', 'toknar_calm', 'toknar_roar', 'caim_calm', 'caim_sly'];
-export const ARENA_IMAGES = ['arena_toknar', 'arena_caim'];
+export const PORTRAITS = ['atriox_calm', 'atriox_angry', 'carrasco', 'toknar_calm', 'toknar_roar', 'caim_calm', 'caim_sly', 'selun_calm', 'selun_angry'];
+export const ARENA_IMAGES = ['arena_toknar', 'arena_caim', 'arena_selun'];
+
+/** Apollon na ressurreição (cena de GAME OVER). */
+export const APOLLON_LINES = {
+  first: 'Ele encerrou sua tentativa. Eu ainda não encerrei a sua história.',
+  again: 'Leve esta centelha. Faça-o sentir sua próxima passagem.',
+  lastWord: 'Atriox! Esse golpe eu não posso deter. Vou tirar você daí.',
+};
 
 /** Velocidade da revelação do texto (caracteres por segundo). */
 export const DIALOGUE_CPS = 48;

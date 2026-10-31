@@ -35,7 +35,7 @@ export function buildArena(scene: Phaser.Scene, theme: ArenaTheme): ArenaLayout 
   const obstacles: CircleObstacle[] = [];
   const cx = ARENA_CENTER.x;
   const cy = ARENA_CENTER.y;
-  const painted = theme === 'toknar' || theme === 'caim';
+  const painted = theme === 'toknar' || theme === 'caim' || theme === 'selun';
   const nemeia = theme === 'nemeia';
   if (painted) return buildPainted(scene, theme, objects, add);
 
@@ -141,10 +141,12 @@ export function buildArena(scene: Phaser.Scene, theme: ArenaTheme): ArenaLayout 
 }
 
 /** Pontos das tochas pintadas (px da imagem 1536×1024) para a luz tremular por cima. */
-const PAINTED_TORCHES: Record<'toknar' | 'caim', [number, number][]> = {
+const PAINTED_TORCHES: Record<PaintedTheme, [number, number][]> = {
   toknar: [[154, 49], [417, 66], [1119, 66], [1377, 49], [565, 856], [976, 856]],
-  caim: []
+  caim: [],
+  selun: [[143, 208], [296, 132], [1251, 170], [1410, 236]]
 };
+type PaintedTheme = 'toknar' | 'caim' | 'selun';
 
 /** Obstáculos que mantêm o combate no chão pintado (cantos e cerca inferior). */
 export const PAINTED_BOUNDS: CircleObstacle[] = [
@@ -161,7 +163,7 @@ export const PAINTED_BOUNDS: CircleObstacle[] = [
  * (Toknar) e wyverns pousadas (Caim). Só cenário: sem colisão, abaixo do combate,
  * em pontos onde a ilustração não tem figuras (nada duplicado ou "sumindo").
  */
-const AMBIENT: Record<'toknar' | 'caim', { prefix: string; rows: number[][]; spots: [number, number, number, boolean][]; ms: number }> = {
+const AMBIENT: Partial<Record<PaintedTheme, { prefix: string; rows: number[][]; spots: [number, number, number, boolean][]; ms: number }>> = {
   toknar: {
     prefix: 'crowd_orc',
     rows: [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11]],
@@ -179,10 +181,11 @@ const AMBIENT: Record<'toknar' | 'caim', { prefix: string; rows: number[][]; spo
 
 function addAmbientLayers(
   scene: Phaser.Scene,
-  theme: 'toknar' | 'caim',
+  theme: PaintedTheme,
   add: <T extends Phaser.GameObjects.GameObject>(o: T) => T
 ): void {
   const cfg = AMBIENT[theme];
+  if (!cfg) return;
   const tex = scene.textures.get('characters');
   if (!tex || !tex.has(`${cfg.prefix}_00`)) return;
   cfg.rows.forEach((row, r) => {
@@ -205,7 +208,7 @@ function addAmbientLayers(
 
 function buildPainted(
   scene: Phaser.Scene,
-  theme: 'toknar' | 'caim',
+  theme: PaintedTheme,
   objects: Phaser.GameObjects.GameObject[],
   add: <T extends Phaser.GameObjects.GameObject>(o: T) => T
 ): ArenaLayout {
@@ -239,7 +242,7 @@ function buildPainted(
         lifespan: { min: 4000, max: 8000 },
         scale: { start: 0.8, end: 0 },
         alpha: { start: 0.7, end: 0 },
-        tint: theme === 'caim' ? [0xc0101a, 0xff3010] : [0xffa040, 0xff6a20],
+        tint: theme === 'caim' ? [0xc0101a, 0xff3010] : theme === 'selun' ? [0xffb35a, 0x9aa8a0] : [0xffa040, 0xff6a20],
         blendMode: 'ADD',
         frequency: 110 / particleScale(),
         maxParticles: 80

@@ -23,6 +23,7 @@ export class UIScene extends Phaser.Scene {
   private rewards!: Phaser.GameObjects.Text[];
   private detailText!: Phaser.GameObjects.Text;
   private bossExtraText!: Phaser.GameObjects.Text;
+  private countdownText!: Phaser.GameObjects.Text;
   private arrows: Phaser.GameObjects.Text[] = [];
   private hpText!: Phaser.GameObjects.Text;
   private roomText!: Phaser.GameObjects.Text;
@@ -114,6 +115,11 @@ export class UIScene extends Phaser.Scene {
       r.setWordWrapWidth(340).setPadding(10).setBackgroundColor('#100c09e8');
     this.detailText = txt(22, GAME_H - 162, '', 13, '#bfe8d4');
     this.bossExtraText = txt(GAME_W / 2, 116, '', 14, '#f0c4aa').setOrigin(0.5);
+    // Última Palavra do Sêlun: contagem inequívoca no centro (não cobre o chão)
+    this.countdownText = this.add
+      .text(GAME_W / 2, 200, '', { fontFamily: FONT_TITLE, fontSize: '46px', color: '#ffb35a', stroke: '#0b0607', strokeThickness: 8 })
+      .setOrigin(0.5)
+      .setVisible(false);
     this.hpText = txt(132, GAME_H - 90, '', 15).setOrigin(0, 0.5);
     this.roomText = txt(GAME_W / 2, 14, '', 16, COLORS.hex.gold).setOrigin(
       0.5,
@@ -235,6 +241,8 @@ export class UIScene extends Phaser.Scene {
     );
     this.detailText.setText([h.buff, h.details].filter(Boolean).join('\n'));
     this.bossExtraText.setText(h.bossExtra).setVisible(!!h.boss);
+    this.countdownText.setText(h.countdown).setVisible(!!h.countdown);
+    if (h.countdown) this.countdownText.setScale(1 + 0.06 * Math.sin(this.time.now / 90));
     this.arrows.forEach((t) => t.setVisible(false));
     h.arrows.forEach((a, i) => {
       if (!this.arrows[i])

@@ -113,6 +113,8 @@ export class Player implements Combatant {
   locked = false;
   /** dominado pelo sangue de Caim: não age */
   stunned = false;
+  /** redução de movimento externa (Peso do Fim do Sêlun), 0..0.2; não desliga a esquiva */
+  externalSlow = 0;
   /** cena final: oculto e sem controle */
   cinematic = false;
   hurtTimer = 0;
@@ -492,7 +494,7 @@ export class Player implements Combatant {
     // ---------------- movimento
     const move = canAct ? input.move : { x: 0, y: 0 };
     if (length(move.x, move.y) > 0.1) this.usage.moved = true;
-    const maxSpeed = this.stats.get('moveSpeed');
+    const maxSpeed = this.stats.get('moveSpeed') * (1 - Math.min(0.2, Math.max(0, this.externalSlow)));
     if (this.dash.state === 'dashing') {
       this.vx = this.dash.dir.x * this.dash.speed;
       this.vy = this.dash.dir.y * this.dash.speed;
@@ -677,6 +679,16 @@ export class Player implements Combatant {
 
   addGlory(n: number): void {
     this.glory = Math.min(AVATAR.gloryMax, this.glory + n);
+  }
+
+  /**
+   * Última Palavra do Sêlun: a ÚNICA técnica que ignora defesa e invulnerabilidade.
+   * Conduz ao GAME OVER e à ressurreição por Apollon.
+   */
+  forceKill(): void {
+    if (this.dead) return;
+    this.health.current = 0;
+    this.die();
   }
 
   private die(): void {

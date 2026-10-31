@@ -286,8 +286,8 @@ export class Toknar implements Combatant {
     const dealt = this.health.damage(hit.damage * (broken ? 1.3 : 1));
     if (
       this.brain.hitPosture(
-        hit.posture ??
-          (hit.tag === 'charged' ? 85 : hit.heavy ? 40 : hit.basic ? 13 : 5),
+        (hit.posture ??
+          (hit.tag === 'charged' ? 85 : hit.heavy ? 40 : hit.basic ? 13 : 5)) * (hit.postureMul ?? 1),
       )
     ) {
       this.cancel();

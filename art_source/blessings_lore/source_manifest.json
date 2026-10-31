@@ -1,0 +1,284 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Inventario de fontes para o spec; nao e um atlas de runtime.",
+  "archive": "Bencaos_Atriox_Assets_e_Guia.zip",
+  "archiveSha256": "6331dcde78d4da1180b0b8e4a57f80ebe50a6ae5423421e523f7e738bcf9dec1",
+  "inspectedOn": "2026-10-31",
+  "status": "source-only; requires crop, alpha validation and anchor review",
+  "files": [
+    {
+      "file": "GUIA.md",
+      "bytes": 2897,
+      "sha256": "3797163cc2e16b2106266e44062edd972aca4a98fc0a1900a1f29b144d4cc702"
+    },
+    {
+      "file": "PROMPTS_GERACAO.md",
+      "bytes": 8775,
+      "sha256": "3abe9babf33f2228706ac9d2e3138c7c8fd05313b47d507bdce48425edc25e7e"
+    },
+    {
+      "file": "fx_cicatrizes_douradas.png",
+      "bytes": 2050930,
+      "sha256": "e6976d0c7aaf78d34151e72a8ba3563990193017a8fb0c275e7c53a8ee9b1f60",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "alpha": {
+        "min": 0,
+        "max": 253,
+        "transparentPercent": 28.523,
+        "opaquePercent": 0.0,
+        "corners": [
+          1,
+          0,
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "file": "fx_cicatrizes_douradas_alpha_revision.png",
+      "bytes": 2156622,
+      "sha256": "0e0101a3b41232992ee8f57e8e4eb246853d3ff98a1864ba809fe7a096de682a",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "alpha": {
+        "min": 0,
+        "max": 253,
+        "transparentPercent": 25.013,
+        "opaquePercent": 0.0,
+        "corners": [
+          0,
+          0,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "file": "fx_cinzas_ignacius.png",
+      "bytes": 1604320,
+      "sha256": "a65683c2e122c966308ca523b40bc096ede1abae3599dad1a493acfa4674805e",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPercent": 53.3,
+        "opaquePercent": 0.0,
+        "corners": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "file": "fx_disciplina_althar.png",
+      "bytes": 977429,
+      "sha256": "f1910f8887a3129ecfb658d61c3821000c12801365cce4c4d1260f3542716b18",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "alpha": {
+        "min": 0,
+        "max": 254,
+        "transparentPercent": 68.742,
+        "opaquePercent": 0.0,
+        "corners": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "file": "fx_instinto_eremita.png",
+      "bytes": 1999396,
+      "sha256": "ba055ff73a47b336ee39f09c3ce755d9f8ba67efbdc2bf7668505eafe2fc525d",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "alpha": {
+        "min": 0,
+        "max": 254,
+        "transparentPercent": 58.162,
+        "opaquePercent": 0.0,
+        "corners": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "file": "fx_instinto_eremita_alpha_revision.png",
+      "bytes": 2303030,
+      "sha256": "0a35af9e42399d528b4a09a8d90ec9b82c90c9a747d0683b986eb4cf11feb1a0",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "alpha": {
+        "min": 0,
+        "max": 253,
+        "transparentPercent": 36.742,
+        "opaquePercent": 0.0,
+        "corners": [
+          1,
+          0,
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "file": "fx_julgamento_proprio.png",
+      "bytes": 2096671,
+      "sha256": "1a72e413a41226de08b536162ce03e4be7f18e21b7bb2d13cfe0133651b05dae",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "alpha": {
+        "min": 0,
+        "max": 253,
+        "transparentPercent": 33.39,
+        "opaquePercent": 0.0,
+        "corners": [
+          0,
+          0,
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "file": "fx_julgamento_proprio_alpha_revision.png",
+      "bytes": 2114461,
+      "sha256": "1f91a079da0e7d4190f42af5a0246edeac413022f53e1dca4ee40827e42e1e69",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "alpha": {
+        "min": 0,
+        "max": 254,
+        "transparentPercent": 45.765,
+        "opaquePercent": 0.0,
+        "corners": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "file": "fx_quebrador_grilhoes.png",
+      "bytes": 1863288,
+      "sha256": "cd60aca25bcd50d9b9ce743f0db9cfdc9ff2e6ca53eaf3e2f80332caca21da14",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPercent": 41.662,
+        "opaquePercent": 0.001,
+        "corners": [
+          0,
+          0,
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "file": "fx_vontade_renegado.png",
+      "bytes": 1733526,
+      "sha256": "b292098070c8f4e1a2476e1ae0df9fff9189fcabc302352c65d49c08702e6674",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPercent": 48.241,
+        "opaquePercent": 0.0,
+        "corners": [
+          0,
+          0,
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "file": "icons_bencaos_lore.png",
+      "bytes": 2284564,
+      "sha256": "9f9546baa286bb80a0ea202c9fbae71121b8835f4be073a3987d6a5cf3357066",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "grid": {
+        "columns": 4,
+        "rows": 2
+      },
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPercent": 46.13,
+        "opaquePercent": 0.003,
+        "corners": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  ]
+}

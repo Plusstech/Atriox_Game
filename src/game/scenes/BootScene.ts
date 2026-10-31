@@ -5,6 +5,7 @@ import { ATLAS_KEY, type AnimLibrary } from '../animation/SpriteAnimator';
 import { buildAnimations, type AtlasMeta } from '../../data/animations';
 import { CHARACTER_ATLAS_META, versionedCharacterAtlas } from '../../data/atlas';
 import { ARENA_IMAGES, PORTRAITS } from '../../data/dialogues';
+import { save } from '../services';
 
 export const ATRIOX_POSES = ['idle', 'lunge', 'slash', 'cast', 'dash', 'hurt'] as const;
 
@@ -76,6 +77,11 @@ export class BootScene extends Phaser.Scene {
     }
     this.registry.set('animLibrary', lib);
     this.registry.set('missingAssets', this.missing);
+    // derrota para Sêlun ainda sem escolha concluída (página recarregada): reabre a MESMA escolha
+    if (save.data.selun.pending && !new URLSearchParams(location.search).has('inspector')) {
+      this.scene.start('SelunAftermathScene', { resume: true });
+      return;
+    }
     this.scene.start(new URLSearchParams(location.search).has('inspector') ? 'AnimInspectorScene' : 'MenuScene');
   }
 }

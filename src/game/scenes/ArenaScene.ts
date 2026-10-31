@@ -7,6 +7,8 @@ import {
   type AltarBuff,
 } from '../../data/v03';
 import { Toknar } from '../entities/Toknar';
+import { Selun } from '../entities/Selun';
+import { SELUN, blessingModifiers } from '../../data/selun';
 import { GiftBuild, type GiftOffer } from '../progression/GiftBuild';
 import { AdvancedCombat } from '../combat/AdvancedCombat';
 import Phaser from 'phaser';
@@ -23,7 +25,7 @@ import { ENEMIES, type EnemyKind } from '../../data/enemies';
 import { EXECUTIONER, CAIM } from '../../data/bosses';
 import { ROOMS, type RewardKind } from '../../data/rooms';
 import type { SpawnKind } from '../../data/waves';
-import { BOSS_DIALOGUES, type BossDialogueId } from '../../data/dialogues';
+import { BOSS_DIALOGUES, APOLLON_LINES, type BossDialogueId } from '../../data/dialogues';
 import { JUDGMENT_FLAME } from '../../data/abilities';
 import {
   AVATAR,
@@ -108,6 +110,8 @@ export interface HudState {
   options: string[];
   buff: string;
   bossExtra: string;
+  /** contagem grande no centro (Última Palavra) */
+  countdown: string;
   arrows: { x: number; y: number; angle: number; label: string }[];
   hp: number;
   maxHp: number;
@@ -248,6 +252,19 @@ export class ArenaScene extends Phaser.Scene {
   private introWalk: 'executioner' | 'caim' | null = null;
   /** conversa pré-chefe aberta (arena pausada) */
   dialogueActive = false;
+  /** Sêlun — O Fim do Infinito (após o nível SELUN.triggerWave do Infinito) */
+  selun: Selun | null = null;
+  private selunAttempt: string | null = null;
+  private selunTriggered = false;
+  private selunDodges = 0;
+  /** uma única transição terminal por tentativa (morte do jogador tem precedência) */
+  private selunTerminal = false;
+  private hitGroups = new Map<string, number>();
+  private sparkReadyAt = 0;
+  /** bênçãos permanentes de Apollon aplicadas nesta tentativa */
+  private bless = blessingModifiers({});
+  /** multiplicador de dano de postura do jogador (Vontade Inquebrável + Brasa) */
+  postureMul = 1;
   private orbObjects: Phaser.GameObjects.GameObject[] = [];
   private cinematic: BlessingCinematic | null = null;
   private gloryGranted: boolean | null = null;
@@ -259,7 +276,7 @@ export class ArenaScene extends Phaser.Scene {
   }
 
   // =================================================================== ciclo de vida
-  create(): void {
+  create(data?: { eternity?: boolean }): void {
     // a instância é reaproveitada ao reiniciar: reinicializar TODO o estado aqui
     this.toknar = null;
     this.giftOffers = [];
@@ -298,6 +315,13 @@ export class ArenaScene extends Phaser.Scene {
     this.camTarget = null;
     this.introWalk = null;
     this.dialogueActive = false;
+    this.selun = null;
+    this.selunAttempt = null;
+    this.selunTriggered = false;
+    this.selunDodges = 0;
+    this.selunTerminal = false;
+    this.hitGroups.clear();
+    this.sparkReadyAt = 0;
     this.orbObjects = [];
     this.cinematic = null;
     this.gloryGranted = null;
@@ -355,6 +379,19 @@ export class ArenaScene extends Phaser.Scene {
     );
     if (save.data.unlocks.blessingOfGlory)
       this.player.dashPurifyMs = BLESSING_OF_GLORY.purifyMs;
+    // bênçãos permanentes de Apollon (derrotas para Sêlun): SEMPRE a partir dos valores-base,
+    // uma vez por tentativa — recarregar não duplica nada
+    const ember = save.consumeEmber();
+    this.bless = blessingModifiers(save.data.selun.blessings, ember);
+    const pst = this.player.stats;
+    pst.addPermanent('maxHp', { mul: this.bless.maxHpMul });
+    pst.addPermanent('damageMul', { mul: this.bless.damageMul });
+    pst.addPermanent('dashCooldownMul', { mul: this.bless.dashRechargeMul });
+    if (this.bless.resistAdd > 0) pst.addPermanent('resist', { add: this.bless.resistAdd });
+    this.player.health.setMax(pst.get('maxHp'), false);
+    this.player.health.current = this.player.health.max;
+    this.postureMul = this.bless.postureMul;
+    if (ember) this.time.delayedCall(1600, () => this.ui()?.toast('Brasa de Apollon: +10% de dano de postura nesta tentativa.'));
     this.build = new GiftBuild(this.player.gifts);
     this.skills = new AdvancedCombat(this);
     this.blessings = new BlessingSystem(this.player.stats);
@@ -425,6 +462,8 @@ export class ArenaScene extends Phaser.Scene {
     else this.scene.get('UIScene').scene.restart();
 
     this.handleRun(this.run.begin());
+    // refúgio → Provação da Eternidade a partir do nível 1
+    if (data?.eternity && save.data.selun.eternityUnlocked) this.time.delayedCall(60, () => this.startEternityFromRefuge());
     Sfx.startMusic();
     Sfx.setIntensity(0.1);
 
@@ -688,6 +727,9 @@ export class ArenaScene extends Phaser.Scene {
         ...(this.boss && !this.boss.dead
           ? [{ x: this.boss.x, y: this.boss.y, r: this.boss.def.radius }]
           : []),
+        ...(this.selun && this.selun.brain.tangible
+          ? [{ x: this.selun.x, y: this.selun.y, r: SELUN.radius }]
+          : []),
       ]);
     this.player.update(sdt, input, collide);
 
@@ -714,6 +756,10 @@ export class ArenaScene extends Phaser.Scene {
       } else this.caim.update(edt, this.player);
     }
     this.toknar?.update(edt, this.player);
+    if (this.selun) {
+      this.selun.update(edt, this.player);
+      this.player.externalSlow = this.selun.slowAt(this.player.x, this.player.y);
+    } else this.player.externalSlow = 0;
     this.skills.update(this.player.dead ? 0 : sdt);
     this.separateBodies();
     this.bloodRenderer.draw(this.pools, edt);
@@ -751,7 +797,8 @@ export class ArenaScene extends Phaser.Scene {
       !this.player.dead &&
       this.aliveEnemies() + this.pendingSpawns === 0 &&
       !this.toknar &&
-      !this.caim
+      !this.caim &&
+      !this.selun
     )
       this.endlessCleared();
 
@@ -790,6 +837,7 @@ export class ArenaScene extends Phaser.Scene {
     if (this.toknar && !this.toknar.dead) list.push(this.toknar.hurtbox);
     if (this.boss && !this.boss.dead) list.push(this.boss.hurtbox);
     if (this.caim && !this.caim.dead) list.push(this.caim.hurtbox);
+    if (this.selun && !this.selun.removed) list.push(this.selun.hurtbox);
     for (const d of this.dummies) list.push(d.hurtbox);
     this.lastHurtboxes = list;
     return list;
@@ -800,6 +848,7 @@ export class ArenaScene extends Phaser.Scene {
     if (this.toknar && this.toknar.id === id) return this.toknar;
     if (this.boss && this.boss.id === id) return this.boss;
     if (this.caim && this.caim.id === id) return this.caim;
+    if (this.selun && this.selun.id === id) return this.selun;
     return (
       this.enemies.find((e) => e.id === id) ??
       this.wyverns.find((w) => w.id === id) ??
@@ -1335,7 +1384,15 @@ export class ArenaScene extends Phaser.Scene {
       if (dir.x === 0 && dir.y === 0) dir = { x: 1, y: 0 };
       const heavy = !!s.meta?.heavy;
       const basic = !!s.meta?.basic;
+      const group = s.meta?.group;
+      if (s.team === 'enemy' && c === this.player && typeof group === 'string' && group) {
+        // um mesmo golpe (espada + rastro + chão) acerta no máximo uma vez por janela
+        const last = this.hitGroups.get(group);
+        if (last !== undefined && this.time.now - last < SELUN.groupWindowMs) continue;
+        this.hitGroups.set(group, this.time.now);
+      }
       const dealt = c.receiveHit({
+        postureMul: s.team === 'player' ? this.postureMul : undefined,
         damage: s.damage,
         knockback: s.knockback,
         dirX: dir.x,
@@ -1811,6 +1868,9 @@ export class ArenaScene extends Phaser.Scene {
     this.boss = null;
     this.caim?.destroy();
     this.caim = null;
+    this.selun?.destroy();
+    this.selun = null;
+    this.hitGroups.clear();
     for (const o of this.orbObjects) o.destroy();
     this.orbObjects = [];
     this.pendingSpawns = 0;
@@ -2027,14 +2087,158 @@ export class ArenaScene extends Phaser.Scene {
     }
   }
 
+  // =================================================================== Sêlun — O Fim do Infinito
+  private startSelunEncounter(): void {
+    this.clearRoomEntities();
+    this.interactables = [];
+    this.clearDoors();
+    this.giftOffers = [];
+    if (this.layout) destroyArena(this, this.layout);
+    this.layout = buildArena(this, 'selun');
+    const p = this.player;
+    p.x = ARENA_CENTER.x;
+    p.y = FLOOR.y + FLOOR.h - 300;
+    p.vx = p.vy = 0;
+    p.heal(p.health.max);
+    p.locked = true;
+    p.clearInput();
+    this.run.phase = 'boss';
+    this.selunDodges = 0;
+    this.selunTerminal = false;
+    this.hitGroups.clear();
+    this.selunAttempt = save.selunBeginAttempt();
+    this.ui()?.roomTitle('O Fim do Infinito', 'Sêlun');
+    const epoch = this.roomEpoch;
+    this.selun = new Selun(this, this.lib, ARENA_CENTER.x, FLOOR.y + 400, {
+      hitboxes: this.hitboxes,
+      effects: this.effects,
+      collide: (x, y, r) => resolveCircle(x, y, r, FLOOR, this.layout.obstacles),
+      playerMaxHp: () => this.player.health.max,
+      postureMul: () => this.postureMul,
+      playerReady: () => {
+        const q = this.player;
+        return !q.dead && q.postHitInvuln <= 0 && q.hurtTimer <= 0 && !q.stunned && q.avatarT < 0 && !q.cinematic;
+      },
+      onPhase: (n) =>
+        this.ui()?.banner(
+          n === 2 ? 'O Fim se aproxima' : 'A arena obedece',
+          n === 2 ? 'Decreto do Fim e ecos de execução' : 'Ecos duplos, Peso do Fim e Tributo ao Silêncio',
+          0xffb35a,
+        ),
+      onStagger: () => this.ui()?.toast('Postura quebrada! 2 s para punir — Sêlun não ataca.'),
+      onFallen: () => this.ui()?.toast('A manifestação cai...'),
+      onRecomposed: (n) =>
+        n === 1
+          ? this.ui()?.banner('Sêlun se recompõe', 'A manifestação não é o fim dele', 0xcfe0d8)
+          : this.ui()?.toast(`Sêlun se recompõe (${n}×)`),
+      onLastWord: () => {
+        this.projectiles.clearTeam('enemy');
+        for (const b of this.hitboxes.all) if (b.spec.team === 'enemy') b.cancel();
+        Sfx.bossRoar();
+        this.ui()?.banner('ÚLTIMA PALAVRA', 'Sêlun finca a espada. Nada a detém.', 0xffb35a);
+        this.ui()?.toast(`Apollon: ${APOLLON_LINES.lastWord}`);
+      },
+      onExecute: () => this.player.forceKill(),
+      onToast: (m) => this.ui()?.toast(m),
+    });
+    this.camTarget = { x: ARENA_CENTER.x, y: FLOOR.y + 460 };
+    Sfx.bossRoar();
+    this.effects.shake(700, 0.005);
+    this.time.delayedCall(1400, () => {
+      if (epoch !== this.roomEpoch || !this.selun) return;
+      const first = !save.data.selun.seenIntro;
+      this.bossDialogue(
+        first ? 'selun' : 'selun_return',
+        () => {
+          save.selunSeenIntro();
+          this.ui()?.bossIntro('SÊLUN', 'O Fim do Infinito');
+          if (first)
+            this.ui()?.banner('Há um fim inevitável', 'Resista o quanto puder. Apollon pode trazer Atriox de volta.', 0xffb35a);
+          this.time.delayedCall(900, () => {
+            if (epoch !== this.roomEpoch || !this.selun) return;
+            this.camTarget = null;
+            this.player.locked = false;
+            this.selun.startFight();
+          });
+        },
+        true,
+      );
+    });
+  }
+
+  /** Morte real no encontro: uma única transição terminal → GAME OVER → Apollon. */
+  private selunGameOver(): void {
+    const s = this.selun;
+    if (!s || this.selunTerminal) return;
+    this.selunTerminal = true;
+    s.halt();
+    this.hitboxes.clear();
+    this.projectiles.clear();
+    this.pools.clear();
+    this.skills.reset();
+    this.exposure.reset();
+    const feats = {
+      activeMs: Math.round(s.brain.activeMs),
+      breaks: s.brain.breaks,
+      recompositions: s.brain.recompositions,
+      perfectDodges: this.selunDodges,
+      phase: s.brain.phase,
+    };
+    if (this.selunAttempt) save.selunRecordDeath(this.selunAttempt, feats);
+    this.selunAttempt = null;
+    this.ending = true;
+    Sfx.defeat();
+    this.slowMotion(0.3, 1600);
+    this.effects.flash(400, 40, 20, 10);
+    this.effects.shake(600, 0.01);
+    try {
+      this.cameras.main.postFX?.addColorMatrix().grayscale(0.9);
+    } catch {
+      /* renderer Canvas: sem pós-processamento */
+    }
+    this.time.delayedCall(1900, () => {
+      this.cameras.main.fadeOut(900, 0, 0, 0);
+      this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+        this.cameras.main.postFX?.clear();
+        this.scene.stop('UIScene');
+        this.scene.start('SelunAftermathScene');
+      });
+    });
+  }
+
+  /** Esquiva perfeita (ameaça real atravessada): feitos, Memória da Dor, Centelha de Retorno. */
+  onPreciseDodge(): void {
+    if (this.selun && !this.selunTerminal) this.selunDodges++;
+    const b = this.bless;
+    if (b.painDamage > 0) this.player.stats.addTimed('damageMul', b.painDamage, 4000);
+    if (b.sparkHeal > 0 && this.time.now >= this.sparkReadyAt) {
+      this.sparkReadyAt = this.time.now + 8000;
+      const n = this.player.heal(Math.max(1, Math.round(this.player.health.max * b.sparkHeal)));
+      if (n > 0) this.effects.floatingText(this.player.x, this.player.chestY - 40, `+${n}`, '#ffe08a', 15);
+    }
+  }
+
+  /** Dev/testes: pula direto para o encontro (Infinito concluído no nível de gatilho). */
+  devStartSelun(): void {
+    if (this.selun || this.player.dead) return;
+    this.campaignRecorded = true;
+    this.endless = true;
+    this.endlessWave = SELUN.triggerWave;
+    this.selunTriggered = true;
+    this.endlessWaiting = true;
+    this.dummies.forEach((d) => d.destroy());
+    this.dummies = [];
+    this.startSelunEncounter();
+  }
+
   // =================================================================== chefes
   /**
    * Conversa antes do chefe: a arena PAUSA (combate e perigos congelados), a
    * DialogueScene assume a entrada e, ao terminar, nenhuma tecla ou clique vaza
    * para o primeiro quadro da luta. `done` roda uma única vez.
    */
-  private bossDialogue(id: BossDialogueId, done: () => void): void {
-    if (this.endless || this.run.over || this.player.dead) {
+  private bossDialogue(id: BossDialogueId, done: () => void, force = false): void {
+    if ((this.endless && !force) || this.run.over || this.player.dead) {
       done();
       return;
     }
@@ -2357,6 +2561,10 @@ export class ArenaScene extends Phaser.Scene {
   }
 
   private onPlayerDeath(): void {
+    if (this.selun && !this.selunTerminal) {
+      this.selunGameOver();
+      return;
+    }
     this.giftOffers = [];
     this.interactables = [];
     this.clearDoors();
@@ -2425,6 +2633,24 @@ export class ArenaScene extends Phaser.Scene {
       timeMs: this.runTime,
       highestWave: this.highestRoom,
     });
+    save.unlockEternity();
+    this.beginEndless();
+  }
+
+  /** Refúgio (após a ressurreição por Apollon): novo Infinito no nível 1, build vazia. */
+  startEternityFromRefuge(): void {
+    if (this.endless || this.player.dead) return;
+    this.dummies.forEach((d) => d.destroy());
+    this.dummies = [];
+    if (this.layout) destroyArena(this, this.layout);
+    this.layout = buildArena(this, 'caim');
+    this.player.x = ARENA_CENTER.x;
+    this.player.y = ARENA_CENTER.y + 240;
+    this.ui()?.banner('Provação da Eternidade', 'Do nível 1 — o Fim espera depois do 10', 0xffd77a);
+    this.beginEndless();
+  }
+
+  private beginEndless(): void {
     this.campaignRecorded = true;
     this.endless = true;
     this.endlessWave = 0;
@@ -2488,6 +2714,19 @@ export class ArenaScene extends Phaser.Scene {
 
   private endlessCleared(): void {
     if (this.endlessWaiting || this.player.dead) return;
+    // Sêlun: concluir o nível SELUN.triggerWave chama o Fim — antes de qualquer nível seguinte
+    if (this.endlessWave >= SELUN.triggerWave && !this.selunTriggered) {
+      this.selunTriggered = true;
+      this.endlessWaiting = true;
+      this.hitboxes.clear();
+      this.projectiles.clear();
+      this.pools.clear();
+      save.recordEternity(this.endlessWave, true);
+      this.startSelunEncounter();
+      return;
+    }
+    // o Fim do Infinito: depois do gatilho não existe nível seguinte (nem porta do 11)
+    if (this.selunTriggered) return;
     this.endlessWaiting = true;
     this.hitboxes.clear();
     this.projectiles.clear();
@@ -2587,7 +2826,9 @@ export class ArenaScene extends Phaser.Scene {
         Phaser.Math.Clamp((wp.y - this.player.chestY) * 0.1, -60, 60);
       // enquadra o chefe ativo junto com o jogador (para os ataques serem antecipáveis)
       const foe =
-        this.toknar && !this.toknar.dead
+        this.selun && !this.selun.removed
+          ? this.selun
+          : this.toknar && !this.toknar.dead
           ? this.toknar
           : this.caim && !this.caim.dead && !this.caim.scripted
             ? this.caim
@@ -2667,6 +2908,24 @@ export class ArenaScene extends Phaser.Scene {
   }
 
   // =================================================================== HUD e depuração
+  private selunHudLine(): string {
+    const s = this.selun!;
+    const b = s.brain;
+    const t = Math.floor(b.activeMs / 1000);
+    const clock = `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
+    const status =
+      b.state === 'channel'
+        ? ` · TRIBUTO AO SILÊNCIO ${'█'.repeat(Math.ceil((b.timer / SELUN.moves.channel.channelMs) * 10))}${'░'.repeat(Math.max(0, 10 - Math.ceil((b.timer / SELUN.moves.channel.channelMs) * 10)))} — quebre a postura!`
+        : b.state === 'stagger'
+          ? ' · POSTURA QUEBRADA'
+          : b.state === 'fallen' || b.state === 'recompose'
+            ? ' · recompondo...'
+            : b.protectMs > 0
+              ? ' · postura protegida'
+              : '';
+    return `Manifestação ${Math.ceil(s.health.current)}/${SELUN.manifestHp} · Postura ${Math.ceil(b.posture)}/${SELUN.posture} · Fase ${b.phase} · ${clock}${status}`;
+  }
+
   getHud(): HudState {
     const p = this.player;
     const room = this.run.room;
@@ -2687,6 +2946,13 @@ export class ArenaScene extends Phaser.Scene {
         phase: this.caim.brain.phase,
       };
     // a barra só entra depois da conversa (ordem: diálogo → rugido/título → barra)
+    if (this.selun && this.selun.brain.state !== 'intro')
+      boss = {
+        name: this.selun.name,
+        title: this.selun.title,
+        ratio: this.selun.hpRatio,
+        phase: this.selun.brain.phase,
+      };
     if (this.toknar && !this.toknar.dead && this.toknar.brain.state !== 'intro')
       boss = {
         name: this.toknar.name,
@@ -2713,7 +2979,13 @@ export class ArenaScene extends Phaser.Scene {
       buff: this.buffActive
         ? `${this.buffActive.name} · ${this.buffRooms === 1 ? 'sala atual' : 'próxima sala'}${this.buffActive.id === 'barrier' ? ` · ${p.barrier} barreira / ${p.barrierHits} acertos` : this.buffActive.id === 'ward' ? ` · ${p.infectionWard} proteções` : ''}`
         : '',
-      bossExtra: this.boss && !this.boss.scripted && !this.boss.dead && !this.toknar && !this.caim
+      countdown:
+        this.selun && this.selun.brain.state === 'execution'
+          ? `ÚLTIMA PALAVRA  ${Math.max(1, Math.ceil((SELUN.lastWordMs - this.selun.brain.timer) / 1000))}`
+          : '',
+      bossExtra: this.selun
+        ? this.selunHudLine()
+        : this.boss && !this.boss.scripted && !this.boss.dead && !this.toknar && !this.caim
         ? `Postura ${Math.ceil(this.boss.brain.posture)}/${EXECUTIONER.posture}${this.boss.brain.state === 'broken' ? ' · VULNERÁVEL' : ''}`
         : this.toknar
         ? `${TOKNAR.moves[this.toknar.brain.move].name} · Postura ${Math.ceil(this.toknar.brain.posture)}/${TOKNAR.posture}${this.toknar.brain.state === 'broken' ? ' · VULNERÁVEL' : ''}`
@@ -2789,6 +3061,19 @@ export class ArenaScene extends Phaser.Scene {
           }
         : null,
       dialogue: this.dialogueActive,
+      selun: this.selun
+        ? {
+            state: this.selun.brain.state,
+            phase: this.selun.brain.phase,
+            activeMs: Math.round(this.selun.brain.activeMs),
+            hp: this.selun.health.current,
+            posture: this.selun.brain.posture,
+            breaks: this.selun.brain.breaks,
+            recompositions: this.selun.brain.recompositions,
+            hazards: this.selun.hazardCount,
+            frame: this.selun.frameName,
+          }
+        : null,
       kinds: this.enemies.filter((e) => !e.dead).map((e) => e.def.kind),
       wildWyverns: this.wyverns.filter((w) => !w.dead && w.variant === 'wild').length,
       endlessWave: this.endlessWave,

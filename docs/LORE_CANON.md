@@ -99,3 +99,11 @@ Na v0.2, Caim aparece com cabelo preto curto, rosto pálido, casaco preto com bo
 | Conversas antes dos chefes (`src/data/dialogues.ts`) | **Roteiros propostos para o jogo**, não falas canônicas. Não criam parentescos, pactos ou eventos. |
 | Arena de Toknar (fosso do clã) e "Campo em Ruínas" de Caim | **Cenários de jogo.** O local exato do confronto com Caim não é afirmado como canônico. |
 
+## 8. Sêlun — O Fim do Infinito (proposta de jogo)
+
+| Elemento | Status |
+|---|---|
+| **Sêlun** (cavaleiro de armadura verde-acinzentada, elmo de crânio com chifres) | Visual e papel definidos pelo usuário (PROMPT_SELUN_GAME_OVER). O nome lembra **Selûnn Ecléssio**, que na fonte **vence Atriox** e é o oponente mais forte que ele enfrentou; o jogo respeita isso: Sêlun é invencível e a luta mede resistência, não vitória. A equivalência entre os dois não é afirmada como cânone. |
+| Apollon revivendo Atriox e as bênçãos permanentes | **Proposta de jogo.** Coerente com Apollon como patrono que intervém em Nemeia, sem afirmar evento canônico. |
+| Falas do encontro e da ressurreição | **Roteiros originais** desta implementação. |
+

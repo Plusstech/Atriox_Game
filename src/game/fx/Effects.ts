@@ -161,7 +161,7 @@ export class Effects {
     x: number,
     y: number,
     names: string[],
-    opts: { frameMs?: number; flipX?: boolean; rotation?: number; scale?: number; scaleX?: number; scaleY?: number; depth?: number; blend?: boolean; alpha?: number } = {}
+    opts: { frameMs?: number; flipX?: boolean; rotation?: number; scale?: number; scaleX?: number; scaleY?: number; depth?: number; blend?: boolean; alpha?: number; tint?: number } = {}
   ): Phaser.GameObjects.Sprite | null {
     if (!names.length || !this.scene.textures.exists('characters')) return null;
     const tex = this.scene.textures.get('characters');
@@ -176,6 +176,7 @@ export class Effects {
       .setAlpha(opts.alpha ?? 1)
       .setDepth(opts.depth ?? DEPTH.overlayFx - 40);
     if (opts.blend) s.setBlendMode(Phaser.BlendModes.ADD);
+    if (opts.tint !== undefined) s.setTint(opts.tint);
     const ms = opts.frameMs ?? 55;
     let i = 0;
     this.scene.time.addEvent({
